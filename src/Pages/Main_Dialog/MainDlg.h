@@ -38,10 +38,7 @@
 //CMainDlg dialog
 //------------------------------------------------------------------------------
 class CMainDlg : public CDialog
-{
-  //DECLARE_DYNAMIC(CMainDlg)
-  //IMPLEMENT_DYNAMIC(CMainDlg)
-  
+{  
   public:
   //Construction standard constructor
   CMainDlg(CWnd* pParent = NULL);
