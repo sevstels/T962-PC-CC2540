@@ -1,0 +1,35 @@
+[OPTIONS]
+Auto Index=Yes
+Compatibility=1.1 or later
+Compiled file=PCRM.chm
+Contents file=PCRM.hhc
+Index file=PCRM.hhk
+Default topic=pages\index.htm
+Display compile progress=No
+Full-text search=Yes
+Language=0x0409 English (United States)
+Title=PCR machine help
+
+[FILES]
+pages\index.htm
+pages\tab1.htm
+pages\tab2.htm
+pages\tab3.htm
+pages\tab4.htm
+pages\tab5.htm
+
+[ALIAS]
+IDH_PAGE_MAIN=pages\index.htm
+IDH_PAGE_TAB1=pages\tab1.htm
+IDH_PAGE_TAB2=pages\tab2.htm
+IDH_PAGE_TAB3=pages\tab3.htm
+IDH_PAGE_TAB4=pages\tab4.htm
+IDH_PAGE_TAB5=pages\tab5.htm
+
+[MAP]
+#include HTMLDefines.h
+
+[TEXT POPUPS]
+HTMLDefines.h
+
+[INFOTYPES]

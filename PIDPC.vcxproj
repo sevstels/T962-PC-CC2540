@@ -1,0 +1,462 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|Win32">
+      <Configuration>Template</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Template|x64">
+      <Configuration>Template</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A87D20DC-24B7-4C51-BE8D-092780A72C63}</ProjectGuid>
+    <RootNamespace>PIDPC</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+    <ProjectName>T962</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>NotSet</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>Static</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)64</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;C:\WinDDK\inc\ddk;C:\WinDDK\inc\api</IncludePath>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">T962</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">T962</TargetName>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(VCInstallDir)include;$(VCInstallDir)atlmfc\include;$(WindowsSdkDir)include;$(FrameworkSDKDir)\include;C:\WinDDK\inc\ddk;C:\WinDDK\inc\api</IncludePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\;.\res;.\src\Help;.\src\DFU;.\src\CMD;.\src\Decvice;.\src\Headers;.\src\BT-Dlg;.\src\Application;.\src\DialogPos;.\src\Graph;.\src\PcrFile;.\src\DataTx;.\src\Display;.\src\Version;.\src\Profiles;.\src\AppSetup;.\src\AnalysisGraph;.\src\Pages;.\src\Pages\Main_Dialog;.\src\Pages\Page1;.\src\Pages\Page2;.\src\Pages\Page2\Functions;.\src\Pages\Page2\DlgPID-test;.\src\Pages\Page3;.\src\Pages\Page3\DlgMonitor;.\src\Pages\Page4;.\src\Pages\Page5;.\src\Pages\Page6;.\src\Pages\Page6\SensorDlg;.\src\Pages\SensorDlg;.\src\Pages\ReflowDlg;.\src\Pages\AboutDialog;.\src\LibCPP\Interpolation;.\src\LibCPP\Files-cpp;.\src\LibCPP\Arrows;.\src\LibCPP\Trace;.\src\LibCPP\ConsoleLog;.\src\LibCPP\WinRegApp;.\src\LibCPP\ToolTip;.\src\LibCPP\HexTxt-Parser;.\src\LibCPP\ColorTxt;.\src\LibCPP\DialogPos;.\src\LibCPP\Images;.\src\LibCPP\LogFile;.\src\LibCPP\CC2540;.\src\LibCPP\SendMsg;.\src\LibCPP\CStaticColor;.\src\LibCPP\LED-Blink;.\src\LibCPP\Integrator;.\src\LibCPP\ProtocolEx;.\src\LibCPP\ParseValue;.\src\LibCPP\CircleBuffer;.\src\LibCPP\VCOM;.\src\LibCPP\LastError;.\src\LibCPP\ShowErrors</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>Nafxcwd.lib;Libcmtd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Debug;</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <IgnoreSpecificDefaultLibraries>Nafxcwd.lib;Libcmtd.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+      <Outputs>
+      </Outputs>
+    </CustomBuildStep>
+    <CustomBuild>
+      <Command>hhc.exe dd$(ProjectDir)\src\Help\chm\PCRM.hhp</Command>
+    </CustomBuild>
+    <CustomBuild>
+      <Outputs> $(ProjectDir)\PCRM.chm</Outputs>
+      <Message>HTML help assembly...</Message>
+    </CustomBuild>
+    <PreBuildEvent>
+      <Command>$(ProjectDir)\src\Version\revision.exe "$(ProjectDir)\src\Version"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>.\..\..\..\CAN_DLL_LIB\candll;.\;.\res;.\src\Help;.\src\CMD;.\src\WinReg;.\src\Headers;.\src\ToolTip;.\src\Application;.\src\Dialogs;.\src\DialogPos;.\src\Dialogs\Main_Dialog;.\src\Dialogs\Page1;.\src\Dialogs\Page2;.\src\Dialogs\Page2\Functions</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN64;_WINDOWS;_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Link>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\Debug;</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\;.\res;.\src\Help;.\src\DFU;.\src\CMD;.\src\Decvice;.\src\Headers;.\src\BT-Dlg;.\src\Application;.\src\DialogPos;.\src\Graph;.\src\PcrFile;.\src\DataTx;.\src\Display;.\src\Version;.\src\Profiles;.\src\AppSetup;.\src\AnalysisGraph;.\src\Pages;.\src\Pages\Main_Dialog;.\src\Pages\Page1;.\src\Pages\Page2;.\src\Pages\Page2\Functions;.\src\Pages\Page2\DlgPID-test;.\src\Pages\Page3;.\src\Pages\Page3\DlgMonitor;.\src\Pages\Page4;.\src\Pages\Page5;.\src\Pages\Page6;.\src\Pages\Page6\SensorDlg;.\src\Pages\SensorDlg;.\src\Pages\ReflowDlg;.\src\Pages\AboutDialog;.\src\LibCPP\Interpolation;.\src\LibCPP\Files-cpp;.\src\LibCPP\Arrows;.\src\LibCPP\Trace;.\src\LibCPP\ConsoleLog;.\src\LibCPP\WinRegApp;.\src\LibCPP\ToolTip;.\src\LibCPP\HexTxt-Parser;.\src\LibCPP\ColorTxt;.\src\LibCPP\DialogPos;.\src\LibCPP\Images;.\src\LibCPP\LogFile;.\src\LibCPP\CC2540;.\src\LibCPP\SendMsg;.\src\LibCPP\CStaticColor;.\src\LibCPP\LED-Blink;.\src\LibCPP\Integrator;.\src\LibCPP\ProtocolEx;.\src\LibCPP\ParseValue;.\src\LibCPP\CircleBuffer;.\src\LibCPP\VCOM;.\src\LibCPP\LastError;.\src\LibCPP\ShowErrors</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>.\Release</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalDependencies>Nafxcw.lib;Libcmt.lib</AdditionalDependencies>
+      <IgnoreSpecificDefaultLibraries>Nafxcw.lib;Libcmt.lib</IgnoreSpecificDefaultLibraries>
+    </Link>
+    <PreBuildEvent>
+      <Command>$(ProjectDir)\src\Version\revision.exe "$(ProjectDir)\src\Version"</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>.\..\..\..\CAN_DLL_LIB\candll;.\;.\res;.\src\Help;.\src\CMD;.\src\WinReg;.\src\Headers;.\src\ToolTip;.\src\Application;.\src\Dialogs;.\src\DialogPos;.\src\Dialogs\Main_Dialog;.\src\Dialogs\Page1;.\src\Dialogs\Page2;.\src\Dialogs\Page2\Functions</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN64;_WINDOWS;NDEBUG;</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>.\Release</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\AnalysisGraph\anls-dlg-settings.cpp" />
+    <ClCompile Include="src\AnalysisGraph\anls-graph.cpp" />
+    <ClCompile Include="src\Application\PIDPC.cpp" />
+    <ClCompile Include="src\AppSetup\app-setup.cpp" />
+    <ClCompile Include="src\BT-Dlg\bt-dlg.cpp" />
+    <ClCompile Include="src\DataTx\datatx.cpp" />
+    <ClCompile Include="src\DFU\lpc21isp.cpp" />
+    <ClCompile Include="src\Display\display.cpp" />
+    <ClCompile Include="src\Display\Functions\add-remove.cpp" />
+    <ClCompile Include="src\Display\Functions\backgnd.cpp" />
+    <ClCompile Include="src\Display\Functions\duration.cpp" />
+    <ClCompile Include="src\Display\Functions\led-sample.cpp" />
+    <ClCompile Include="src\Display\Functions\menu.cpp" />
+    <ClCompile Include="src\Display\Functions\mouse_events.cpp" />
+    <ClCompile Include="src\Display\Functions\msgbox.cpp" />
+    <ClCompile Include="src\Display\Functions\primitives.cpp" />
+    <ClCompile Include="src\Display\Functions\profile.cpp" />
+    <ClCompile Include="src\Display\Functions\ramp.cpp" />
+    <ClCompile Include="src\Display\Functions\scales.cpp" />
+    <ClCompile Include="src\Display\Functions\scroll.cpp" />
+    <ClCompile Include="src\Display\Functions\selection.cpp" />
+    <ClCompile Include="src\Display\Functions\square.cpp" />
+    <ClCompile Include="src\Display\Functions\temperature-pcr.cpp" />
+    <ClCompile Include="src\Graph\graphs.cpp" />
+    <ClCompile Include="src\Help\user_help.cpp" />
+    <ClCompile Include="src\LibCPP\Arrows\Arrows.cpp" />
+    <ClCompile Include="src\LibCPP\CC2540\cc2540-cmd.cpp" />
+    <ClCompile Include="src\LibCPP\CC2540\cc2540-func.cpp" />
+    <ClCompile Include="src\LibCPP\CC2540\cc2540.cpp" />
+    <ClCompile Include="src\LibCPP\ColorTxt\ColorStaticST.cpp" />
+    <ClCompile Include="src\LibCPP\ConsoleLog\log-console.cpp" />
+    <ClCompile Include="src\LibCPP\CStaticColor\cstatic-color.cpp" />
+    <ClCompile Include="src\LibCPP\DialogPos\dialog-pos.cpp" />
+    <ClCompile Include="src\LibCPP\Files-cpp\files-cpp.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_bgnd.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_curve.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_edge.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_line.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_scale.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_search_frame.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_string.cpp" />
+    <ClCompile Include="src\LibCPP\Images\draw_window.cpp" />
+    <ClCompile Include="src\LibCPP\Images\Images.cpp" />
+    <ClCompile Include="src\LibCPP\Integrator\integrator.cpp" />
+    <ClCompile Include="src\LibCPP\Interpolation\bezier.cpp" />
+    <ClCompile Include="src\LibCPP\LED-Blink\led-blink.cpp" />
+    <ClCompile Include="src\LibCPP\LogFile\log-file.cpp" />
+    <ClCompile Include="src\LibCPP\ParseValue\parse-value.cpp" />
+    <ClCompile Include="src\LibCPP\ProtocolEx\protocol-ex.cpp" />
+    <ClCompile Include="src\LibCPP\ShowErrors\show-err.cpp" />
+    <ClCompile Include="src\LibCPP\ToolTip\tooltip.cpp" />
+    <ClCompile Include="src\LibCPP\Trace\trace.cpp" />
+    <ClCompile Include="src\LibCPP\VCOM\vcom.cpp" />
+    <ClCompile Include="src\LibCPP\WinRegApp\AppWinReg.cpp" />
+    <ClCompile Include="src\Pages\AboutDialog\about_dlg.cpp" />
+    <ClCompile Include="src\Pages\Main_Dialog\Functions\ble-support.cpp" />
+    <ClCompile Include="src\Pages\Main_Dialog\MainDlg.cpp" />
+    <ClCompile Include="src\Pages\Main_Dialog\Thread\ThreadMain.cpp" />
+    <ClCompile Include="src\Pages\Page1\Page1.cpp" />
+    <ClCompile Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.cpp" />
+    <ClCompile Include="src\Pages\Page2\Functions\controls2.cpp" />
+    <ClCompile Include="src\Pages\Page2\Functions\edit_boxs.cpp" />
+    <ClCompile Include="src\Pages\Page2\Functions\pid-tune.cpp" />
+    <ClCompile Include="src\Pages\Page2\Page2.cpp" />
+    <ClCompile Include="src\Pages\Page3\DlgMonitor\dlg-monitor.cpp" />
+    <ClCompile Include="src\Pages\Page3\Functions\controls3.cpp" />
+    <ClCompile Include="src\Pages\Page3\Functions\show-data3.cpp" />
+    <ClCompile Include="src\Pages\Page3\Page3.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\analysis-graph.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\analysis-log.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\analysis-read.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\context-menu.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\controls4.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\list_ctrl.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\list_hahdlers.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\parser-page4.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\pcr-log.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\profile-read.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\profile-write.cpp" />
+    <ClCompile Include="src\Pages\Page4\Functions\sample-log.cpp" />
+    <ClCompile Include="src\Pages\Page4\Page4.cpp" />
+    <ClCompile Include="src\Pages\Page4\Thread\Thread4.cpp" />
+    <ClCompile Include="src\Pages\Page5\Functions\controls5.cpp" />
+    <ClCompile Include="src\Pages\Page5\Page5.cpp" />
+    <ClCompile Include="src\Pages\Page6\Functions\controls6.cpp" />
+    <ClCompile Include="src\Pages\Page6\Page6.cpp" />
+    <ClCompile Include="src\Pages\Page6\Thread\thread-dfu.cpp" />
+    <ClCompile Include="src\Pages\ReflowDlg\dlg_reflow.cpp" />
+    <ClCompile Include="src\Pages\SensorDlg\dlg_sensor.cpp" />
+    <ClCompile Include="src\Profiles\profile-file-mc.cpp" />
+    <ClCompile Include="src\Profiles\profile-file.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\AnalysisGraph\anls-dlg-settings.h" />
+    <ClInclude Include="src\AnalysisGraph\anls-graph.h" />
+    <ClInclude Include="src\AppSetup\app-setup.h" />
+    <ClInclude Include="src\BT-Dlg\bt-dlg.h" />
+    <ClInclude Include="src\DataTx\datatx.h" />
+    <ClInclude Include="src\DFU\lpc21isp.h" />
+    <ClInclude Include="src\Display\display.h" />
+    <ClInclude Include="src\Graph\graphs.h" />
+    <ClInclude Include="src\LibCPP\Arrows\Arrows.h" />
+    <ClInclude Include="src\LibCPP\CC2540\cc2540.h" />
+    <ClInclude Include="src\LibCPP\ColorTxt\ColorStaticST.h" />
+    <ClInclude Include="src\LibCPP\ConsoleLog\log-console.h" />
+    <ClInclude Include="src\LibCPP\CStaticColor\cstatic-color.h" />
+    <ClInclude Include="src\LibCPP\DialogPos\dialog-pos.h" />
+    <ClInclude Include="src\LibCPP\Files-cpp\files-cpp.h" />
+    <ClInclude Include="src\LibCPP\Images\Images.h" />
+    <ClInclude Include="src\LibCPP\Integrator\integrator.h" />
+    <ClInclude Include="src\LibCPP\Interpolation\interpolation.h" />
+    <ClInclude Include="src\LibCPP\LastError\last-error.h" />
+    <ClInclude Include="src\LibCPP\LED-Blink\led-blink.h" />
+    <ClInclude Include="src\LibCPP\LogFile\log-file.h" />
+    <ClInclude Include="src\LibCPP\ParseValue\parse-value.h" />
+    <ClInclude Include="src\LibCPP\ProtocolEx\protocol-ex.h" />
+    <ClInclude Include="src\LibCPP\ShowErrors\show-err.h" />
+    <ClInclude Include="src\LibCPP\ToolTip\tooltip.h" />
+    <ClInclude Include="src\LibCPP\Trace\trace.h" />
+    <ClInclude Include="src\LibCPP\VCOM\vcom.h" />
+    <ClInclude Include="src\LibCPP\WinRegApp\AppWinReg.h" />
+    <ClInclude Include="src\Pages\AboutDialog\about_dlg.h" />
+    <ClInclude Include="src\Pages\Main_Dialog\MainDlg.h" />
+    <ClInclude Include="src\Pages\Page1\Page1.h" />
+    <ClInclude Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.h" />
+    <ClInclude Include="src\Pages\Page2\Page2.h" />
+    <ClInclude Include="src\Pages\Page3\DlgMonitor\dlg-monitor.h" />
+    <ClInclude Include="src\Pages\Page3\Page3.h" />
+    <ClInclude Include="src\Pages\Page4\Functions\analysis.h" />
+    <ClInclude Include="src\Pages\Page4\Page4.h" />
+    <ClInclude Include="src\Pages\Page5\Page5.h" />
+    <ClInclude Include="src\Pages\Page6\Page6.h" />
+    <ClInclude Include="src\Pages\pages.h" />
+    <ClInclude Include="src\Pages\ReflowDlg\dlg_reflow.h" />
+    <ClInclude Include="src\Pages\SensorDlg\dlg_sensor.h" />
+    <ClInclude Include="src\Profiles\profile-file.h" />
+    <ClInclude Include="src\Version\firmware_build.h" />
+    <ClInclude Include="tec-resource.h" />
+    <ClInclude Include="src\Application\PIDPC.h" />
+    <ClInclude Include="src\CMD\cmd.h" />
+    <ClInclude Include="src\Decvice\device_struct.h" />
+    <ClInclude Include="src\Help\user_help.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\led_red.bmp" />
+    <None Include="res\led_yellow.bmp" />
+    <None Include="res\PIDPC.ico" />
+    <None Include="res\PIDPC.rc2" />
+    <None Include="src\Help\chm\pages\index.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="src\Help\chm\pages\tab1.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="src\Help\chm\pages\tab2.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="src\Help\chm\pages\tab3.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="src\Help\chm\pages\tab4.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="src\Help\chm\pages\tab5.htm">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="src\Help\chm\PCRM.hhk" />
+    <CustomBuild Include="src\Help\chm\PCRM.hhp">
+      <FileType>Document</FileType>
+    </CustomBuild>
+    <None Include="src\Help\chm\PCRM.hhc" />
+    <None Include="src\Pictures\led_green.bmp" />
+    <None Include="src\Pictures\led_grey.bmp" />
+    <None Include="src\Pictures\ts.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PIDPC.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="PIDPC.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

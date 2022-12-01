@@ -1,0 +1,652 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "tec-resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Russian (Russia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_RUS)
+LANGUAGE LANG_RUSSIAN, SUBLANG_DEFAULT
+#pragma code_page(1251)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MENU1 MENU
+BEGIN
+    POPUP "page5"
+    BEGIN
+        MENUITEM "Add Vertex",                  ID_PAGE5_ADDVERTEX
+        MENUITEM "Delete Vertex",               ID_PAGE5_DELETEVERTEX
+        MENUITEM "Delete Segment",              ID_PAGE5_DELETESEGMENT
+    END
+END
+
+IDR_MENU3 MENU
+BEGIN
+    POPUP "_page5-2_"
+    BEGIN
+        MENUITEM "Copy Section",                ID__COPYSECTION
+    END
+END
+
+IDR_MENU4 MENU
+BEGIN
+    POPUP "main"
+    BEGIN
+        MENUITEM "Add to Ch: 1",                ID_CONNECT_CH1
+        MENUITEM "Add to Ch: 2",                ID_CONNECT_CH2
+        MENUITEM "Add to Ch: 3",                ID_CONNECT_CH3
+        MENUITEM "Add to Ch: 4",                ID_CONNECT_CH4
+        MENUITEM "Add to Ch: 5 ",               ID_CONNECT_CH5
+        MENUITEM "Add to Ch: 6",                ID_CONNECT_CH6
+        MENUITEM "Disconnect",                  ID_DISABLE_CHN
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_BLE DIALOGEX 0, 0, 106, 118
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "BT adapter"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_EDIT_COM,23,4,25,14,ES_CENTER | ES_AUTOHSCROLL | ES_NUMBER,WS_EX_RIGHT
+    LTEXT           "COM:",IDC_STATIC,2,7,19,8
+    PUSHBUTTON      "Connect",IDC_BUTTON_CONNECT,2,102,48,14
+    PUSHBUTTON      "Find Oven",IDC_BUTTON_SCAN,54,61,50,14
+    PUSHBUTTON      "Disconnect",IDC_BUTTON_DISCONNECT,53,102,51,14
+    LISTBOX         IDC_LIST1,2,21,102,37,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_ADDR,2,84,73,14,ES_AUTOHSCROLL
+    LTEXT           "Address",IDC_STATIC,77,87,27,8
+    PUSHBUTTON      "Open Port",IDC_BUTTON_COM,54,4,50,14
+    LTEXT           "BT: TI CC2540",IDC_STATIC,3,64,47,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_BLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 104
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 117
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Russian (Russia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_NEUTRAL
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_REFLOW_SETUP_DIALOG DIALOGEX 0, 0, 190, 193
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Reflow settings"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,155,176,32,14
+    PUSHBUTTON      "Cancel",IDCANCEL,122,176,28,14
+    CONTROL         "Enable",IDC_CHECK_PRH_ON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,138,33,37,10
+    EDITTEXT        IDC_EDIT_PREHIT_TIME,6,30,30,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PREHIT_TEMPR,76,30,30,14,ES_AUTOHSCROLL
+    GROUPBOX        " Reflow Preheating ",IDC_STATIC,1,19,186,34
+    EDITTEXT        IDC_EDIT_PAUSE_TIME,6,3,30,14,ES_AUTOHSCROLL
+    LTEXT           "Pause duration, Sec",IDC_STATIC_TXT_PS,41,6,70,8
+    GROUPBOX        " Temperature Alignment",IDC_STATIC,1,55,186,46
+    LTEXT           "Time, Min",IDC_STATIC,40,33,31,8
+    LTEXT           "T °C",IDC_STATIC_sd,111,33,15,8
+    CONTROL         "Sensor 1",IDC_CHECK_ALG_SN1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,8,67,40,10
+    CONTROL         "Sensor 2",IDC_CHECK_ALG_SN2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,51,67,40,10
+    CONTROL         "Sensor 3",IDC_CHECK_ALG_SN3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,94,67,40,10
+    CONTROL         "Sensor 4",IDC_CHECK_ALG_SN4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,138,67,40,10
+    COMBOBOX        IDC_COMBO_ALG_MODE,7,82,139,119,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Mode",IDC_STATIC,155,84,18,8
+END
+
+IDD_SENSOR_SETUP_DIALOG DIALOGEX 0, 0, 146, 155
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Temperature Sensor"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Close",IDC_BUTTON_CLOSE,103,138,42,14
+    PUSHBUTTON      "Default",IDC_BUTTON_SET_DEFAULT,2,138,41,14
+    COMBOBOX        IDC_COMBO_TYPES,2,2,60,146,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_FILTER,2,47,60,131,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_MEASURE_RES,2,17,60,116,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Thermocouple Type",-1,66,4,70,8
+    LTEXT           "Measure T-Sensor resol",-1,66,19,80,8
+    LTEXT           "Noise reduction filter",-1,66,49,73,8
+    COMBOBOX        IDC_COMBO_BURST,2,62,60,101,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Burst Samples",-1,66,64,59,8
+    COMBOBOX        IDC_COMBO_AMBIENT_RES,2,32,60,116,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Ambient T-Sensor resol",-1,66,34,79,8
+    COMBOBOX        IDC_COMBO_MODE,2,77,60,71,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Sensor Mode",-1,66,79,74,8
+    EDITTEXT        IDC_EDIT_CALIBR,2,91,59,14,ES_AUTOHSCROLL
+    LTEXT           "Calibration value",-1,65,94,71,8
+    CONTROL         134,IDC_STATIC_PIC_ALERT1,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,125,110,14,14
+    CONTROL         134,IDC_STATIC_PIC_ALERT2,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,105,110,14,14
+    CONTROL         134,IDC_STATIC_PIC_ALERT3,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,85,110,14,14
+    CONTROL         134,IDC_STATIC_PIC_ALERT4,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,65,110,14,14
+    CONTROL         134,IDC_STATIC_PIC_IR,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,45,110,14,14
+    CONTROL         134,IDC_STATIC_PIC_THU,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,25,110,14,14
+    CONTROL         134,IDC_STATIC_PIC_BMC,"Static",SS_BITMAP | SS_NOTIFY | SS_CENTERIMAGE,5,110,14,14
+    LTEXT           "A1",-1,127,126,10,8
+    LTEXT           "A2",-1,108,126,10,8
+    LTEXT           "A3",-1,87,126,10,8
+    LTEXT           "A4",-1,68,126,10,8
+    LTEXT           "BC",-1,8,126,10,8
+    LTEXT           "TC",-1,27,126,10,8
+    LTEXT           "ERR",-1,45,126,14,8
+END
+
+IDD_MONITOR_TEMPR DIALOGEX 0, 0, 32, 323
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_PROGRESS_TEMPERATURE,"msctls_progress32",PBS_SMOOTH | PBS_VERTICAL | WS_BORDER,2,24,11,295
+    CONTROL         "",IDC_PROGRESS_CURRENT,"msctls_progress32",PBS_SMOOTH | PBS_VERTICAL | WS_BORDER,18,24,11,295
+    LTEXT           "T",IDC_STATIC_T,2,3,26,8
+    LTEXT           "C",IDC_STATIC_C,2,13,27,8
+END
+
+IDD_PID_TEST_DIALOG DIALOGEX 0, 0, 170, 102
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "PID optimization test"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Close",IDCANCEL,118,86,50,14
+    COMBOBOX        IDC_COMBO_TEST_FUNCTION,2,8,63,102,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Select function",IDC_STATIC_0,72,11,48,8
+    EDITTEXT        IDC_EDIT_MAX_VALUE,3,27,27,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MIN_VALUE,3,46,27,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CYCLES,3,85,27,14,ES_AUTOHSCROLL
+    LTEXT           "Temperature Max",IDC_STATIC_1,40,30,58,8
+    LTEXT           "Temperature Min",IDC_STATIC_2,40,49,55,8
+    LTEXT           "Number of cycles",IDC_STATIC_3,40,87,56,8
+    EDITTEXT        IDC_EDIT_CYCLES2,3,65,27,14,ES_AUTOHSCROLL
+    LTEXT           "Switching period Sec",IDC_STATIC_4,40,68,66,8
+    PUSHBUTTON      "Test Run",IDC_BUTTON_TEST_ONOFF,118,67,50,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_REFLOW_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 1
+        RIGHTMARGIN, 187
+        TOPMARGIN, 3
+        BOTTOMMARGIN, 190
+    END
+
+    IDD_SENSOR_SETUP_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 3
+    END
+
+    IDD_MONITOR_TEMPR, DIALOG
+    BEGIN
+        RIGHTMARGIN, 31
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 322
+    END
+
+    IDD_PID_TEST_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 2
+        RIGHTMARGIN, 168
+        TOPMARGIN, 2
+        BOTTOMMARGIN, 100
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_TS_SCH              BITMAP                  "src\\Pictures\\ts.bmp"
+IDB_LED_GREY            BITMAP                  ".\\src\\Pictures\\led_grey.bmp"
+IDB_LED_GREEN           BITMAP                  ".\\src\\Pictures\\led_green.bmp"
+IDB_LED_RED             BITMAP                  "res\\led_red.bmp"
+IDB__LED_YELLOW         BITMAP                  "res\\led_yellow.bmp"
+#endif    // English resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 203, 62
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About T962"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,6,5,21,20,SS_CENTERIMAGE
+    LTEXT           "T962.exe, Reflow Oven Control, ver 2.0",IDC_STATIC,36,4,160,8,SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,150,44,50,14,WS_GROUP
+    LTEXT           "S3D Copyright (C), Singapore 2022",IDC_STATIC,7,47,115,8
+    LTEXT           "Software Update page ->",1195,8,30,84,8
+    CONTROL         "T962 improvement",1196,"MfcLink",WS_TABSTOP,95,29,94,11
+    LTEXT           "Build",IDC_STATIC_TXT_BUILD,37,15,101,8
+END
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 357, 194
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "T962"
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    PUSHBUTTON      "Exit",IDCANCEL,335,181,20,11
+    CONTROL         "",IDC_TAB1,"SysTabControl32",TCS_HOTTRACK,0,1,357,179,WS_EX_TRANSPARENT
+    CONTROL         134,IDC_STATIC_DEVICE_LED,"Static",SS_BITMAP | SS_REALSIZEIMAGE,2,182,11,10
+    LTEXT           "Off Line",IDC_STATIC_DEVICE_TXT,15,183,42,8
+    PUSHBUTTON      "Setup",IDC_BUTTON_READ_SETUP,259,181,29,11
+    PUSHBUTTON      "Reset",IDC_BUTTON_RESET,233,181,24,11
+    PUSHBUTTON      "Clear",IDC_BUTTON_CONSOLE_CLS,207,181,24,11
+    PUSHBUTTON      "Bluetooth",IDC_BUTTON_BT,292,181,40,11
+END
+
+IDD_Page1 DIALOGEX 0, 0, 350, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    GROUPBOX        "Heater temperature sensor",IDC_STATIC_PAGE,0,0,349,164
+    CONTROL         152,IDC_STATIC_PICTURE,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_REALSIZEIMAGE | WS_BORDER,4,11,272,129
+    EDITTEXT        IDC_EDIT_OFFSET1,186,70,30,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_OFFSET2,184,116,30,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_DGAIN1,226,70,30,12,ES_CENTER | ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_DGAIN2,226,116,30,12,ES_CENTER | ES_AUTOHSCROLL
+    LTEXT           "TC1 Out",IDC_STATIC,285,38,28,8
+    LTEXT           "Static",IDC_STATIC_TXTMSG,7,143,265,16
+    CTEXT           "Static",IDC_STATIC_TOUT1,279,50,40,10,WS_BORDER
+    CTEXT           "Static",IDC_STATIC_TOUT2,279,96,40,10,SS_PATHELLIPSIS | WS_BORDER
+    LTEXT           "TC2 Out",IDC_STATIC,285,84,28,8
+END
+
+IDD_Page2 DIALOGEX 0, 0, 350, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    LTEXT           "P  factor",IDC_STATIC_CH1_KP,65,31,39,8
+    LTEXT           "I  factor",IDC_STATIC_CH1_KI,65,49,33,8
+    LTEXT           "D  factor",IDC_STATIC_CH1_KD,65,66,35,8
+    LTEXT           "PID loop period mS",IDC_STATIC_DAC_OUT_PER,63,132,62,8
+    EDITTEXT        IDC_EDIT_KP,11,29,45,12,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_KI,11,47,45,12,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_RIGHT
+    EDITTEXT        IDC_EDIT_KD,11,64,45,12,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_RIGHT
+    CONTROL         "Normal Mode ",IDC_RADIO_PID_MODE_AUTO,"Button",BS_AUTORADIOBUTTON,141,46,59,10
+    CONTROL         "Turn on PID Tuning",IDC_RADIO_PID_MODE_MANUAL,"Button",BS_AUTORADIOBUTTON,141,59,77,10
+    EDITTEXT        IDC_EDIT_REF,141,28,45,12,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_RIGHT
+    PUSHBUTTON      "Set Default",IDC_BUTTON_SETCHNDEFAULT,283,140,53,14
+    GROUPBOX        "Engineering menu",IDC_STATIC_CHN,1,1,349,164
+    CTEXT           "Set Point",IDC_STATIC_CH1_KD2,190,30,32,8
+    EDITTEXT        IDC_EDIT_PID_PERIOD,11,130,45,12,ES_RIGHT | ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "Meander Test",IDC_BUTTON_TEST_MEANDER,283,99,53,14
+    PUSHBUTTON      "Linerity Test",IDC_BUTTON_TEST_LINERITY,284,60,53,14
+    LTEXT           "°C",IDC_STATIC_TXT_GRAD,226,30,9,8
+    PUSHBUTTON      "Step Test",IDC_BUTTON_TEST_STEP,284,79,53,14
+    PUSHBUTTON      "Run Manual ",IDC_BUTTON_PID_MANUAL_RUN,283,27,53,14
+    GROUPBOX        " Heater PID ",IDC_STATIC_P1,5,14,118,93
+    LTEXT           "Fan Speed Boost",IDC_STATIC_CH1_KP2,64,115,65,8
+    EDITTEXT        IDC_EDIT_FAN_GAIN,11,113,45,12,ES_MULTILINE | ES_AUTOHSCROLL,WS_EX_RIGHT
+    LTEXT           "* Write 0 for factor disable",IDC_STATIC_txt45,13,85,105,8
+    GROUPBOX        "  PID Tuning  ",IDC_STATIC,131,14,214,146
+    CONTROL         "PID Log remove delay ",IDC_CHECK_LOG_FIX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,147,82,10
+    LTEXT           "Info: Autotune available\r\n only in the Pro version",IDC_STATIC,142,119,105,19
+    PUSHBUTTON      "PID Autotune",IDC_BUTTON_AUTO_TUNE,139,140,94,14
+END
+
+IDD_Page3 DIALOGEX 0, 0, 350, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    GROUPBOX        "Engineering menu",IDC_STATIC,0,1,349,164
+    CONTROL         "",IDC_PROGRESS_TMPR,"msctls_progress32",WS_BORDER,4,9,341,7
+    LTEXT           "Heater temperature:",IDC_STATIC_HELP8,6,16,90,8
+    CONTROL         "",IDC_SLIDER_HEATER,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | TBS_TOOLTIPS | WS_TABSTOP,6,121,321,17
+    CONTROL         "",IDC_PROGRESS_CURR,"msctls_progress32",WS_BORDER,4,26,341,7
+    EDITTEXT        IDC_EDIT_MAX_POWER,5,63,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MAX_TMPR,5,81,40,14,ES_AUTOHSCROLL
+    LTEXT           "Heater Power Limit, Watt",IDC_STATIC_1,50,65,88,8
+    LTEXT           "Heater Temperature Limit, °C",IDC_STATIC_2,50,83,95,8
+    CONTROL         "Enable manual control",IDC_CHECK_MANUAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,98,83,10
+    LTEXT           "Heater power:",IDC_STATIC_HELP9,5,33,73,8
+    EDITTEXT        IDC_EDIT_FAN,263,42,40,14,ES_AUTOHSCROLL
+    LTEXT           "Fan Speed",IDC_STATIC5,308,45,36,8
+    LTEXT           "Warnings:",IDC_STATIC_WARNINGS,158,65,152,41
+    LTEXT           "T",IDC_STATIC_TEMPERATURE_VAL,115,16,93,8
+    PUSHBUTTON      "Panel",IDC_BUTTON_PANEL,317,96,28,12
+    LTEXT           "P",IDC_STATIC_POWER_VAL,116,34,103,8
+    GROUPBOX        " Heater / Fan manual control ",IDC_STATIC,4,110,341,50
+    CONTROL         "",IDC_SLIDER_FAN,"msctls_trackbar32",TBS_BOTH | TBS_NOTICKS | TBS_TOOLTIPS | WS_TABSTOP,6,140,321,17
+    LTEXT           "Htr",IDC_STATIC_H,329,124,11,8
+    LTEXT           "Fan",IDC_STATIC_F,330,144,13,8
+    EDITTEXT        IDC_EDIT_HEATER_PWR,5,45,40,14,ES_AUTOHSCROLL
+    LTEXT           "Heater Total Power, Watt",IDC_STATIC,50,48,95,8
+END
+
+IDD_Page4 DIALOGEX 0, 0, 350, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    PUSHBUTTON      "Write",IDC_BUTTON_WRITE_PROFILE,309,90,38,13
+    EDITTEXT        IDC_EDIT_MONITOR,265,2,82,43,ES_MULTILINE | ES_AUTOHSCROLL
+    PUSHBUTTON      "Open file",IDC_BUTTON_FOPEN_PCR,265,47,40,13
+    PUSHBUTTON      "T-Graph",IDC_BUTTON_SHOW_GRAPH,310,60,38,13
+    COMBOBOX        IDC_COMBO_PCR_WRITE,266,75,81,123,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "",IDC_PROGRESS_WRITE,"msctls_progress32",WS_BORDER,266,105,82,6
+    PUSHBUTTON      "Launch\r\nReflow",IDC_BUTTON_REFLOW_RUN,312,136,35,27,BS_MULTILINE
+    PUSHBUTTON      "Analysis",IDC_BUTTON_ANALYSIS,266,150,41,13
+    PUSHBUTTON      "From Begin",IDC_BUTTON_FROM_BEGIN,266,136,41,13
+    SCROLLBAR       IDC_SCROLLBAR1,1,151,259,11
+    PUSHBUTTON      "Save file",IDC_BUTTON_FSAVE_PCR,265,60,40,13
+    PUSHBUTTON      "Read",IDC_BUTTON_READ_PROFILE,266,90,40,13
+    PUSHBUTTON      "Show file",IDC_BUTTON_SHOW_FILE,310,47,38,13
+    CONTROL         "Show Log",IDC_CHECK_SHOW_LOG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,266,114,47,10
+    CONTROL         "Save Log",IDC_CHECK_DATA_TXT_LOG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,266,125,45,10
+    PUSHBUTTON      "Settings",IDC_BUTTON_SETTINGS,312,113,35,11
+    PUSHBUTTON      "Pause",IDC_BUTTON_PCR_PAUSE,312,124,35,11
+END
+
+IDD_Page5 DIALOGEX 0, 0, 350, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    GROUPBOX        "Temperature sensors configuration",IDC_STATIC_PAGE,0,0,349,164
+    LTEXT           "T Calc method",IDC_STATIC_TXT1,207,43,62,8
+    CONTROL         "TC1 Left Sensor Enable",IDC_CHECK_TS_TOP_LEFT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,29,91,10
+    GROUPBOX        "Top Side Heater Sensors",IDC_STATIC_TOP,6,16,285,46
+    CONTROL         "TC2 Right Sensor Enable",IDC_CHECK_TS_TOP_RIGHT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,44,95,10
+    COMBOBOX        IDC_COMBO_HTR_CALC,188,27,96,130,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "PCB Sensors (MCP9600) ",IDC_STATIC_EXTRA_SENSORS,6,66,285,93
+    CONTROL         "Temperature Sensor 1",IDC_CHECK_TS1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,79,87,10
+    CONTROL         "Temperature Sensor 2",IDC_CHECK_TS2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,98,87,10
+    CONTROL         "Temperature Sensor 3",IDC_CHECK_TS3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,118,87,10
+    CONTROL         "Temperature Sensor 4",IDC_CHECK_TS4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,137,87,10
+    COMBOBOX        IDC_COMBO_TS1,108,77,70,130,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_TS2,108,96,70,130,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_TS3,108,116,70,130,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_TS4,108,136,70,130,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_COMBO_TS_CALC,188,77,96,130,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "T Calc method",IDC_STATIC_TXT12,205,94,62,8
+    PUSHBUTTON      "TS1",IDC_BUTTON_CFG_TS1,191,135,18,14
+    PUSHBUTTON      "TS2",IDC_BUTTON_CFG_TS2,216,135,18,14
+    PUSHBUTTON      "TS3",IDC_BUTTON_CFG_TS3,241,135,18,14
+    PUSHBUTTON      "TS4",IDC_BUTTON_CFG_TS4,266,135,18,14
+END
+
+IDD_Page6 DIALOGEX 0, 0, 350, 165
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_SYSMENU
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    GROUPBOX        "Settings and information ",IDC_STATIC_PAGE,0,0,349,164
+    PUSHBUTTON      "Firmware Info",IDC_BUTTON_FW_INFO,291,26,53,14
+    PUSHBUTTON      "Oven Help",IDC_BUTTON_HELP,291,43,53,14
+    PUSHBUTTON      "Profiles List",IDC_BUTTON_PROFILE_LIST,291,59,53,14
+    PUSHBUTTON      "Sensors List",IDC_BUTTON_SENSORS_LIST,291,112,53,14
+    PUSHBUTTON      "EEPROM",IDC_BUTTON_SHOW_EEPROM,234,95,53,14
+    PUSHBUTTON      "Settings",IDC_BUTTON_SHOW_SETTINGS,291,129,53,14
+    PUSHBUTTON      "EEP Test",IDC_BUTTON_EEPROM_TEST,234,129,53,14
+    PUSHBUTTON      "EEP Erase",IDC_BUTTON_EEPROM_ERASE,234,112,53,14
+    PUSHBUTTON      "Setup Default",IDC_BUTTON_SET_DEFAULT,291,146,53,14
+    PUSHBUTTON      "Current Profile",IDC_BUTTON_CURR_PROFILE,291,76,53,14
+    PUSHBUTTON      "About",IDC_BUTTON_ABOUT,235,8,53,14
+    PUSHBUTTON      "Erase Custom",IDC_BUTTON_ERASE_CUSTOM_PR,291,94,53,14
+    PUSHBUTTON      "Bluetooth Info",IDC_BUTTON_BT_INFO,291,8,53,14
+    EDITTEXT        IDC_EDIT_INFO,2,10,230,133,ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL
+    CONTROL         "",IDC_FW_PROGRESS,"msctls_progress32",WS_BORDER,2,149,229,8
+    PUSHBUTTON      "FW Update",IDC_BUTTON_UPDATE,234,146,53,14
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 60
+    END
+
+    IDD_MAIN_DIALOG, DIALOG
+    BEGIN
+        TOPMARGIN, 1
+    END
+
+    IDD_Page1, DIALOG
+    BEGIN
+    END
+
+    IDD_Page2, DIALOG
+    BEGIN
+    END
+
+    IDD_Page3, DIALOG
+    BEGIN
+    END
+
+    IDD_Page4, DIALOG
+    BEGIN
+    END
+
+    IDD_Page5, DIALOG
+    BEGIN
+    END
+
+    IDD_Page6, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "tec-resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\PIDPC.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""     // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\PIDPC.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "NUS"
+            VALUE "FileDescription", "CAN communication & control"
+            VALUE "FileVersion", "1.0.0.1"
+            VALUE "InternalName", "PIDPC.exe"
+            VALUE "LegalCopyright", "2016(c) <NUS>.  All rights reserved."
+            VALUE "OriginalFilename", "PIDPC.exe"
+            VALUE "ProductName", "PIDPC"
+            VALUE "ProductVersion", "3.0.0.1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_ABOUTBOX DLGINIT
+BEGIN
+    1196, 0x37c, 207, 0
+0x4d3c, 0x4346, 0x694c, 0x6b6e, 0x555f, 0x6c72, 0x683e, 0x7474, 0x7370, 
+0x2f3a, 0x652f, 0x2e6e, 0x7267, 0x6461, 0x6569, 0x746e, 0x732d, 0x2e67, 
+0x6f63, 0x2f6d, 0x3974, 0x3236, 0x742f, 0x3639, 0x2e32, 0x6870, 0x2370, 
+0x6f64, 0x6e77, 0x6f6c, 0x6461, 0x3c73, 0x4d2f, 0x4346, 0x694c, 0x6b6e, 
+0x555f, 0x6c72, 0x3c3e, 0x464d, 0x4c43, 0x6e69, 0x5f6b, 0x7255, 0x506c, 
+0x6572, 0x6966, 0x3e78, 0x2f3c, 0x464d, 0x4c43, 0x6e69, 0x5f6b, 0x7255, 
+0x506c, 0x6572, 0x6966, 0x3e78, 0x4d3c, 0x4346, 0x694c, 0x6b6e, 0x545f, 
+0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x4d2f, 0x4346, 0x694c, 0x6b6e, 0x545f, 
+0x6f6f, 0x746c, 0x7069, 0x3c3e, 0x464d, 0x4c43, 0x6e69, 0x5f6b, 0x7546, 
+0x6c6c, 0x6554, 0x7478, 0x6f54, 0x6c6f, 0x6974, 0x3e70, 0x4146, 0x534c, 
+0x3c45, 0x4d2f, 0x4346, 0x694c, 0x6b6e, 0x465f, 0x6c75, 0x546c, 0x7865, 
+0x5474, 0x6f6f, 0x746c, 0x7069, "\076" 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDS_ABOUTBOX            "&About PIDPC..."
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\PIDPC.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"     // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

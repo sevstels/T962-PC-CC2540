@@ -1,0 +1,690 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="CMD">
+      <UniqueIdentifier>{9e9de850-08e8-4a38-9098-1994a144370f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Help">
+      <UniqueIdentifier>{a80422c8-7e28-4343-8461-b2e41ebc7f2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{95a269b3-c01f-4415-a0c5-2ff989be8f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages">
+      <UniqueIdentifier>{ae17458a-fcf9-4856-a28d-9dcd03e7d035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Main Dialog">
+      <UniqueIdentifier>{0b0d3700-5d9b-4b59-b370-1a1d375f6849}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 2">
+      <UniqueIdentifier>{05fc8b47-e9a4-4991-914a-4c1d46b15abc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 2\Functions">
+      <UniqueIdentifier>{6dc5f6f3-34ed-4cdf-ab82-da408652454e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 1">
+      <UniqueIdentifier>{e28798eb-de19-49f5-bf42-b95c48b7a1d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP">
+      <UniqueIdentifier>{25389f23-86e6-4a87-8cb9-16bef64289a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\ToolTip">
+      <UniqueIdentifier>{8a3a777a-579f-4db5-8402-54a54a3a2cbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\WinReg">
+      <UniqueIdentifier>{527a987c-0b1b-4e64-a1c3-b2b0445bc855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Dialog Position">
+      <UniqueIdentifier>{ff1c03d2-8e22-4bfe-a9a5-2a68ed12753d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Main Dialog\Thread">
+      <UniqueIdentifier>{c46ebea2-f128-4be5-af5d-bb4ceef73a3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Images">
+      <UniqueIdentifier>{e1271c2f-c921-4f20-9dbc-302c6e72c5aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Arrows">
+      <UniqueIdentifier>{3f553024-8ba8-4a5c-a845-d0a028d7fd8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Images\Functions">
+      <UniqueIdentifier>{a4ac0e77-cb91-4a6d-a79b-af66aaec5a64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Bezier Interpolation">
+      <UniqueIdentifier>{34720f9a-c1eb-4e32-a85b-32e04dc76b61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Help\chm">
+      <UniqueIdentifier>{8ac00a5b-8424-438c-8e03-7a975e3a8398}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Help\html">
+      <UniqueIdentifier>{6e0f4924-839c-453b-87eb-ad01d6783571}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Color Txt">
+      <UniqueIdentifier>{686c78af-74b5-4e74-beac-866f85550adb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Console Log">
+      <UniqueIdentifier>{9afba763-b333-4c21-ba8b-66c91a36c7df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphs">
+      <UniqueIdentifier>{3154c4ab-7164-49c3-adfc-9155b300b150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Files-cpp">
+      <UniqueIdentifier>{5f8f7914-6e0f-48c3-bae9-dfd28cf24ae2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 2\Dialog PID-Test">
+      <UniqueIdentifier>{2c638972-9894-4aef-ad2b-789d1a3d5fa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\StaticColor">
+      <UniqueIdentifier>{de24d8aa-b6b7-4530-a2dc-f150076aa3f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\LogFile">
+      <UniqueIdentifier>{f7fdef47-9032-4383-bd2d-bdf0b0acde1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Integrator">
+      <UniqueIdentifier>{cff72a63-4444-4066-8fb7-6ed66d850cf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Trace">
+      <UniqueIdentifier>{14301627-3f9b-4d10-ad26-53d4dd82638a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Device setup">
+      <UniqueIdentifier>{caa1c3b7-3e53-4f32-a272-e564dca8f454}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application setup">
+      <UniqueIdentifier>{38e43b15-c869-4d31-92f1-71ef4f812447}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DataTx">
+      <UniqueIdentifier>{ca7fc85c-9fc6-4c02-bfb0-5664091b9e4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Parse Value">
+      <UniqueIdentifier>{ee060ba5-307b-4c42-90b7-f660a4206511}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Sensor Dlg">
+      <UniqueIdentifier>{8c3173f3-82f6-48f2-8c3d-6cec4c9f5d57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 3">
+      <UniqueIdentifier>{d3828748-f8ca-4686-99f6-676c25f9fc20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 3\Functions">
+      <UniqueIdentifier>{0f01a6af-328c-4290-b020-1eb6b22ed7db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 3\Dialog Panel">
+      <UniqueIdentifier>{76aa763b-2c42-496f-92d3-576b88838479}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 4">
+      <UniqueIdentifier>{e3e5c46f-a5a9-4aed-ac96-9bcc8a58eea7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 4\Functions">
+      <UniqueIdentifier>{a52da7e5-44a6-4797-8d89-9a3af911a6ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 4\Thread">
+      <UniqueIdentifier>{9a184c76-9263-4d87-9e0f-8986f3ac8593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 5">
+      <UniqueIdentifier>{eda03b3a-b2d0-4536-a339-907b3fa71e9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 5\Functions">
+      <UniqueIdentifier>{b969b5bd-414c-4e2d-b6d7-a5763cc7e1d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 6">
+      <UniqueIdentifier>{e666c18b-0819-4f14-958a-047f702a19db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 6\Functions">
+      <UniqueIdentifier>{7e347faa-fe15-4d8f-98d4-1b516fcdcb88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Version">
+      <UniqueIdentifier>{02a64695-50e6-4dd7-a7a8-d020bb9a5dbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\About Dialog">
+      <UniqueIdentifier>{7a018e63-c900-4e76-82d8-aceeae6c8095}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\LED Blink">
+      <UniqueIdentifier>{058b95eb-999d-4242-930a-0934276695f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Display">
+      <UniqueIdentifier>{5d1726b8-3f4a-4d94-bb35-b2289bf5aa99}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Display\Functions">
+      <UniqueIdentifier>{5682f9aa-8f1e-4ff1-bc8f-712f506faa90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Reflow Dlg">
+      <UniqueIdentifier>{cf7b2f08-885a-4393-9dd4-a4ccdafa6954}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Main Dialog\Functions">
+      <UniqueIdentifier>{6633bfa1-2cc5-4c41-b0b0-50242fc67563}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Firmware Update">
+      <UniqueIdentifier>{fa20e4c9-9372-4613-8959-eb8a9f178e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Page 6\Thread">
+      <UniqueIdentifier>{73d5ff9c-aa34-4af2-809f-d9a0cf05e10f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\ProtocolEx">
+      <UniqueIdentifier>{60403952-48df-4686-b6e8-c1563a7022d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Analysys">
+      <UniqueIdentifier>{b18a3c61-0fab-4a00-8b00-fda34ab56607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Analysys\Settings Dialog">
+      <UniqueIdentifier>{49546134-fbe3-41b6-9590-d4ccb7b8a194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Profile Files">
+      <UniqueIdentifier>{f140e704-6246-4c19-9c37-fdf9b31c958b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\CC2540">
+      <UniqueIdentifier>{43b86eaf-cb28-43c4-815d-2fee931e28ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\VCOM">
+      <UniqueIdentifier>{b35f4213-d970-46df-bfdc-89428bcea36b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Last Error">
+      <UniqueIdentifier>{6218d88a-88b8-41e8-b536-4d5f83b640ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Show Error">
+      <UniqueIdentifier>{cc1b2e8f-80dd-4c0e-84ac-b896ca48933c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\Bluetooth Dialog">
+      <UniqueIdentifier>{85ee0cad-0803-47fd-afdb-6c5ba39599b0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Application\PIDPC.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page1\Page1.cpp">
+      <Filter>Pages\Page 1</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page2\Page2.cpp">
+      <Filter>Pages\Page 2</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page2\Functions\edit_boxs.cpp">
+      <Filter>Pages\Page 2\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Main_Dialog\MainDlg.cpp">
+      <Filter>Pages\Main Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Main_Dialog\Thread\ThreadMain.cpp">
+      <Filter>Pages\Main Dialog\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page2\Functions\controls2.cpp">
+      <Filter>Pages\Page 2\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Help\user_help.cpp">
+      <Filter>Help</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AnalysisGraph\anls-graph.cpp">
+      <Filter>Analysys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page2\Functions\pid-tune.cpp">
+      <Filter>Pages\Page 2\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.cpp">
+      <Filter>Pages\Page 2\Dialog PID-Test</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AnalysisGraph\anls-dlg-settings.cpp">
+      <Filter>Analysys\Settings Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AppSetup\app-setup.cpp">
+      <Filter>Application setup</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DataTx\datatx.cpp">
+      <Filter>DataTx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\SensorDlg\dlg_sensor.cpp">
+      <Filter>Pages\Sensor Dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page3\Page3.cpp">
+      <Filter>Pages\Page 3</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page3\DlgMonitor\dlg-monitor.cpp">
+      <Filter>Pages\Page 3\Dialog Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page3\Functions\controls3.cpp">
+      <Filter>Pages\Page 3\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page3\Functions\show-data3.cpp">
+      <Filter>Pages\Page 3\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\analysis-graph.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\analysis-log.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\analysis-read.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\context-menu.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\list_ctrl.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\list_hahdlers.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\pcr-log.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\profile-read.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\profile-write.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\sample-log.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Thread\Thread4.cpp">
+      <Filter>Pages\Page 4\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\parser-page4.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\controls4.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Page4.cpp">
+      <Filter>Pages\Page 4</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page6\Functions\controls6.cpp">
+      <Filter>Pages\Page 6\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page6\Page6.cpp">
+      <Filter>Pages\Page 6</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page5\Functions\controls5.cpp">
+      <Filter>Pages\Page 5\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page5\Page5.cpp">
+      <Filter>Pages\Page 5</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\AboutDialog\about_dlg.cpp">
+      <Filter>Pages\About Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\ReflowDlg\dlg_reflow.cpp">
+      <Filter>Pages\Reflow Dlg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Main_Dialog\Functions\ble-support.cpp">
+      <Filter>Pages\Main Dialog\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DFU\lpc21isp.cpp">
+      <Filter>Firmware Update</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page6\Thread\thread-dfu.cpp">
+      <Filter>Pages\Page 6\Thread</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BT-Dlg\bt-dlg.cpp">
+      <Filter>Pages\Bluetooth Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\WinRegApp\AppWinReg.cpp">
+      <Filter>LibCPP\WinReg</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Trace\trace.cpp">
+      <Filter>LibCPP\Trace</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\ToolTip\tooltip.cpp">
+      <Filter>LibCPP\ToolTip</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\CStaticColor\cstatic-color.cpp">
+      <Filter>LibCPP\StaticColor</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\ParseValue\parse-value.cpp">
+      <Filter>LibCPP\Parse Value</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\LogFile\log-file.cpp">
+      <Filter>LibCPP\LogFile</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\LED-Blink\led-blink.cpp">
+      <Filter>LibCPP\LED Blink</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Integrator\integrator.cpp">
+      <Filter>LibCPP\Integrator</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\Images.cpp">
+      <Filter>LibCPP\Images</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_bgnd.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_curve.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_edge.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_line.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_scale.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_search_frame.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_string.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Images\draw_window.cpp">
+      <Filter>LibCPP\Images\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Files-cpp\files-cpp.cpp">
+      <Filter>LibCPP\Files-cpp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\ProtocolEx\protocol-ex.cpp">
+      <Filter>LibCPP\ProtocolEx</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\DialogPos\dialog-pos.cpp">
+      <Filter>LibCPP\Dialog Position</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\ConsoleLog\log-console.cpp">
+      <Filter>LibCPP\Console Log</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Arrows\Arrows.cpp">
+      <Filter>LibCPP\Arrows</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\Interpolation\bezier.cpp">
+      <Filter>LibCPP\Bezier Interpolation</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\add-remove.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\backgnd.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\duration.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\led-sample.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\menu.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\mouse_events.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\msgbox.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\primitives.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\profile.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\ramp.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\scales.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\scroll.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\selection.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\square.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\Functions\temperature-pcr.cpp">
+      <Filter>Display\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Display\display.cpp">
+      <Filter>Display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graph\graphs.cpp">
+      <Filter>Graphs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Profiles\profile-file.cpp">
+      <Filter>Profile Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Profiles\profile-file-mc.cpp">
+      <Filter>Profile Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\ColorTxt\ColorStaticST.cpp">
+      <Filter>LibCPP\Color Txt</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\CC2540\cc2540.cpp">
+      <Filter>LibCPP\CC2540</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\VCOM\vcom.cpp">
+      <Filter>LibCPP\VCOM</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\ShowErrors\show-err.cpp">
+      <Filter>LibCPP\Show Error</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\CC2540\cc2540-func.cpp">
+      <Filter>LibCPP\CC2540</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LibCPP\CC2540\cc2540-cmd.cpp">
+      <Filter>LibCPP\CC2540</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CMD\cmd.h">
+      <Filter>CMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Application\PIDPC.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Decvice\device_struct.h">
+      <Filter>Device setup</Filter>
+    </ClInclude>
+    <ClInclude Include="tec-resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page1\Page1.h">
+      <Filter>Pages\Page 1</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page2\Page2.h">
+      <Filter>Pages\Page 2</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\pages.h">
+      <Filter>Pages</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Main_Dialog\MainDlg.h">
+      <Filter>Pages\Main Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Help\user_help.h">
+      <Filter>Help</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AnalysisGraph\anls-graph.h">
+      <Filter>Analysys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.h">
+      <Filter>Pages\Page 2\Dialog PID-Test</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AnalysisGraph\anls-dlg-settings.h">
+      <Filter>Analysys\Settings Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AppSetup\app-setup.h">
+      <Filter>Application setup</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DataTx\datatx.h">
+      <Filter>DataTx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\SensorDlg\dlg_sensor.h">
+      <Filter>Pages\Sensor Dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page3\Page3.h">
+      <Filter>Pages\Page 3</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page3\DlgMonitor\dlg-monitor.h">
+      <Filter>Pages\Page 3\Dialog Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page4\Functions\analysis.h">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page4\Page4.h">
+      <Filter>Pages\Page 4</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page6\Page6.h">
+      <Filter>Pages\Page 6</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\Page5\Page5.h">
+      <Filter>Pages\Page 5</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\AboutDialog\about_dlg.h">
+      <Filter>Pages\About Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Version\firmware_build.h">
+      <Filter>Version</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pages\ReflowDlg\dlg_reflow.h">
+      <Filter>Pages\Reflow Dlg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DFU\lpc21isp.h">
+      <Filter>Firmware Update</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BT-Dlg\bt-dlg.h">
+      <Filter>Pages\Bluetooth Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\WinRegApp\AppWinReg.h">
+      <Filter>LibCPP\WinReg</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Trace\trace.h">
+      <Filter>LibCPP\Trace</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\ToolTip\tooltip.h">
+      <Filter>LibCPP\ToolTip</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\CStaticColor\cstatic-color.h">
+      <Filter>LibCPP\StaticColor</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\ParseValue\parse-value.h">
+      <Filter>LibCPP\Parse Value</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\LogFile\log-file.h">
+      <Filter>LibCPP\LogFile</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\LED-Blink\led-blink.h">
+      <Filter>LibCPP\LED Blink</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Integrator\integrator.h">
+      <Filter>LibCPP\Integrator</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Images\Images.h">
+      <Filter>LibCPP\Images</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Files-cpp\files-cpp.h">
+      <Filter>LibCPP\Files-cpp</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\ProtocolEx\protocol-ex.h">
+      <Filter>LibCPP\ProtocolEx</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\DialogPos\dialog-pos.h">
+      <Filter>LibCPP\Dialog Position</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\ConsoleLog\log-console.h">
+      <Filter>LibCPP\Console Log</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Arrows\Arrows.h">
+      <Filter>LibCPP\Arrows</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Interpolation\interpolation.h">
+      <Filter>LibCPP\Bezier Interpolation</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Display\display.h">
+      <Filter>Display</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graph\graphs.h">
+      <Filter>Graphs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Profiles\profile-file.h">
+      <Filter>Profile Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\ColorTxt\ColorStaticST.h">
+      <Filter>LibCPP\Color Txt</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\CC2540\cc2540.h">
+      <Filter>LibCPP\CC2540</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\VCOM\vcom.h">
+      <Filter>LibCPP\VCOM</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\LastError\last-error.h">
+      <Filter>LibCPP\Last Error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\ShowErrors\show-err.h">
+      <Filter>LibCPP\Show Error</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\PIDPC.ico">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\PIDPC.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\Pictures\led_green.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\Pictures\led_grey.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\Help\chm\PCRM.hhc">
+      <Filter>Help\chm</Filter>
+    </None>
+    <None Include="src\Help\chm\PCRM.hhk">
+      <Filter>Help\chm</Filter>
+    </None>
+    <None Include="src\Help\chm\pages\index.htm">
+      <Filter>Help\html</Filter>
+    </None>
+    <None Include="src\Help\chm\pages\tab1.htm">
+      <Filter>Help\html</Filter>
+    </None>
+    <None Include="src\Help\chm\pages\tab2.htm">
+      <Filter>Help\html</Filter>
+    </None>
+    <None Include="src\Help\chm\pages\tab3.htm">
+      <Filter>Help\html</Filter>
+    </None>
+    <None Include="src\Help\chm\pages\tab4.htm">
+      <Filter>Help\html</Filter>
+    </None>
+    <None Include="src\Help\chm\pages\tab5.htm">
+      <Filter>Help\html</Filter>
+    </None>
+    <None Include="src\Pictures\ts.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\led_red.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="res\led_yellow.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PIDPC.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="src\Help\chm\PCRM.hhp">
+      <Filter>Help\chm</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

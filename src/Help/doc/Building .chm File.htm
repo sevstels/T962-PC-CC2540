@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html class="hasSidebar hasPageActions hasBreadcrumb conceptual has-default-focus js-focus-visible theme-light" dir="ltr" data-css-variable-support="true" data-authenticated="false" data-auth-status-determined="true" data-target="docs" x-ms-format-detection="none" lang="en-us"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta property="og:title" content="Automatically Building Your .chm File">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733976(v%3dvs.60)">
+
+	<meta name="twitter:card" content="summary">
+	<meta name="twitter:site" content="@docsmsft">
+
+		<meta name="is_archived" content="true">
+<meta name="ROBOTS" content="NOINDEX,NOFOLLOW">
+<meta name="author" content="Archiveddocs">
+<meta name="ms.author" content="Archiveddocs">
+<meta name="breadcrumb_path" content="breadcrumb/toc.json">
+<meta name="current_version_url" content="https://docs.microsoft.com/en-us/visualstudio/">
+<meta name="ms.topic" content="archived">
+<meta name="vs_archive" content="true">
+<meta name="ms.prod" content="visual-studio-6.0">
+<meta name="uhfHeaderId" content="MSDocsHeader-Archive">
+<meta name="ms:contentKeyID" content="4702856">
+<meta name="TOCTitle" content="Automatically Building Your .chm File">
+<meta name="ms:assetid" content="VS|vccore98|~htmlvchowautomaticallybuildingyourchmfile.htm">
+<meta name="ms:mtpsurl" content="https://msdn.microsoft.com/en-us/library/Aa733976(v=VS.60)">
+<meta name="ms.date" content="09/15/2006">
+<meta name="mtps_version" content="v=VS.60">
+<meta name="search.ms_sitename" content="Docs">
+<meta name="search.ms_docsetname" content="vs-6.0-archive">
+<meta name="locale" content="en-us">
+<meta name="site_name" content="Docs">
+<meta name="search.ms_product" content="MSDN">
+<meta name="depot_name" content="MSDN.vs-6.0-archive">
+<meta name="updated_at" content="2018-03-28 09:30 PM">
+<meta name="gitcommit" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/VS6.0-docs-archive-pr/commit/5f096531f8553342030fc789192a49b971b56f93?path=%2fvs-6.0%2faa733976(v%3dvs.60).md&amp;_a=contents">
+<meta name="original_content_git_url" content="https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/VS6.0-docs-archive-pr?path=%2fvs-6.0%2faa733976(v%3dvs.60).md&amp;version=GBlive&amp;_a=contents">
+<meta name="document_id" content="44bbc30c-a592-70da-40ef-64ae76727fdc">
+<meta name="document_version_independent_id" content="87fd2e6b-543b-7109-74a5-439a958d9387">
+<meta name="page_type" content="conceptual">
+<meta name="toc_rel" content="aa733989(v=vs.60)/toc.json">
+<meta name="word_count" content="247">
+
+<link href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733976(v%3dvs.60)" rel="canonical">
+	<title>Automatically Building Your .chm File | Microsoft Docs</title>
+
+		<link rel="stylesheet" href="Building%20.chm%20File_files/3b6a844b.css">
+
+	<link rel="stylesheet" href="Building%20.chm%20File_files/cd54db8b.css">
+
+
+	<script async="" src="Building%20.chm%20File_files/analytics.js"></script><script>
+	var msDocs = {
+		data: {
+			timeOrigin: Date.now(),
+			azureHeaderLocale: 'en-us',
+			contentLocale: 'en-us',
+			contentDir: 'ltr',
+			userLocale: 'en-us',
+			userDir: 'ltr',
+			pageTemplate: 'Conceptual',
+			brand: '',
+			context: {
+
+			},
+			hasComments: false,
+			feedbackSystem: 'None',
+			feedbackGitHubRepo: '',
+			feedbackProductUrl: '',
+			contentGitUrl: 'https://docs-archive.visualstudio.com/DefaultCollection/docs-archive-project/_git/VS6.0-docs-archive-pr?path=%2fvs-6.0%2faa733976(v%3dvs.60).md&version=GBlive&_a=contents',
+		},
+		functions:{},
+		settings:{
+			auth: 'v2',
+			extendBreadcrumb: true,
+		}
+	};
+	if (!('Promise' in window && 'resolve' in window.Promise && 'reject' in window.Promise && 'all' in window.Promise && 'race' in window.Promise)) {
+		document.write('<script src="https://static.docs.com/ui/third-party/bluebird/3.5.0/bluebird.min.js" integrity="sha384-aD4BDeDGeLXLpPK4yKeqtZQa9dv4a/7mQ+4L5vwshIYH1Mc2BrXvHd32iHzYCQy5" crossorigin="anonymous"><\/script>');
+	}
+	if (typeof fetch !== 'function') {
+		document.write('<script src="https://static.docs.com/ui/third-party/fetch/2.0.3/fetch.min.js" integrity="sha384-H3LQq82b6Mm80GYRHtRSlTwO9DoXctmYCVEYk9M8mp97lRzs6DuSrHVUg3SBP9w0" crossorigin="anonymous"><\/script>');
+	}
+	if (typeof HTMLTemplateElement === 'undefined') {
+		document.write('<script src="https://static.docs.com/ui/third-party/template/1.4.0/template.min.js" integrity="sha384-1zKzI6ldTVHMU7n0W2HpE/lhHI+UG4D9IIaxbj3kT2UhCWicdTuJkTtnKuu0CQzN" crossorigin="anonymous"><\/script>');
+	}
+	if (typeof URL !== 'function') {
+		document.write('<script src="https://static.docs.com/ui/third-party/url/0.5.7/url.min.js" integrity="sha384-vn7xBMtpSTfzaTRWxj0kVq0UcsbBrTOgZ/M1ISHqe1V358elYva+lfiEC+T8jLPc" crossorigin="anonymous"><\/script>');
+	}
+	</script>
+
+	<script src="Building%20.chm%20File_files/jquery-3.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+		<script src="Building%20.chm%20File_files/cccfcedd.js"></script><style></style><script src="Building%20.chm%20File_files/jsll-4.js" async="" defer="defer"></script>
+
+<script async="" src="Building%20.chm%20File_files/t.js"></script><script async="" src="Building%20.chm%20File_files/t_016.js"></script><script async="" src="Building%20.chm%20File_files/t_012.js"></script><script async="" src="Building%20.chm%20File_files/t_004.js"></script><script async="" src="Building%20.chm%20File_files/t_010.js"></script><script async="" src="Building%20.chm%20File_files/t_007.js"></script><script async="" src="Building%20.chm%20File_files/t_003.js"></script><script async="" src="Building%20.chm%20File_files/t_015.js"></script><script async="" src="Building%20.chm%20File_files/t_005.js"></script><script async="" src="Building%20.chm%20File_files/t_002.js"></script><script async="" src="Building%20.chm%20File_files/t_014.js"></script><script async="" src="Building%20.chm%20File_files/t_017.js"></script><script async="" src="Building%20.chm%20File_files/t_006.js"></script><script async="" src="Building%20.chm%20File_files/t_008.js"></script><script async="" src="Building%20.chm%20File_files/t_009.js"></script><script async="" src="Building%20.chm%20File_files/t_013.js"></script><script async="" src="Building%20.chm%20File_files/t_011.js"></script></head>
+
+<body dir="ltr" lang="en-us">
+<div class="header-holder has-default-focus">
+	<a href="#main" class="skip-to-main-link visually-hidden-until-focused is-fixed has-inner-focus focus-visible has-top-zero has-left-zero has-right-zero has-padding-medium has-text-centered has-body-background-medium" tabindex="1">Skip to main content</a>
+		<div id="headerAreaHolder" data-bi-name="header"><!----><!----><header class="nav-bar" role="banner" itemscope="itemscope" itemtype="http://schema.org/Organization"><!---->
+		
+		<button class="nav-bar-burger" aria-label="Global navigation" aria-controls="ax-6" aria-expanded="false">
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+		<nav class="nav-bar-mobile-nav" role="navigation" id="ax-6" aria-label="Global" hidden="">
+			<ul class="nav-bar-mobile-nav-list">
+				<!---->
+		<li class="nav-bar-mobile-nav-item">
+			<a class="nav-bar-button" href="https://docs.microsoft.com/"><!---->Docs<!----></a>
+		</li><!---->
+		<li class="nav-bar-mobile-nav-item">
+			<a class="nav-bar-button" href="https://docs.microsoft.com/en-us/previous-versions"><!---->Previous Versions Documentation<!----></a>
+		</li><!---->
+			</ul>
+		</nav>
+		
+		<a class="nav-bar-button" itemprop="url" href="https://www.microsoft.com/" aria-label="Microsoft">
+			<div class="nav-bar-logo has-background-image theme-display is-light" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+			<div class="nav-bar-logo has-background-image theme-display is-dark is-high-contrast" role="presentation" aria-hidden="true" itemprop="logo" itemscope="itemscope"></div>
+		</a>
+		<nav class="nav-bar-nav" role="navigation" aria-label="Global">
+			<ul class="nav-bar-nav-list">
+				
+		<li class="nav-bar-item is-category has-spacing">
+			<a class="nav-bar-button title has-hover-underline is-4" itemprop="url" href="https://docs.microsoft.com/">
+				<span><!---->Docs<!----></span>
+			</a>
+		</li>
+				<!---->
+		<li class="nav-bar-item">
+			<a class="nav-bar-button has-hover-underline" href="https://docs.microsoft.com/en-us/previous-versions">
+				<span><!---->Previous Versions Documentation<!----></span>
+			</a>
+		</li><!---->
+		<li class="dropdown nav-bar-item" hidden="">
+			<button aria-expanded="false" class="dropdown-trigger nav-bar-button has-hover-underline" aria-controls="ax-7">
+				<span><!---->More<!----></span>
+				<span class="nav-bar-button-chevron" aria-hidden="true">
+					<span class="docon docon-chevron-down-light expanded-indicator"></span>
+				</span>
+			</button>
+			<ul class="dropdown-menu" id="ax-7" aria-label="More">
+				<!---->
+		<li class="nav-bar-item" hidden="">
+			<a class="nav-bar-button" href="https://docs.microsoft.com/en-us/previous-versions"><!---->Previous Versions Documentation<!----></a>
+		</li>
+	<!---->
+			</ul>
+		</li><!---->
+				
+			</ul>
+		</nav>
+		<span class="nav-bar-spacer"></span>
+		
+			<div class="nav-bar-item nav-bar-search-form-item" id="ax-8" hidden="">
+				
+			<form class="is-flex" method="GET" id="searchForm" name="searchForm" role="search" aria-label="Search" aria-expanded="false" action="https://docs.microsoft.com/en-us/search/">
+					
+					<div class="autocomplete" data-bi-name="autocomplete"><!---->
+		<div class="control ">
+			<input role="combobox" maxlength="100" aria-autocomplete="list" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="site-search-input" class="autocomplete-input input   is-full-width" type="search" name="search" aria-expanded="false" aria-owns="ax-9-listbox" aria-activedescendant="" placeholder="Search previous versions">
+
+			<span class="icon is-small is-left" aria-hidden="true" hidden="">
+				<span class="has-text-primary docon docon-undefined"></span>
+			</span>
+
+			<span class="autocomplete-loader loader has-text-primary" aria-hidden="true" hidden=""></span>
+		</div>
+
+		<ul class="autocomplete-suggestions is-vertically-scrollable" role="listbox" id="ax-9-listbox" hidden="">
+			
+		</ul><!----></div>
+					<!-- mobile safari will not dispatch submit event unless there's a submit button that is not display:none -->
+					<button type="submit" class="visually-hidden" tabindex="-1" aria-hidden="true"></button>
+					<input name="category" value="All" hidden="">
+					
+					<input name="dataSource" value="previousVersions" hidden="">
+			</form>
+		
+			</div>
+			<div class="nav-bar-item ">
+				<button id="form-expander" class="nav-bar-button has-hover-underline has-margin-left-extra-small" aria-label="Search" aria-expanded="false" aria-controls="ax-8">
+						
+					<span class="is-hidden-mobile" aria-hidden="true"><!---->Search<!----></span>
+					<span class="icon" aria-hidden="true">
+						<span class="docon docon-search"></span>
+					</span>
+	
+				</button>
+			</div>
+		<!----><!----></header></div>
+		<div class="content-header uhf-container has-padding has-default-focus" data-bi-name="content-header">
+		<nav class="has-padding-none-mobile" data-bi-name="breadcrumb" itemscope="" itemtype="http://schema.org/BreadcrumbList" role="navigation" aria-label="Breadcrumb">
+			<ul id="page-breadcrumbs" class="breadcrumbs"><!---->
+		<!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<a itemprop="item" href="https://docs.microsoft.com/en-us/">
+				Docs
+			</a>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<a itemprop="item" href="https://docs.microsoft.com/en-us/previous-versions/">
+				Previous Versions
+			</a>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<a itemprop="item" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/">
+				Visual Studio
+			</a>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<span itemprop="name">
+				Visual Studio 6.0
+			</span>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<span itemprop="name">
+				Visual C and C++ 6.0
+			</span>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<span itemprop="name">
+				Product Documentation
+			</span>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<a itemprop="item" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733974(v=vs.60)">
+				Visual C++ Programmer's Guide
+			</a>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<a itemprop="item" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa241093(v=vs.60)">
+				Adding User Interface Features
+			</a>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<a itemprop="item" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa269094(v=vs.60)">
+				Details
+			</a>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<span itemprop="name">
+				Help Topics (HTML Help): Context-Sensitive Help for Your Programs
+			</span>
+		</li><!---->
+		<li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
+			
+			<span itemprop="name">
+				Automatically Building Your .chm File
+			</span>
+		</li><!---->
+	<!----></ul>
+		</nav>
+		<div class="content-header-controls">
+			<button type="button" class="contents-button button" data-bi-name="contents-expand" aria-haspopup="true">
+				<span class="icon"><span class="docon docon-menu" aria-hidden="true"></span></span>
+				<span>Contents</span>
+			</button>
+		</div>
+		<div class="content-header-controls exit-focus">
+			<button type="button" class="ap-collapse-behavior ap-expanded button" data-bi-name="ap-collapse" aria-controls="action-panel">
+				<span class="icon"><span class="docon docon-exit-mode" aria-hidden="true"></span></span>
+				<span>Exit focus mode</span>
+			</button>
+		</div>
+		<div id="page-actions" class="is-flex-touch has-flex-justify-content-space-between-touch has-padding-none has-padding-none-mobile">
+			<ul class="action-list has-flex-justify-content-start-mobile is-flex is-flex-row has-flex-wrap">
+				<li><!---->
+		<button type="button" class="bookmark button is-text has-inner-focus is-small is-icon-only-touch">
+			<span class="icon" aria-hidden="true">
+				<span class="docon docon-single-bookmark"></span>
+			</span>
+			<span class="bookmark-status is-visually-hidden-touch is-hidden-portrait"><!---->Bookmark<!----></span>
+		</button><!----></li><li>
+<div class="sharing dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small is-icon-only-touch" aria-controls="sharing-menu" aria-expanded="false" title="Share This Document" data-bi-name="share">
+		<span class="icon" aria-hidden="true">
+			<span class="docon docon-sharing"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Share</span>
+	</button>
+	<div class="dropdown-menu has-padding-small" id="sharing-menu">
+		<ul data-bi-name="share-links">
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-twitter" data-bi-name="twitter" href="https://twitter.com/intent/tweet?original_referer=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fprevious-versions%2Fvisualstudio%2Fvisual-studio-6.0%2Faa733976(v%3Dvs.60)%3Fredirectedfrom%3DMSDN%26WT.mc_id%3Dtwitter&amp;text=Automatically%20Building%20Your%20.chm%20File%20%7C%20Microsoft%20Docs&amp;tw_p=tweetbutton&amp;url=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fprevious-versions%2Fvisualstudio%2Fvisual-studio-6.0%2Faa733976(v%3Dvs.60)%3Fredirectedfrom%3DMSDN%26WT.mc_id%3Dtwitter">
+					<span class="icon">
+						<span class="docon docon-brand-twitter has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Twitter</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-linkedin" data-bi-name="linkedin" href="https://www.linkedin.com/cws/share?url=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fprevious-versions%2Fvisualstudio%2Fvisual-studio-6.0%2Faa733976(v%3Dvs.60)%3Fredirectedfrom%3DMSDN%26WT.mc_id%3Dlinkedin">
+					<span class="icon">
+						<span class="docon docon-brand-linkedin has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>LinkedIn</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-facebook" data-bi-name="facebook" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fprevious-versions%2Fvisualstudio%2Fvisual-studio-6.0%2Faa733976(v%3Dvs.60)%3Fredirectedfrom%3DMSDN%26WT.mc_id%3Dfacebook">
+					<span class="icon">
+						<span class="docon docon-brand-facebook has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Facebook</span>
+				</a>
+			</li>
+			<li>
+				<a class="button is-text is-fullwidth has-flex-justify-content-start has-inner-focus is-small share-email" data-bi-name="email" href="mailto:?subject=%5BShared%20Article%5D%20Automatically%20Building%20Your%20.chm%20File%20%7C%20Microsoft%20Docs&amp;body=Automatically%20Building%20Your%20.chm%20File%20%7C%20Microsoft%20Docs%0A%0Ahttps%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fprevious-versions%2Fvisualstudio%2Fvisual-studio-6.0%2Faa733976(v%3Dvs.60)%3Fredirectedfrom%3DMSDN%26WT.mc_id%3Demail">
+					<span class="icon">
+						<span class="docon docon-mail-message-fill has-text-primary" aria-hidden="true"></span>
+					</span>
+					<span>Email</span>
+				</a>
+			</li>
+		</ul>
+	</div>
+</div>				</li>
+				<li>
+<div class="dropdown has-caret">
+	<button class="dropdown-trigger button is-text is-small is-icon-only-touch has-inner-focus" aria-controls="theme-menu" aria-expanded="false" title="Theme" data-bi-name="theme">
+		<span class="icon">
+			<span class="docon docon-sun" aria-hidden="true"></span>
+		</span>
+		<span class="is-visually-hidden-touch is-hidden-portrait">Theme</span>
+	</button>
+	<div class="dropdown-menu" id="theme-menu" role="menu">
+		<div class="theme-selector has-padding-small">
+			<div class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start is-selected" data-theme-to="light" role="menuitem" aria-selected="true">
+					<span class="theme-light has-margin-right-small">
+						<span class="theme-selector-icon css-variable-support has-border is-inline-block has-body-background" aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background"></rect>
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary"></rect>
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary"></rect>
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary"></rect>
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary"></rect>
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary"></rect>
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary"></rect>
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary"></rect>
+							</svg>
+						</span>
+					</span>
+					<span>
+Light					</span>
+				</button>
+			</div>
+			<div class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start" data-theme-to="dark" role="menuitem" aria-selected="false">
+					<span class="theme-dark has-margin-right-small">
+						<span class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background" aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background"></rect>
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary"></rect>
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary"></rect>
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary"></rect>
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary"></rect>
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary"></rect>
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary"></rect>
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary"></rect>
+							</svg>
+						</span>
+					</span>
+					<span>
+Dark					</span>
+				</button>
+			</div>
+			<div class="theme is-block">
+				<button class="button is-text is-small theme-control is-fullwidth has-flex-justify-content-start" data-theme-to="high-contrast" role="menuitem" aria-selected="false">
+					<span class="theme-high-contrast has-margin-right-small">
+						<span class="has-border theme-selector-icon css-variable-support is-inline-block has-body-background" aria-hidden="true">
+							<svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 14">
+								<rect width="22" height="14" class="has-fill-body-background"></rect>
+								<rect x="5" y="5" width="12" height="4" class="has-fill-secondary"></rect>
+								<rect x="5" y="2" width="2" height="1" class="has-fill-secondary"></rect>
+								<rect x="8" y="2" width="2" height="1" class="has-fill-secondary"></rect>
+								<rect x="11" y="2" width="3" height="1" class="has-fill-secondary"></rect>
+								<rect x="1" y="1" width="2" height="2" class="has-fill-secondary"></rect>
+								<rect x="5" y="10" width="7" height="2" rx="0.3" class="has-fill-primary"></rect>
+								<rect x="19" y="1" width="2" height="2" rx="1" class="has-fill-secondary"></rect>
+							</svg>
+						</span>
+					</span>
+					<span>
+High contrast					</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>				</li>
+				<li>
+					<a class="docs-sign-in auth-status-determined not-authenticated button is-text has-inner-focus has-text-primary is-small" href="#">Sign in</a>
+					<div class="dropdown has-caret auth-status-determined authenticated">
+						<button class="dropdown-trigger button is-text has-inner-focus is-small is-icon-only-touch has-inner-focus" aria-label="Your Account" aria-controls="user-menu" aria-expanded="false">
+							<span class="icon" aria-hidden="true">
+								<span class="image">
+									<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+								</span>
+							</span>
+							<span class="is-truncated has-margin-left-small" data-profile-property="userName"></span>
+						</button>
+						<div class="dropdown-menu box" id="user-menu" role="menu">
+							<div class="media is-user-dir">
+								<div class="media-left">
+									<span class="image is-64x64" aria-hidden="true">
+										<img class="has-body-background-medium is-rounded" data-profile-property="avatarUrl">
+									</span>
+								</div>
+								<div class="media-content">
+									<p class="title">
+										<span class="is-truncated" style="max-width: 200px" data-profile-property="userName"></span>
+									</p>
+									<p class="subtitle has-margin-bottom-none">
+										<span class="is-truncated" style="max-width: 200px" data-profile-property="upn"></span>
+									</p>
+									<ul class="is-unstyled has-margin-none has-margin-top-small">
+										<li><a href="https://docs.microsoft.com/profile" data-profile-property="profileUrl">Profile</a></li>
+										<li><a class="docs-sign-out" href="#">Sign out</a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+			<button type="button" class="contents-button button is-small is-text is-hidden-tablet has-inner-focus is-hidden-tablet" aria-label="Contents" data-bi-name="contents-expand-">
+				<span class="icon">
+					<span class="docon docon-editor-list-bullet" aria-hidden="true"></span>
+				</span>
+				<span>Contents</span>
+			</button>
+		</div>
+	</div>
+
+		<div id="banner-holder" class="has-default-focus has-overflow-hidden">
+		</div>
+
+	<div id="disclaimer-holder" class="has-overflow-hidden has-default-focus">
+			<section data-dismissable="disappearing" class="uhf-container has-padding has-padding-top-small has-padding-bottom-small is-info alert is-banner">
+				<button data-dismiss="" type="button" class="delete is-absolute has-top-zero has-right-zero has-margin-extra-small is-large"><span class="visually-hidden">Dismiss alert</span></button>
+				<div class="columns">
+					<div class="column is-12">
+						<div class="level">
+							<div class="level-left has-flex-shrink">
+								<div class="level-item has-flex-shrink">
+									<p class="has-text-white-static disclaimer-title has-margin-top-extra-small has-margin-right-medium has-line-height-reset is-size-7-mobile">
+										<span class="icon">
+											<span class="docon docon-status-error-outline" aria-hidden="true"></span>
+										</span>
+										<span>We're no longer updating this content regularly. Check the <a href="https://support.microsoft.com/en-us/lifecycle/selectindex">Microsoft Product Lifecycle</a> for information about how this product, service, technology, or API is supported.</span>
+									</p>
+								</div>
+							</div>
+							
+			<div class="level-right has-margin-extra-small-mobile">
+				<div class="level-item has-flex-justify-content-start-mobile has-padding-small-tablet">
+					<a href="https://docs.microsoft.com/en-us/visualstudio/" class="button is-info is-outlined is-small has-margin-left-extra-small has-margin-right-extra-small">
+						<span>Recommended Version</span>
+					</a>
+				</div>
+			</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			
+			<section data-dismissable="disappearing" class="uhf-container has-padding has-padding-top-small has-padding-bottom-small is-info alert is-banner">
+				<button data-dismiss="" type="button" class="delete is-absolute has-top-zero has-right-zero has-margin-extra-small is-large"><span class="visually-hidden">Dismiss alert</span></button>
+				<div class="columns">
+					<div class="column is-12">
+						<div class="level">
+							<div class="level-left has-flex-shrink">
+								<div class="level-item has-flex-shrink">
+									<p class="has-text-white-static disclaimer-title has-margin-top-extra-small has-margin-right-medium has-line-height-reset is-size-7-mobile">
+										<span class="icon">
+											<span class="docon docon-status-error-outline" aria-hidden="true"></span>
+										</span>
+										<span>We recommend using Visual Studio 2019.</span>
+									</p>
+								</div>
+							</div>
+							
+			<div class="level-right has-margin-extra-small-mobile">
+				<div class="level-item has-flex-justify-content-start-mobile has-padding-small-tablet">
+					<a href="https://visualstudio.microsoft.com/downloads/?utm_medium=microsoft&amp;utm_source=docs.microsoft.com&amp;utm_campaign=button+cta&amp;utm_content=download+vs2019" class="button is-info is-outlined is-small has-margin-left-extra-small has-margin-right-extra-small">
+						<span>Download now</span>
+					</a>
+				</div>
+			</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			</div>
+	</div>
+
+	<div class="mainContainer  uhf-container has-top-padding  has-default-focus" data-bi-name="body">
+
+		<div class="columns has-large-gaps is-gapless-mobile ">
+
+			<div id="left-container" class="left-container is-hidden-mobile column is-one-third-tablet is-one-quarter-desktop">
+				<nav id="affixed-left-container" class="is-fixed is-flex is-flex-column" role="navigation" aria-label="Primary" style="width: 364px; top: 24px; bottom: 30.2px;" data-bi-name="left toc"><form action="javascript:" role="search" aria-label="Search" class="is-full-width has-margin-bottom-small"><label class="visually-hidden" for="ax-10">Search</label><div class="autocomplete is-block" data-bi-name="autocomplete"><!---->
+		<div class="control has-icons-left">
+			<input role="combobox" maxlength="100" aria-autocomplete="list" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" id="ax-10" class="autocomplete-input input control has-icons-left is-small is-full-width" type="text" aria-expanded="false" aria-owns="ax-11-listbox" aria-activedescendant="" placeholder="Filter by title">
+
+			<span class="icon is-small is-left" aria-hidden="true">
+				<span class="has-text-primary docon docon-filter"></span>
+			</span>
+
+			<span class="autocomplete-loader loader has-text-primary" aria-hidden="true" hidden=""></span>
+		</div>
+
+		<ul class="autocomplete-suggestions is-vertically-scrollable" role="listbox" id="ax-11-listbox" hidden="">
+			
+		</ul><!----></div></form><ul class="tree is-vertically-scrollable has-flex-grow has-flex-shrink" role="tree" aria-label="Table of contents" data-bi-name="tree"><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Visual C and C++ 6.0</span><ul class="tree-group" role="group"><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Product Documentation</span><ul class="tree-group" role="group"><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Visual C++ Documentation Map</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>What's New in Visual C++ 6.0</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Getting Started with Visual C++ 6.0</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Visual C++ Tutorials</span></li><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Visual C++ Programmer's Guide</span><ul class="tree-group" role="group"><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733974(v=vs.60)">Visual C++ Programmer's Guide</a></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Porting and Upgrading</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Beginning Your Program</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Compiling and Linking</span></li><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Adding User Interface Features</span><ul class="tree-group" role="group"><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa241093(v=vs.60)">Adding User Interface Features</a></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Overviews</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>How Do I...</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Frequently Asked Questions</span></li><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Details</span><ul class="tree-group" role="group"><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa269094(v=vs.60)">Adding User-Interface Features: Details</a></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>ActiveX Control Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Clipboard Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Control Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Control Bar Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Dialog Bar Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Dialog Box Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Document/View Architecture Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Form Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Help Topics (Win<wbr>Help): Context-Sensitive Help for Your Programs</span></li><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Help Topics (HTML Help): Context-Sensitive Help for Your Programs</span><ul class="tree-group" role="group"><li class="tree-item is-expanded" role="treeitem" tabindex="-1" aria-expanded="true"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Help Topics (HTML Help): Context-Sensitive Help for Your Programs</span><ul class="tree-group" role="group"><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733989(v=vs.60)">Help Topics (HTML Help): Context-Sensitive Help for Your Programs</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733988(v=vs.60)">Installing HTML Help</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733984(v=vs.60)">Including HTML Help Support Files in an Application</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733983(v=vs.60)">Displaying the Help Viewer</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733982(v=vs.60)">Displaying Context-Sensitive Help</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733986(v=vs.60)">Receiving HTML Help Notification Messages in an MFC Application</a></li><li role="none"><a class="tree-item is-leaf is-selected" role="treeitem" tabindex="0" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733976(v=vs.60)">Automatically Building Your .chm File</a></li></ul></li></ul></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Menu Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Printing and Print Preview Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Property Sheet Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Resource Editor Topics (Specific to Visual C++)</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Status Bar Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Tool Tip Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Toolbar Topics</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Window Topics</span></li></ul></li></ul></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Adding Program Functionality</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Debugging</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Performance Tuning</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Preprocessor Reference</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Language Quick Reference</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Run-Time Library Reference</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Build Errors</span></li></ul></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Visual C++ User's Guide</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Glossary</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Microsoft Foundation Class Library and Templates</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>C/C++ Language and C++ Libraries</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Add-in Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>ATL Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Compiler COM Support Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Custom App<wbr>Wizard Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>MFC Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>OLE DB Templates Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>SDK Samples</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Alpha Programmer's Guide</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Windows NT for Alpha Systems Calling Standard 1.11</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Alpha Assembler 3.04.00</span></li></ul></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Technical Articles</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Windows CE Toolkit for Visual C++ 6.0</span></li><li class="tree-item" role="treeitem" tabindex="-1" aria-expanded="false"><span class="tree-expander" data-bi-name="tree-expander"><span class="tree-expander-indicator docon docon-chevron-right-light" aria-hidden="true"></span>Periodicals</span></li></ul></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/ms950412(v=msdn.10)">Visual Inter<wbr>Dev 6.0</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/ms950413(v=msdn.10)">Visual J++ 6.0</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/ms950420(v=msdn.10)">Visual Source<wbr>Safe 6.0</a></li><li role="none"><a class="tree-item is-leaf" role="treeitem" tabindex="-1" data-bi-name="tree-leaf" href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/ms950418(v=msdn.10)">Visual Studio 6.0</a></li></ul></nav>
+			</div>
+
+			<section class="primary-holder column is-two-thirds-tablet is-three-quarters-desktop">
+				<div class="columns is-gapless-mobile has-large-gaps ">
+
+
+				<div id="main-column" class="column  is-full is-four-fifths-desktop ">
+
+					<main id="main" role="main" class="content " data-bi-name="content" dir="ltr" lang="en-us">
+
+
+
+						<h1 id="automatically-building-your-chm-file" sourcefile="aa733976(v=vs.60).md" sourcestartlinenumber="12">Automatically Building Your .chm File</h1>
+
+						<ul class="metadata page-metadata" data-bi-name="page info" dir="ltr" lang="en-us">
+							<li class="displayDate">
+								<time role="presentation" datetime="2006-09-15T00:00:00.000Z" data-article-date-source="ms.date">09/15/2006</time>
+							</li>
+								<li class="readingTime">2 minutes to read</li>
+
+						</ul>
+
+						<nav id="center-doc-outline" class="doc-outline is-hidden-desktop" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline" hidden="">
+							<h3>In this article</h3>
+						</nav>
+
+
+						<!-- <content> -->
+							
+<p><a href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa241093%28v%3dvs.60%29" data-linktype="relative-path"></a></p>
+<p>Custom build rules in Visual C++ can build a .chm file anytime any of the sources to the .chm file change.</p>
+<p><strong>To add a custom build rule to build the latest version of the .chm</strong></p>
+<ol>
+<li><p>Add the HTML Help Project file (.hhp) to a Visual C++ project. From the <strong>Project</strong> menu, click <strong>Add To Project</strong>, then choose <strong>Files</strong> options to access the <strong>Insert Files into Project</strong> dialog box.</p>
+</li>
+<li><p>Select <strong>Settings…</strong> from the <strong>Project</strong> menu to access the <strong>Project Settings</strong> dialog box.</p>
+</li>
+<li><p>Select the .hhp file in the <strong>Settings For:</strong> list and click the <strong>Custom Build</strong> tab.</p>
+</li>
+<li><p>The <strong>Commands</strong> entry for the build rule should resemble:</p>
+<div class="codeHeader" id="code-try-0" data-bi-name="code-header"><span class="language"></span>
+			<button class="action" data-bi-name="copy" aria-label="Copy code">
+				<span class="docon docon-edit-copy" role="presentation"></span>
+				<span>Copy</span>
+			</button></div><pre tabindex="0" class="has-inner-focus"><code data-author-content="hhc.exe $(InputName).hhp
+@echo off
+">hhc.exe $(InputName).hhp
+@echo off
+</code></pre>
+<p>You may need to specify absolute or relative paths to the hhc.exe and
+ .hhp file. You can put hhc.exe in your project's search path:</p>
+<ul>
+<li><p>Select <strong>Options…</strong> from the <strong>Tools</strong> menu.</p>
+</li>
+<li><p>Click on the <strong>Directories</strong> tab and select <strong>Executable files</strong> from the <strong>Show directories for:</strong> list.</p>
+</li>
+<li><p>Specify the directory containing the hhc.exe file in the <strong>Directories</strong> list.</p>
+</li>
+</ul>
+</li>
+<li><p>The Outputs entry should resemble:</p>
+<div class="codeHeader" id="code-try-1" data-bi-name="code-header"><span class="language"></span>
+			<button class="action" data-bi-name="copy" aria-label="Copy code">
+				<span class="docon docon-edit-copy" role="presentation"></span>
+				<span>Copy</span>
+			</button></div><pre tabindex="0" class="has-inner-focus"><code data-author-content="$(InputName).chm
+">$(InputName).chm
+</code></pre>
+<p>You may have to specify an absolute or relative path to ensure that the output file is written to the desired location.</p>
+</li>
+<li><p>If you want to rebuild the .chm file after a .htm file changes but where the .chm file wa not rebuilt, you should click the <strong>Dependencies...</strong> button in the <strong>Project Settings</strong> dialog box and specify each .htm file, including the path if necessary, to your HTML Help project.</p>
+</li>
+</ol>
+<p><a href="https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733989%28v%3dvs.60%29" data-linktype="relative-path">Back to Help Topics (HTML Help)</a></p>
+
+						<!-- </content> -->
+
+						</main>
+
+						<!-- rating mobile section -->
+						<!-- end rating mobile section -->
+
+						<!-- feedback section -->
+
+
+
+
+
+						<!-- end feedback section -->
+
+						<div class="footerContainer is-visible-interactive has-default-focus ">
+<footer id="footer-interactive" data-bi-name="footer" class="footer-layout">
+
+    <a data-mscc-ic="false" class="locale-selector-link" href="https://docs.microsoft.com/en-us/locale?target=https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733976(v=vs.60)?redirectedfrom=MSDN" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text has-inner-focus">English (United States)</span></a>
+
+    <ul class="links" data-bi-name="footerlinks">
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/teamblog" data-bi-name="bloglink">Blog</a></li>
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+			<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+		<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
+		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+    </ul>
+</footer>
+						</div>
+					</div>
+
+					<div id="page-actions" class="right-container column is-one-quarter is-one-fifth-desktop is-hidden-mobile is-hidden-tablet-only" data-bi-name="pageactions" role="complementary" aria-label="Page Actions">
+							<div id="affixed-right-container" class="doc-outline is-fixed is-vertically-scrollable" style="width: 199.2px; top: 24px; bottom: 30.2px;">
+								<nav id="side-doc-outline" data-bi-name="intopic toc" role="navigation" aria-label="Article Outline" hidden="">
+									<h3>In this article</h3>
+								</nav>
+							</div>
+					</div>
+
+					<!--end of div.columns -->
+				</div>
+
+			<!--end of .primary-holder -->
+			</section>
+
+			<aside id="interactive-container" class="interactive-container is-visible-interactive column has-body-background-dark ">
+			</aside>
+		</div>
+
+		<!--end of .mainContainer -->
+	</div>
+
+	<div id="openFeedbackContainer" class="openfeedback-container"></div>
+
+	<div class="footerContainer has-default-focus is-hidden-interactive ">
+<footer id="footer" data-bi-name="footer" class="footer-layout uhf-container has-padding" role="contentinfo">
+
+    <a data-mscc-ic="false" class="locale-selector-link" href="https://docs.microsoft.com/en-us/locale?target=https://docs.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-6.0/aa733976(v=vs.60)?redirectedfrom=MSDN" data-bi-name="select-locale"><span class="icon docon docon-world is-size-4 has-margin-right-small" aria-hidden="true"></span><span class="local-selector-link-text">English (United States)</span></a>
+
+    <ul class="links" data-bi-name="footerlinks">
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/previous-versions/" data-bi-name="archivelink">Previous Version Docs</a></li>
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/teamblog" data-bi-name="bloglink">Blog</a></li>
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/contribute" data-bi-name="contributorGuide">Contribute</a></li>
+			<li><a data-mscc-ic="false" href="https://go.microsoft.com/fwlink/?LinkId=521839" data-bi-name="privacy">Privacy &amp; Cookies</a></li>
+		<li><a data-mscc-ic="false" href="https://docs.microsoft.com/en-us/legal/termsofuse" data-bi-name="termsofuse">Terms of Use</a></li>
+		<li><a data-mscc-ic="false" href="https://aka.ms/sitefeedback" data-bi-name="feedback">Site Feedback</a></li>
+		<li><a data-mscc-ic="false" href="https://www.microsoft.com/en-us/legal/intellectualproperty/Trademarks/EN-US.aspx" data-bi-name="trademarks">Trademarks</a></li>
+    </ul>
+</footer>
+	</div>
+
+	<div id="action-panel" role="region" aria-label="Action Panel" class="action-panel has-default-focus" tabindex="-1"></div>
+
+
+</body></html>
