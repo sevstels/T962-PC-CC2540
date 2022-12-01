@@ -20,6 +20,7 @@ CC2540::CC2540()
   event_filter = 0;
   dev_detected = 0;
   dev_connected = 0;
+  dev_name_str = "##";
 }
 
 //------------------------------------------------------------------------------
@@ -167,7 +168,7 @@ void CC2540::DeviceInformation(char *pBuf, int length)
  
  std::string txt(dataa);
 
- int position = txt.find(dev_name);
+ int position = txt.find(dev_name_str);
  
  if(position>=0)
  {
@@ -239,12 +240,11 @@ int CC2540::Connect(void)
   dev_address[5] = 0xC6;*/
 
   int result = BD_StringToAddr(&dev_bd_addr_str, (char*)dev_address);
-  if(result!=1) {dev_name = ""; return -1;}
+  if(result!=1) {return -1;}
 
   result = CMD_Connect((char*)dev_address);
   if(result!=1) 
   {
-	dev_name = ""; 
 	CMD_ConnectCancel();
 	return -1;
   }

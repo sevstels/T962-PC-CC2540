@@ -89,7 +89,7 @@ BOOL CBTDlg::OnInitDialog()
 
   if(pBLE->dev_connected==1)
   {
-	m_Monitor.AddString(pBLE->dev_name.c_str());
+	m_Monitor.AddString(pBLE->dev_name_str.c_str());
 	m_edit_com.EnableWindow(FALSE);
     m_edit_addr.EnableWindow(FALSE);
 
@@ -283,7 +283,7 @@ void CBTDlg::DeviceInfo(void)
   m_Monitor.ResetContent(); 
 
   CString txt, dig;
-  txt = pBLE->dev_name.c_str();
+  txt = pBLE->dev_name_str.c_str();
   txt += ", RSSI: ";
   dig.Format("%d dBm", pBLE->dev_rssi);
   txt += dig;

@@ -33,7 +33,7 @@ int CC2540::AddEventsHandler(void(*pEventsCallback)(int, char*, int))
 //------------------------------------------------------------------------------
 int CC2540::AddFilter_DeviceName(char *pDeviceName)
 {
-   dev_name = pDeviceName;
+   dev_name_str = pDeviceName;
    return 1;
 }
 

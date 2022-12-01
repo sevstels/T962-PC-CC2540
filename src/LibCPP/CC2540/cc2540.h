@@ -110,7 +110,7 @@ class CC2540
   int adapter_opened;
 
   //Bluetooth device
-  std::string dev_name;
+  std::string dev_name_str;
   std::string dev_bd_addr_str;
   //for scan
   char dev_detected;
