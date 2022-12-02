@@ -26,7 +26,7 @@ ipch
 *.lib
 *.sbr
 obj/
-ipch/
+[Ii]pch*/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
