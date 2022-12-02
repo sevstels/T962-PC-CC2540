@@ -15,4 +15,4 @@ Example can see here: https://t1.daumcdn.net/cfile/tistory/2161273557831B1D2B
 If the Nordic nRF51822 address is correct, you will connect in 1-3 seconds after the program starts. 
 Then by pressing the control buttons you can observe the data exchange. Don't forget to program into the nRF51822 the firmware from here: https://gradient-sg.com/files/t962/t962nrf.zip
 
-![btti](https://user-images.githubusercontent.com/13213368/204974861-2c580c05-f971-4465-b607-1317d8a4c34f.png)
+![tibt](https://user-images.githubusercontent.com/13213368/205233465-f96a94d3-7341-4a24-a69e-5be093637277.png)
