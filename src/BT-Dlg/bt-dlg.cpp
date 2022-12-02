@@ -205,7 +205,7 @@ void CBTDlg::OnButtonCom()
   int result = ParseValueCh(&m_edit_com, com, 1, 100);
   if(!result) return; 
 
-  if(pBLE->COM.port_number==com)
+  if(pBLE->COM.port_number==com && pBLE->COM.opened==1)
   {
 	m_Monitor.AddString("Port already open");
 	return;
@@ -236,7 +236,6 @@ void CBTDlg::OnButtonCom()
      m_Monitor.ResetContent(); 
      m_Monitor.AddString("Opening Error");
   }
-
 }
 
 //------------------------------------------------------------------------------ 

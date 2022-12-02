@@ -392,3 +392,23 @@ int CC2540::CMD_SetRxGain(char level)
   int ret = Wait_Event(0x0400, 200); 
   return ret;
 }
+
+//------------------------------------------------------------------------------
+//Function
+/*Type          : 0x01 (Command)
+-OpCode         : 0x1405 (HCI_ReadRSSI)
+-Data Length    : 0x02 (2) byte(s)
+ ConnHandle     : 0xFFFE (65534)
+Dump(Tx):
+0000:01 05 14 02 FE FF  */
+//------------------------------------------------------------------------------ 
+int CC2540::CMD_ReadRSSI(void)
+{
+  char cmd[] = {0x01, 0x05, 0x14, 0x02, 0xFE, 0xFF};
+
+  event_filter = 0x1009; 
+  SendCMD(cmd, sizeof(cmd), __func__);
+
+  int ret = Wait_Event(0x1009, 200); 
+  return ret;
+}

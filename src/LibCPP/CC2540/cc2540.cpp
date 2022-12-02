@@ -86,6 +86,41 @@ int CC2540::SendCMD(char *pCmd, int length, char *pTxt)
 //------------------------------------------------------------------------------
 //Function 
 //------------------------------------------------------------------------------
+int CC2540::CheckCOM(void)
+{
+  char data[] = {1,1,1,1};
+  int find = -1;
+  
+  if(COM.opened==1)
+  {
+    int ret = CMD_SupervisionTimeout();
+    if(ret!=1){COM.Close(); return -1;}	
+	else return 2;
+  }	
+
+  Sleep(800);
+
+  //----  
+  int result = COM.PortList();  
+  if(result!=1) return -1;
+
+  int number = COM.ports_list.size();
+  std::string port;
+  port = "COM";
+  port += std::to_string((long long)COM.port_number);
+
+  for(int i=0; i<number; i++)
+  {
+	result = COM.ports_list.at(i).find(port);
+	if(result>=0){ find = 1; break;}
+  }
+
+  return find;
+}
+
+//------------------------------------------------------------------------------
+//Function 
+//------------------------------------------------------------------------------
 int CC2540::TxCOM(char *pBuf, int length)
 { 
   return COM.WrFile(pBuf, length);

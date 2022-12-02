@@ -130,7 +130,7 @@ class CMainDlg : public CDialog
   virtual BOOL PreTranslateMessage(MSG* pMsg);
   virtual void WinHelp(DWORD dwData, UINT nCmd = HELP_CONTEXT);
   //virtual void HtmlHelp(DWORD_PTR dwData, UINT nCmd = 0x000F);
-  //void WinHelp( DWORD dwData, UINT nCmd );   
+  //void WinHelp( DWORD dwData, UINT nCmd );
 
   afx_msg BOOL OnDeviceChange(UINT EventType, DWORD_PTR dwData);
   afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);

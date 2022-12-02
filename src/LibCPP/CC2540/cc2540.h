@@ -50,6 +50,7 @@ class CC2540
   int  Connect(void); 
   void Close(void);
   int  SetAddress(char *pAddr);
+  int  CheckCOM(void);
 
   //HCI commands
   int  CMD_Scan(void);
@@ -59,6 +60,7 @@ class CC2540
   int  CMD_SetTxPower(char level);
   int  CMD_SetRxGain(char level);
   int  CMD_ReadAttr(void);
+  int  CMD_ReadRSSI(void);
   int  CMD_DeviceInit(void);
   int  CMD_Disconnect(void);
   int  CMD_NotifyEnable(void);

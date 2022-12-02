@@ -8,6 +8,7 @@
 #define _CVCOM_H_
 
 #include "stdafx.h"
+#include <vector> 
 
 #ifdef  __cplusplus
 extern "C" 
@@ -29,7 +30,8 @@ class CVCOM
   public:
   int opened;	 //COM status: open/close
   int port_number;//Opened COM number 
-  
+  std::vector <std::string> ports_list;
+
   HANDLE hCOM;
   COMSTAT COMST;
   CWinThread *pInThread;   //Thread pointers
@@ -44,7 +46,8 @@ class CVCOM
   int Open(int PortNumber, long BaudRate);
   int WrFile(char *pBuffer, int length);
   int RdFile(char *pBuffer, int length);
-  
+  int PortList(void);
+
   void Clear(void);
   void Close(void);
   		  

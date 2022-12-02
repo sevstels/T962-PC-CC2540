@@ -508,7 +508,6 @@ void CVCOM::Close(void)
 {
   if(opened==0) return;
   
-  port_number = 0;
   pRXhandler = NULL;	 
   
   //Delete COM Rx Thread
@@ -533,3 +532,63 @@ void CVCOM::Close(void)
      } 
    }
 }
+
+//------------------------------------------------------------------------------
+//COM List
+//------------------------------------------------------------------------------
+int CVCOM::PortList(void)
+{
+  int r = 0;
+  HKEY hkey = NULL;
+
+  //Открываем раздел реестра, в котором хранится иинформация о COM портах
+  r = RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("HARDWARE\\DEVICEMAP\\SERIALCOMM\\"), 0, KEY_READ, &hkey);
+  if (r != ERROR_SUCCESS) return -1;
+  
+  unsigned long CountValues = 0, MaxValueNameLen = 0, MaxValueLen = 0;
+  
+  //Получаем информацию об открытом разделе реестра
+  RegQueryInfoKey(hkey, NULL, NULL, NULL, NULL, NULL, NULL, &CountValues, &MaxValueNameLen, &MaxValueLen, NULL, NULL);
+  
+  ++MaxValueNameLen;
+  
+  //Выделяем память
+  TCHAR *bufferName = NULL, *bufferData = NULL;
+  
+  bufferName = (TCHAR*)malloc(MaxValueNameLen * sizeof(TCHAR));
+  if(!bufferName)
+  {
+    RegCloseKey(hkey);
+    return -1;
+  }
+  
+  bufferData = (TCHAR*)malloc((MaxValueLen + 1)*sizeof(TCHAR));
+  if(!bufferData) 
+  { 
+    free(bufferName); 
+    RegCloseKey(hkey);
+    return -1;
+  }
+  
+  unsigned long NameLen, type, DataLen;
+  //Цикл перебора параметров раздела реестра
+  for (unsigned int i = 0; i < CountValues; i++)
+  {
+    NameLen = MaxValueNameLen;
+    DataLen = MaxValueLen;
+    r = RegEnumValue(hkey, i, bufferName, &NameLen, NULL, &type, (LPBYTE)bufferData, &DataLen);
+    if ((r != ERROR_SUCCESS) || (type != REG_SZ))
+      continue;    
+    
+	std::string txt(bufferData);
+	ports_list.push_back(txt);
+  }
+  //Освобождаем память
+  free(bufferName);
+  free(bufferData);
+  //Закрываем раздел реестра
+  RegCloseKey(hkey);
+
+  return 1;
+}
+

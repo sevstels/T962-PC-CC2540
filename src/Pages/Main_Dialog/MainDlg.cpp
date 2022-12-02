@@ -10,6 +10,7 @@
 #include "cmd.h"
 #include "datatx.h"
 #include <stdio.h>
+#include <dbt.h>
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -223,34 +224,27 @@ BOOL CMainDlg::OnInitDialog()
   hLED_green = LoadBitmapA(hInstance, (LPCSTR)IDB_LED_GREEN);
   
   CString str, address;
-
-  // TODO: Add extra initialization here
   if(REG.FirstLaunch()==1)
   {
     //First ini
 	REG.SetIntVar("last_tab", 5);
 	REG.SetIntVar("last_com", 1);
-	REG.SetIntVar("tx_power", 0);
+	REG.SetIntVar("tx_power", 1);
 	REG.SetIntVar("rx_gain",  0);
 	str = "00:00:00:00:00:00";
 	REG.SetTxtVar("last_bt_addr", str);
   }
 
-  //REG.SetIntVar("last_com", 1);
-  //str = "C6:04:9C:27:9A:BD";
-  //REG.SetTxtVar("last_bt_addr", str);
-
   //прочитать настройки приложения
   CSETUP.Read();
   LED.Ini(this->m_hWnd, &m_led, &m_led_txt, hLED_grey, hLED_green, hLED_red);
 
-  //Create and initialisation Tab Pages
+  //Create and init Tab Pages
   #include "pages.h"
   
-  POS.SetWindowPositon(this->m_hWnd); //GetSafeHwnd()
+  POS.SetWindowPositon(this->m_hWnd);
 
-  //---- Set Last Open Tab page
-  //REG.SaveLastTab(0);
+  //---- Set Last Opened Tab page
   int tab; 
   REG.GetIntVar("last_tab", tab);
   m_Tab.SetCurSel(tab);
@@ -286,7 +280,7 @@ BOOL CMainDlg::OnInitDialog()
   
   //Monitoring thread 
   ThreadLaunch();
-  
+
   //Bluetooth support
   int port, result;
   int tx_power, rx_gain;
@@ -561,17 +555,23 @@ void CMainDlg::OnWindowPosChanged(WINDOWPOS* lpwndpos)
 //-----------------------------------------------------------------------------
 BOOL CMainDlg::OnDeviceChange(UINT EventType, DWORD_PTR dwData)
 {
-  int result = 0; /// USBCAN_HotPlugHandler(pCAN, EventType, dwData);
+  if((EventType == DBT_DEVICEARRIVAL) || (EventType == DBT_DEVICEREMOVECOMPLETE)) {}
+  else 	return TRUE;
+  
+  //here not complited code
+  int result = BLE.CheckCOM();
+  if(result==2) return TRUE;
+  
   if(result==1)
-    {
-      Controls_Enable(TRUE);
-      LED_Control(1);
-      Sleep(1000);
-      result = 0;//GetDeviceSetup();
-      
+  {  
+	  result = BLE.Open(BLE.COM.port_number);
+	  if(result==1){Sleep(200); result = BLE.Connect();}
       if(result==1)
-       {
-         pPage1->Controls_Update(0);
+      {	 
+		 Controls_Enable(TRUE);
+		 LED_Control(1);
+
+		 pPage1->Controls_Update(0);
          pPage1->Controls_Enable(TRUE);
          //----
 		 pPage2->Controls_Update();
@@ -591,17 +591,19 @@ BOOL CMainDlg::OnDeviceChange(UINT EventType, DWORD_PTR dwData)
          //----
          pPage6->Controls_Update(0);
          pPage6->Controls_Enable(TRUE);
-       }
-      return TRUE;
-    }
+       }		 
+      return TRUE;	
+  }
 
-  if(result==-1)
-   { 
-     LED_Control(0);
-     Controls_Enable(FALSE);
-     //pPage2->Monitoring_Channel(0);
-   } 
-
+  BLE.adapter_opened = 0;
+  BLE.dev_connected = 0;
+  BLE.COM.Close();
+  LED_Control(0);
+  Controls_Enable(FALSE);
+  CString txt;
+  txt = "BT Adapter disconnected!\r\n";
+  AfxMessageBox(_T(txt), MB_ICONSTOP);
+  
   return TRUE;
 }
 
@@ -621,7 +623,6 @@ void CMainDlg::OnButtonOvenReset()
 {
   //Tx
   BT.Tx(CMD_NRF_OVEN_RESET, NULL, 0);
-  //BT.Tx(CMD_NRF_OVEN_PROG_MODE, NULL, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -674,7 +675,7 @@ extern int boot_mode;
 	
 	//progress stepping
 	///if(PROTOCOL.data_counter!=0) 
-	   ///m_progress.SetPos(PROTOCOL.data_counter); 
+	///m_progress.SetPos(PROTOCOL.data_counter); 
   }
 }
 
