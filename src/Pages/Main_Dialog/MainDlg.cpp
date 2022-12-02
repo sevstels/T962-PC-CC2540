@@ -989,4 +989,3 @@ LRESULT CMainDlg::OnDlgMessges(WPARAM wParam, LPARAM lParam)
 		
   return 1;
 }
-
