@@ -64,10 +64,14 @@ class CBTDlg : public CDialog
   CButton m_but_connect;
   CButton m_but_disconnect;
   CButton m_but_scan;
+  //----
+  CComboBox m_combo_rx_gain;
+  CComboBox m_combo_tx_power;
 
   //----func
   void CloseDlg(void);
   void SetTooltip(void);
+  void Controls_Ini(void);
   void Controls_Enable(BOOL on_off);
   void Controls_Update(void);
   void DeviceInfo(void);
@@ -91,6 +95,9 @@ class CBTDlg : public CDialog
   afx_msg void OnButtonDisconnect();
   afx_msg void OnButtonCom();
 
+
+  afx_msg void OnSelchangeComboTxPower();
+  afx_msg void OnSelchangeComboRxGain();
 };
 
 #endif

@@ -192,6 +192,10 @@
 #define IDC_EDIT_ADDR                   1455
 #define IDC_BUTTON1                     1456
 #define IDC_BUTTON_COM                  1456
+#define IDC_COMBO_TX_POWER              1458
+#define IDC_COMBO3                      1459
+#define IDC_COMBO_RX_GAIN               1459
+#define IDC_STATIC_RX                   1460
 #define ID_PAGE5_ADDVERTEX              32775
 #define ID_PAGE5_DELETESEGMENT          32776
 #define ID_PAGE5_DELETEVERTEX           32778
@@ -210,7 +214,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        157
 #define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1457
+#define _APS_NEXT_CONTROL_VALUE         1461
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

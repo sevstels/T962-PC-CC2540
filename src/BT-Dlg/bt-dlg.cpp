@@ -55,6 +55,8 @@ void CBTDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_CONNECT, m_but_connect);
 	DDX_Control(pDX, IDC_BUTTON_DISCONNECT, m_but_disconnect);
 	DDX_Control(pDX, IDC_BUTTON_SCAN, m_but_scan);
+	DDX_Control(pDX, IDC_COMBO_RX_GAIN, m_combo_rx_gain);
+	DDX_Control(pDX, IDC_COMBO_TX_POWER, m_combo_tx_power);
 }														  
 
 //------------------------------------------------------------------------------ 
@@ -73,6 +75,8 @@ BEGIN_MESSAGE_MAP(CBTDlg, CDialog)
   ON_BN_CLICKED(IDC_BUTTON_SCAN, &CBTDlg::OnButtonScan)
   ON_BN_CLICKED(IDC_BUTTON_DISCONNECT, &CBTDlg::OnButtonDisconnect)
   ON_BN_CLICKED(IDC_BUTTON_COM, &CBTDlg::OnButtonCom)
+  ON_CBN_SELCHANGE(IDC_COMBO_TX_POWER, &CBTDlg::OnSelchangeComboTxPower)
+  ON_CBN_SELCHANGE(IDC_COMBO_RX_GAIN, &CBTDlg::OnSelchangeComboRxGain)
 END_MESSAGE_MAP()
 
 //------------------------------------------------------------------------------ 
@@ -82,6 +86,8 @@ BOOL CBTDlg::OnInitDialog()
 {
   CDialog::OnInitDialog();
   POS.SetWindowPositon(this->m_hWnd);
+  
+  Controls_Ini();
 
   CString txt;
   txt.Format("%d", pBLE->COM.port_number);
@@ -108,6 +114,27 @@ BOOL CBTDlg::OnInitDialog()
   Controls_Enable(TRUE);
 
   return TRUE;
+}
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void CBTDlg::Controls_Ini(void)
+{
+  int pos;
+  m_combo_rx_gain.ResetContent();
+  m_combo_rx_gain.InsertString(0, "Normal");//
+  m_combo_rx_gain.InsertString(1, "High");//
+  pREG->GetIntVar("rx_gain", pos);
+  m_combo_rx_gain.SetCurSel(pos);
+  
+  m_combo_tx_power.ResetContent();
+  m_combo_tx_power.InsertString(0, " 4  dBm");//3
+  m_combo_tx_power.InsertString(1, " 0  dBm");//2
+  m_combo_tx_power.InsertString(2, "-6  dBm");//4
+  m_combo_tx_power.InsertString(3, "-23 dBm");//0
+  pREG->GetIntVar("tx_power", pos);
+  m_combo_tx_power.SetCurSel(pos);
 }
 
 //------------------------------------------------------------------------------
@@ -384,3 +411,32 @@ void CBTDlg::OnButtonDisconnect()
   //::PostMessageA(hWndParent, UWM_DIALOG_MESSAGES, CMD_BT_DISCONNECT, 0);
 }
 
+//------------------------------------------------------------------------------ 
+//
+//------------------------------------------------------------------------------
+void CBTDlg::OnSelchangeComboTxPower()
+{
+  int index;
+  char pwr_code = 0;
+  index = m_combo_tx_power.GetCurSel();
+	
+  if(index==0) pwr_code = 3;
+  if(index==1) pwr_code = 2;
+  if(index==2) pwr_code = 4;
+  if(index==3) pwr_code = 0;
+
+  pBLE->CMD_SetTxPower(pwr_code);
+  pREG->SetIntVar("tx_power", index);
+}
+
+//------------------------------------------------------------------------------ 
+//
+//------------------------------------------------------------------------------
+void CBTDlg::OnSelchangeComboRxGain()
+{
+  int index;
+  index = m_combo_rx_gain.GetCurSel();
+
+  pBLE->CMD_SetRxGain((char)index);
+  pREG->SetIntVar("rx_gain", index);
+}

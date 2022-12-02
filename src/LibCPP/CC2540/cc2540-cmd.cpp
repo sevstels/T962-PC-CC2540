@@ -350,3 +350,45 @@ int CC2540::CMD_Disconnect(void)
 
   return result;
 }
+
+//------------------------------------------------------------------------------
+//Function
+/*Type           : 0x01 (Command)
+-OpCode         : 0xFC01 (HCIExt_SetTxPower)
+-Data Length    : 0x01 (1) byte(s)
+ Tx Power       : 0x02 (2) (HCI_EXT_TX_POWER_0_DBM)
+Dump(Tx):
+0000:01 01 FC 01 02 */
+//------------------------------------------------------------------------------
+int CC2540::CMD_SetTxPower(char level)
+{
+  char cmd[] = {0x01, 0x01, 0xFC, 0x01, 0x02};
+  cmd[4] = level;
+
+  event_filter = 0x0401; 
+  SendCMD(cmd, sizeof(cmd), __func__);
+
+  int ret = Wait_Event(0x0401, 200); 
+  return ret;
+}
+
+//------------------------------------------------------------------------------
+//Function
+/*Type          : 0x01 (Command)
+-OpCode         : 0xFC00 (HCIExt_SetRxGain)
+-Data Length    : 0x01 (1) byte(s)
+ Rx Gain        : 0x00 (0) (HCI_EXT_RX_GAIN_STD)
+Dump(Tx):
+0000:01 00 FC 01 00  */
+//------------------------------------------------------------------------------ 
+int CC2540::CMD_SetRxGain(char level)
+{
+  char cmd[] = {0x01, 0x00, 0xFC, 0x01, 0x00};
+  cmd[4] = level;
+
+  event_filter = 0x0400; 
+  SendCMD(cmd, sizeof(cmd), __func__);
+
+  int ret = Wait_Event(0x0400, 200); 
+  return ret;
+}

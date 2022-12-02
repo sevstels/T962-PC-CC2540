@@ -56,6 +56,8 @@ class CC2540
   int  CMD_ScanCancel(void);
   int  CMD_Connect(char *pAddr);
   int  CMD_ConnectCancel(void);
+  int  CMD_SetTxPower(char level);
+  int  CMD_SetRxGain(char level);
   int  CMD_ReadAttr(void);
   int  CMD_DeviceInit(void);
   int  CMD_Disconnect(void);

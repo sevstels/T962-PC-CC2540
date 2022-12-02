@@ -230,6 +230,8 @@ BOOL CMainDlg::OnInitDialog()
     //First ini
 	REG.SetIntVar("last_tab", 5);
 	REG.SetIntVar("last_com", 1);
+	REG.SetIntVar("tx_power", 0);
+	REG.SetIntVar("rx_gain",  0);
 	str = "00:00:00:00:00:00";
 	REG.SetTxtVar("last_bt_addr", str);
   }
@@ -287,20 +289,25 @@ BOOL CMainDlg::OnInitDialog()
   
   //Bluetooth support
   int port, result;
+  int tx_power, rx_gain;
   REG.GetIntVar("last_com", port);
   REG.GetTxtVar("last_bt_addr", address);
-
-
+  REG.GetIntVar("tx_power", tx_power);
+  REG.GetIntVar("rx_gain",  rx_gain);
+  
   //----
   BT.SethBLE(&BLE);
   BLE.AddEventsHandler(BLE_Event);
   BLE.AddRxHandler(BLE_DataRx);
   BLE.AddFilter_DeviceName("T-962");
   result = BLE.SetAddress((char*)address.GetBuffer());
-  if(result!=1){OnButtonBT();  return TRUE;} 
+  if(result!=1){OnButtonBT();  return TRUE;}
   //----
   result = BLE.Open((char)port);
-  if(result!=1){OnButtonBT();  return TRUE;}  
+  if(result!=1){OnButtonBT();  return TRUE;}
+  //----
+  BLE.CMD_SetTxPower((char)tx_power);
+  BLE.CMD_SetRxGain((char)rx_gain);
   //----
   BLE.Connect();
   
