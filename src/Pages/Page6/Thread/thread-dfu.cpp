@@ -1,6 +1,14 @@
+//==============================================================================
+//File name:   "thread-dfu.cpp"
+//Purpose:      Source File
+//Version:      1.00
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//==============================================================================
 #include "stdafx.h"
 #include "Page6.h"
 #include "cmd.h"
+#include "lpc21isp.h"
+#include "files-cpp.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -14,103 +22,117 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+int thread_end(void)
+{
+ TRACE("DFU Thread Exit\n");
+ //pDlg->pThread = NULL;
+ //---- End Tread loop
+ AfxEndThread(0, TRUE);
+ return 0;
+}
+
 //==============================================================================
 //Thread: 
 //==============================================================================
 //Thread function
 static DWORD DFU_PROGRAMM(LPVOID lParam)
 {
- //Get pointer to Class
- CPage6 *pDlg = (CPage6*)lParam;
- ASSERT(pDlg->IsKindOf(RUNTIME_CLASS(CPage6)));
+  //Get pointer to Class
+  CPage6 *pDlg = (CPage6*)lParam;
+  ASSERT(pDlg->IsKindOf(RUNTIME_CLASS(CPage6)));
  
- //Synchronisation objects
- CEvent &ev_Quit = pDlg->ev_Quit;
- CEvent &ev_Data = pDlg->ev_DataAccepted;
- CEvent &ev_Exit = pDlg->ev_ExitRequest;
- CEvent &ev_FB   = pDlg->ev_WaitEnd;
+  //Synchronisation objects
+  CEvent &ev_Quit = pDlg->ev_Quit;
+  CEvent &ev_Data = pDlg->ev_DataAccepted;
+  CEvent &ev_Exit = pDlg->ev_ExitRequest;
+  CEvent &ev_FB   = pDlg->ev_WaitEnd;
 
- //Synchronisation events
- HANDLE evHandles[] = {ev_Quit, 
-	                   ev_Data, 
-					   ev_Exit};
+  //Synchronisation events
+  HANDLE evHandles[] = {ev_Quit, 
+	                    ev_Data, 
+	   				    ev_Exit};
  
- DWORD event_numbers = 3;
- //pDlg->exit_request = 1;
+  DWORD event_numbers = 3;
+  //pDlg->exit_request = 1;
 
- unsigned char Buf[16];
- int more_bytes;
- int exit_request = 0;
+  unsigned char Buf[16];
+  int more_bytes;
+  int exit_request = 0;
 
- //---- launch Tread loop 
- for(;;)
+  TRACE("DFU Thread Run\n");
+
+  //----------------------------------------------------------
+  //
+  //----------------------------------------------------------
+  CString str, file_path, file_name, txt;
+
+  //Standart file dialog
+  CFileDialog fileDialog(NULL, NULL, _T("*.bin"), 
+                         NULL, _T("firmware file (*.bin)"));
+  //Call dlg window
+  INT_PTR dlg = fileDialog.DoModal();
+
+  if(dlg==IDOK)
   {
-    //waiting events
-    DWORD dwEvent = WaitForMultipleObjects(event_numbers, evHandles, FALSE, INFINITE);
-				
-	switch(dwEvent)
-	{			
-       //---- Exit EVENT
-       case WAIT_OBJECT_0:
-       //==================================================
-       //Exit from thread by "Quit" event
-       //==================================================
-	   TRACE("Main Thread Exit\n");
-       //---- End Tread
-       AfxEndThread(0, TRUE);
-       return 0;		
-		
-	   //---- EVENT from flag_bufferNotEmpty
-       case WAIT_OBJECT_0+1:
-       //================================ 
-       //ѕришли данные, читать
-       //================================
-       for(;;)
-	   {
-	     //Prepare exit from main thread
-	     //≈сли закрываем программу - 
-	     //запретить заход в новый цикл обработки данных
-	     /*
-		 if(pDlg->exit_request==2)
-	     {
-		   //wait only ev_Quit
-	   	   //event_numbers = 1;
-		   //more_bytes = 0;
-
-		   //pDlg->ev_WaitEnd.SetEvent();
-	     }		   
-		 */
-		 if(exit_request==0)
-		 {
-		   //Get data from USB circle buffer
-	       more_bytes = -1; ///CAN_ReadData(pDlg->pCAN, Buf, MONITORING_CHN, 0, 8);
-	       //Handle data 
-///           pDlg->Parse_DeviceAnswer(Buf);
-		   //Sleep(300);
-		   //more_bytes = 0;
-	       //memset(Buf, 0, sizeof(Buf));
-		   ///TRACE(".");
-		
-		   //exit if circle buffer is empty
-		   if(more_bytes<1) break;
-		 }
-	   }
-       break;
-       
-	   //---- Exit Ini
-       case WAIT_OBJECT_0+2:
-		    exit_request = 1;
-          	event_numbers = 1;
-			TRACE("Main Thread Exit Request\n");
-			ev_FB.SetEvent();
-	   break;
-	}
+     file_path = fileDialog.GetPathName();
+     file_name = fileDialog.GetFileName();
   }
 
- TRACE("Main Thread Exit\n");
- //---- End Tread loop
- AfxEndThread(0, TRUE);
- return 0;
+  //---------------------------------------
+  //
+  //---------------------------------------
+  //file_name = "t962fw.bin";
+   
+  int exist = CheckFile(file_path);
+  if(exist!=1)
+  {
+    str = "Error: No Firmware file";
+    pDlg->m_edit_info.SetWindowText(_T(str));
+    return thread_end();
+  }
+
+  unsigned long length = Get_FileSize(file_path);
+  if(length<200)
+  {
+    str = "Error: Firmware file wrong";
+    pDlg->m_edit_info.SetWindowText(_T(str));
+    return thread_end();
+  }
+
+  char *pBuf = (char*) new char[length];
+  if(pBuf==NULL)  return thread_end();
+
+  unsigned long read_length = Read_File(file_path, pBuf, 0, length);
+  if(read_length != length)  return thread_end();
+
+
+  //---------------------------------------
+  //Programming
+  //---------------------------------------
+  ISP_ENVIRONMENT isp;
+  memset(&isp, 0, sizeof(ISP_ENVIRONMENT));
+          
+  isp.BinaryContent = (BINARY*)pBuf;
+  isp.BinaryLength = length;
+  isp.ProgramChip = 1;
+  isp.WipeDevice = 1;
+  isp.Verify = 1;
+
+  int ret = NxpDownload(&isp);
+  if(ret!=0)
+  {
+	//show Error
+	pDlg->Progress_Error();
+  }
+  
+  delete [] pBuf;
+  pBuf = NULL;
+  
+  pDlg->program_run = 0;
+  pDlg->m_but_fw_update.SetWindowTextA("FW Update");
+  pDlg->pThread = NULL;
+
+  return thread_end();
 }
 
 //------------------------------------------------------------------------------
@@ -124,8 +146,8 @@ void CPage6::ThreadLaunch(void)
  //THREAD_PRIORITY_ABOVE_NORMAL   //на один пункт выше нормального
  //Restart all threads THREAD_PRIORITY_HIGHEST
  pThread = AfxBeginThread((AFX_THREADPROC)DFU_PROGRAMM, 
-                           this, THREAD_PRIORITY_HIGHEST);//THREAD_PRIORITY_ABOVE_NORMAL
- pThread->m_bAutoDelete = FALSE; 
+                           this, THREAD_PRIORITY_ABOVE_NORMAL);
+ pThread->m_bAutoDelete = TRUE; 
 }
 
 //-----------------------------------------------------------------------------
@@ -133,7 +155,7 @@ void CPage6::ThreadLaunch(void)
 //-----------------------------------------------------------------------------
 void CPage6::ThreadStop(void)
 {
- if(pThread)
+ if(pThread!=NULL)
  {	  /*
    //if thread already was launched
    if(exit_request==1)
@@ -149,16 +171,16 @@ void CPage6::ThreadStop(void)
    }*/
    //else
    //{
-  ev_ExitRequest.SetEvent();
+   ev_ExitRequest.SetEvent();
    
-  //ждем завершени€ цикла, таймаут если данных нет
-  WaitForSingleObject(ev_WaitEnd.m_hObject, 5000);
+   //ждем завершени€ цикла, таймаут если данных нет
+   //WaitForSingleObject(ev_WaitEnd.m_hObject, 5000);
 
-  ev_Quit.SetEvent();
-  WaitForSingleObject(pThread->m_hThread, INFINITE);
-  delete pThread;
-  pThread = NULL;
-   //}
+   ev_Quit.SetEvent();
+   if(pThread!=NULL) WaitForSingleObject(pThread->m_hThread, INFINITE);
+   
+   if(pThread!=NULL) delete pThread;
+   pThread = NULL;
  }
 
  ev_ExitRequest.ResetEvent();

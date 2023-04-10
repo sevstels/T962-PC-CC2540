@@ -329,15 +329,6 @@ void CMainDlg::Parse_Device(unsigned char *pBuf)
   CString txt, dig;
 
   //----
-  if(data[1]==DEV_JTAG_CONNECTED)
-  {
-	txt = "Can`t execute command.\nADC locked by JTAG conection.";
-	//ShowWarningMsg(&txt);
-	TRACE("Procedure error: JTAG conected\n");
-	AfxMessageBox(_T(txt), MB_ICONSTOP);
-  }	
-
-  //----
   if(data[1]==DEV_SETUP_UPDATE_REQUEST ||
 	 data[1]==DEV_SET_DEFAULT_COMLETED)
   {
@@ -345,12 +336,12 @@ void CMainDlg::Parse_Device(unsigned char *pBuf)
 	int ret = 0;///pPage2->GetDeviceSetup(CAN_device_ID);
 	if(ret)
 	{
-	  pPage1->Controls_Update(0);
+	  pPage1->Controls_Update();
       pPage2->Controls_Update();
-	  pPage3->Controls_Update(0);
-	  pPage4->Controls_Update(0);
-	  pPage5->Controls_Update(0);
-	  pPage6->Controls_Update(0);	
+	  pPage3->Controls_Update();
+	  pPage4->Controls_Update();
+	  pPage5->Controls_Update();
+	  pPage6->Controls_Update();	
 	}
   }
 

@@ -7,8 +7,8 @@
 #ifndef _FIRMWARE_BUILD_DATA_H_
 #define _FIRMWARE_BUILD_DATA_H_
 
-//Last build data Year: 2000 + 22, Month: 12, Day: 02, Hour: 18:52
-#define FIRMWARE_BUILD_DATA       2212021852
-#define FIRMWARE_BUILD_DATA_STR  "2022.12.02 18:52"
+//Last build data Year: 2000 + 23, Month: 04, Day: 10, Hour: 21:27
+#define FIRMWARE_BUILD_DATA       2304102127
+#define FIRMWARE_BUILD_DATA_STR  "2023.04.10 21:27"
 
 #endif

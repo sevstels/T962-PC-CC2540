@@ -2,7 +2,7 @@
 //File name:   "cc2540.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "cc2540.h"
@@ -59,12 +59,14 @@ int CC2540::SendCMD(char *pCmd, int length, char *pTxt)
   unsigned short OpCode = pCmd[2];
   OpCode <<= 8;
   OpCode |= pCmd[1];
-
+    
+  #ifdef _DEBUG
   std::string msg = "PC -> ";
   msg += pTxt;
   msg += "\n";
   DBG_TRACE(msg.c_str());
-   
+  #endif
+
   ev_EventAccepted.ResetEvent();
 
   int ret = TxCOM(pCmd, length);
@@ -241,6 +243,10 @@ int CC2540::Open(int com_port)
   //Add handler
   COM.AddRxHandler(RxCOM);
 
+  //If BT dongle already was connected 
+  dev_connected = 1;
+  CMD_Disconnect();
+
   //HCI cmd 
   result = CMD_DeviceInit();
   if(result!=1){Error("BT adapter not found\r\nSelect the right COM"); return -1;}
@@ -347,7 +353,7 @@ int CC2540::DataTx(char *pBuf, int length)
 {
   if(dev_connected !=1) return -1;
   
-  char cmd[22];
+  char cmd[30];
   cmd[0] = 0x01; //Command
   cmd[1] = 0x92; //OpCode
   cmd[2] = 0xFD; //OpCode
@@ -358,16 +364,17 @@ int CC2540::DataTx(char *pBuf, int length)
   cmd[7] = 0x00; //?
   memcpy(&cmd[8], pBuf, length);
 
-  //0F AC B3 00 00 91
-   
+  #ifdef _DEBUG
   std::string msg = "TX -> ";
   msg += __func__;
   msg += "\n";
   DBG_TRACE(msg.c_str());
+  #endif
 
-  COM.WrFile(cmd, 8+length);
+  int send = COM.WrFile(cmd, 8+length);
+  send -= 8;
 
-  return 1;
+  return send;
 }
 
 //------------------------------------------------------------------------------

@@ -153,6 +153,4 @@ class CMainDlg : public CDialog
   
   afx_msg HCURSOR OnQueryDragIcon();
   afx_msg void OnPaint();
-
-  
 };

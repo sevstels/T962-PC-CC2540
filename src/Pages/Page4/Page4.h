@@ -98,7 +98,7 @@ class CPage4 : public CPropertyPage
   void TabOpen(void);
   void Controls_Ini(void);
   void Controls_Enable(BOOL on_off);
-  void Controls_Update(int number);
+  void Controls_Update(void);
   void ControlsGrop(int on_off);
   int  DeviceProfileWrite(void);
   int  DeviceProfileRead(void);

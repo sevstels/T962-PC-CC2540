@@ -23,7 +23,7 @@
 
 #if defined COMPILE_FOR_WINDOWS
 #include <conio.h>
-#define TRACE(x) OutputDebugString(x)
+//#define OutputDebugString(x) TRACE(x) 
 //#define TRACE(x) printf("%s",x)
 #endif // defined COMPILE_FOR_WINDOWS
 
@@ -93,51 +93,29 @@ typedef struct
     int nQuestionMarks; // how many times to try to synchronise
     int DoNotStart;
     int BootHold;
-    char *serial_port;                  // Name of the serial port to use to
-                                        // communicate with the microcontroller.
-                                        // Read from the command line.
-#endif // !defined COMPILE_FOR_LPC21
 
-    unsigned char TerminalOnly;         // Declared here for lazyness saves ifdef's
-#ifdef TERMINAL_SUPPORT
-    unsigned char TerminalAfterUpload;
-    unsigned char LocalEcho;
-#endif
+#endif // !defined COMPILE_FOR_LPC21
 
     unsigned char HalfDuplex;           // Only used for LPC Programming
     unsigned char WriteDelay;
     unsigned char DetectOnly;
     unsigned char WipeDevice;
     unsigned char Verify;
-    int           DetectedDevice;       /* index in LPCtypes[] array */
-    char *baud_rate;                    /**< Baud rate to use on the serial
-                                           * port communicating with the
-                                           * microcontroller. Read from the
-                                           * command line.                        */
+    int DetectedDevice;                 /* index in LPCtypes[] array */
 
     char StringOscillator[6];           /**< Holds representation of oscillator
-                                           * speed from the command line.         */
+                                           * speed from the command line.       */
 
     BINARY *FileContent;
-    BINARY *BinaryContent;              /**< Binary image of the                  */
-                                          /* microcontroller's memory.            */
+    BINARY *BinaryContent;              /**< Binary image of the                */
+                                        /* microcontroller's memory.            */
     unsigned long BinaryLength;
     unsigned long BinaryOffset;
     unsigned long StartAddress;
     unsigned long BinaryMemSize;
 
-#if defined COMPILE_FOR_WINDOWS
-    HANDLE hCom;
-#endif // defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
-
 #ifdef INTEGRATED_IN_WIN_APP
     unsigned char NoSync;
-#endif
-
-#if defined COMPILE_FOR_WINDOWS
-    unsigned long serial_timeout_count;   /**< Local used to track timeouts on serial port read. */
-#else
-    unsigned serial_timeout_count;   /**< Local used to track timeouts on serial port read. */
 #endif
 
 } ISP_ENVIRONMENT;
@@ -168,9 +146,6 @@ void DebugPrintf(const char *fmt, ...);
 //#define DebugPrintf(level, ...) if (level <= debug_level) { TRACE( __VA_ARGS__ ); }
 #endif
 
-void ClearSerialPortBuffers(ISP_ENVIRONMENT *IspEnvironment);
-void ControlXonXoffSerialPort(ISP_ENVIRONMENT *IspEnvironment, unsigned char XonXoff);
-
 #endif
 
 /*
@@ -183,21 +158,14 @@ debug levels
 5 - log comm's          - log serial I/O
 */
 
-void ReceiveBT(ISP_ENVIRONMENT *IspEnvironment,
-                    const char *Ans, unsigned long MaxSize,
-                    unsigned long *RealSize, unsigned long WantedNr0x0A,
-                    unsigned timeOutMilliseconds);
+void ReceiveBT(const char *Ans, unsigned long MaxSize,
+               unsigned long *RealSize, unsigned long WantedNr0x0A,
+               unsigned timeOutMilliseconds);
 void PrepareKeyboardTtySettings(void);
 void ResetKeyboardTtySettings(void);
 void ResetTarget(ISP_ENVIRONMENT *IspEnvironment, TARGET_MODE mode);
 
 void DumpString(int level, const void *s, size_t size, const char *prefix_string);
-//void SendComPort(ISP_ENVIRONMENT *IspEnvironment, const char *s);
-//void SendComPortBlock(ISP_ENVIRONMENT *IspEnvironment, const void *s, size_t n);
-int  ReceiveComPortBlockComplete(ISP_ENVIRONMENT *IspEnvironment, void *block, size_t size, unsigned timeout);
-void ClearSerialPortBuffers(ISP_ENVIRONMENT *IspEnvironment);
-void ControlXonXoffSerialPort(ISP_ENVIRONMENT *IspEnvironment, unsigned char XonXoff);
-	
 int NxpDownload(ISP_ENVIRONMENT *IspEnvironment);
 
 void SetTXpointer(void *pBT);

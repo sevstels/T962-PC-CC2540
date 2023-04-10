@@ -2,11 +2,12 @@
 //File name:    "dlg_sensor.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "bt-dlg.h"
 #include "parse-value.h"
+#include "MainDlg.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -324,6 +325,8 @@ void CBTDlg::DeviceInfo(void)
   
   pBLE->CMD_ScanCancel();
 }
+  
+extern CMainDlg *pCMainDlg;
 
 //------------------------------------------------------------------------------ 
 //
@@ -375,7 +378,8 @@ void CBTDlg::OnButtonConnect()
   m_edit_addr.EnableWindow(FALSE);
 
   Sleep(400);
-  pBLE->CMD_NotifyEnable();
+  ret = pBLE->CMD_NotifyEnable();
+  if(ret==1) pCMainDlg->GetDeviceSetup();
 
   DeviceInfo();
 

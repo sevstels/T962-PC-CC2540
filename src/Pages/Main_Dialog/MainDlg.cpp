@@ -24,8 +24,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-extern DWORD CAN_BUS_MONITORING(LPVOID lParam);
-
 CMainDlg *pCMainDlg = NULL;
 
 //------------------------------------------------------------------------------
@@ -122,7 +120,7 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
   exit_request = 0;
   tab_opened = 0;
   hTimer = 0;
-  Console.SetWindowSize(100, 40);
+  Console.SetWindowSize(720, 400);
 }
 
 //------------------------------------------------------------------------------
@@ -303,8 +301,9 @@ BOOL CMainDlg::OnInitDialog()
   BLE.CMD_SetTxPower((char)tx_power);
   BLE.CMD_SetRxGain((char)rx_gain);
   //----
-  BLE.Connect();
-  
+  result = BLE.Connect();
+  if(result==1) GetDeviceSetup();
+
   //return TRUE  unless you set the focus to a control
   return TRUE;  
 }
@@ -571,25 +570,25 @@ BOOL CMainDlg::OnDeviceChange(UINT EventType, DWORD_PTR dwData)
 		 Controls_Enable(TRUE);
 		 LED_Control(1);
 
-		 pPage1->Controls_Update(0);
+		 pPage1->Controls_Update();
          pPage1->Controls_Enable(TRUE);
          //----
 		 pPage2->Controls_Update();
          pPage2->Controls_Enable(TRUE);
          //----
-		 pPage3->Controls_Update(0);
+		 pPage3->Controls_Update();
          pPage3->Controls_Enable(TRUE);
          //----
-		 pPage4->Controls_Update(0);
+		 pPage4->Controls_Update();
          pPage4->Controls_Enable(TRUE);
          //----
-         pPage5->Controls_Update(0);
+         pPage5->Controls_Update();
          pPage5->Controls_Enable(TRUE);
          //----
-         pPage5->Controls_Update(0);
+         pPage5->Controls_Update();
          pPage5->Controls_Enable(TRUE);
          //----
-         pPage6->Controls_Update(0);
+         pPage6->Controls_Update();
          pPage6->Controls_Enable(TRUE);
        }		 
       return TRUE;	
@@ -637,6 +636,59 @@ void CMainDlg::OnButtonConsoleCls()
 	
 extern int boot_mode;
 
+
+/*
+RX < Bytes:  04 00 04 00 1B 0B 00 0F |                         
+
+BLE 1
+RX < Bytes:  04 00 04 00 1B 0B 00 AC |                         
+
+BLE 1
+RX < Bytes:  04 00 04 00 1B 0B 00 65 |                         
+
+BLE 1
+RX < Bytes:  05 00 04 00 1B 0B 00 00 | 60                      
+
+BLE 2
+RX < 
+ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
+--------------------------------------------------------
+Bytes:  17 00 04 00 1B 0B 00 7F | 1E 00 24 00 2D 00 32 00 
+Bytes:  3C 00 46 00 55 00 5A 00 | 5F 00 64                
+
+BLE 20
+RX < 
+ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
+--------------------------------------------------------
+Bytes:  17 00 04 00 1B 0B 00 00 | 66 00 69 00 6B 00 6E 00 
+Bytes:  70 00 73 00 75 00 78 00 | 7A 00 7F                
+
+BLE 20
+RX < 
+ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
+--------------------------------------------------------
+Bytes:  17 00 04 00 1B 0B 00 00 | 84 00 8A 00 94 00 A0 00 
+Bytes:  A5 00 A0 00 94 00 8A 00 | 82 00 7A                
+
+BLE 20
+RX < 
+ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
+--------------------------------------------------------
+Bytes:  17 00 04 00 1B 0B 00 00 | 72 00 6A 00 62 00 5A 00 
+Bytes:  52 00 4A 00 42 00 3A 00 | 00 00 00                
+
+BLE 20
+RX < 
+ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
+--------------------------------------------------------
+Bytes:  17 00 04 00 1B 0B 00 00 | 00 00 00 00 00 00 00 00 
+Bytes:  00 00 00 00 00 00 00 00 | A8 0F AC                
+
+BLE 20
+RX < Bytes:  09 00 04 00 1B 0B 00 63 | 00 01 E0 01 FE          
+
+BLE 6
+*/
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
@@ -646,6 +698,8 @@ extern int boot_mode;
   if(transport==TRANSPORT_COM) TRACE2("Read COM %d Cnt %d\n", length, debug_byte_count);
   else TRACE2("Read BLE %d Cnt %d\n", length, debug_byte_count);
   */
+  
+  TRACE("BLE %d\n", length);
 
   //----
   for(int i=0; i<length; i++)
@@ -654,6 +708,9 @@ extern int boot_mode;
     int ready = PROTOCOL.Decoder(pBuf[i]);
   	if(ready==1)
 	{
+	  
+    //  TRACE("BLE %d\n", PROTOCOL.data_length);
+
 	  //Data Block was accepted
 	  DeviceMsgHandler(PROTOCOL.cmd, PROTOCOL.pDataBuf, PROTOCOL.data_length);
 	  PROTOCOL.FreeMem();
@@ -824,7 +881,6 @@ void CMainDlg::ParseDeviceEvents(char *pBuf, int length)
 	case EVT_BOOT_MODE:
 	//boot_mode = 1;
 	break;
-
   }
 }
 
@@ -848,12 +904,12 @@ void CMainDlg::DeviceMsgHandler(char cmd, char *pBuf, int length)
 		 {
 		   //Device connected		   
 		   //Обновить все параметры
-           pPage1->Controls_Update(0);
+           pPage1->Controls_Update();
            pPage2->Controls_Update();
-	       pPage3->Controls_Update(0);
-	       pPage4->Controls_Update(0);
-	       pPage5->Controls_Update(0);
-		   pPage6->Controls_Update(0);
+	       pPage3->Controls_Update();
+	       pPage4->Controls_Update();
+	       pPage5->Controls_Update();
+		   pPage6->Controls_Update();
 	       //----
 		   LED_Control(1);
 		   Controls_Enable(1);
@@ -947,7 +1003,6 @@ void CMainDlg::OnButtonBT()
     pBTDlg->pREG = &REG;
 	pBTDlg->pBLE = &BLE;
 	pBTDlg->hWndParent = this->m_hWnd;
-	//pSnDlg[nRow]->Create(IDD_SENSOR_SETUP_DIALOG, this->GetOwner()); //this->GetWindow(IDD_Page8));
 	pBTDlg->Create(IDD_DIALOG_BLE, this->GetWindow(IDD_DIALOG_BLE));
     pBTDlg->ShowWindow(SW_SHOW);
   }

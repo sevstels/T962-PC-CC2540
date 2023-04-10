@@ -165,7 +165,7 @@ void CPage1::Controls_Enable(BOOL on_off)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage1::Controls_Update(int number)
+void CPage1::Controls_Update(void)
 {
   CString txt;
   

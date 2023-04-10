@@ -76,7 +76,7 @@ void CPage5::Controls_Enable(int on_off)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage5::Controls_Update(int number)
+void CPage5::Controls_Update(void)
 {
   int on;
   char check = pDevice->use_sensor_heater;

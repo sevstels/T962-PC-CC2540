@@ -12,7 +12,6 @@
 #include "ColorStaticST.h"
 #include "AppWinReg.h"
 #include "tooltip.h"
- 
 #include "app-setup.h"
 #include "datatx.h"
 
@@ -55,7 +54,7 @@ class CPage3 : public CPropertyPage
   virtual BOOL OnInitDialog();
   void Controls_Ini(void);
   void Controls_Enable(int on_off);
-  void Controls_Update(char val_number);
+  void Controls_Update(void);
   void Manual_Enable(int on_off);
   void Monitoring(int on);
   void HeaterParser(char *pBuf);

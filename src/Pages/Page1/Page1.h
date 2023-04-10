@@ -56,7 +56,7 @@ class CPage1 : public CPropertyPage
   //----
   void Controls_Ini(void);
   void Controls_Enable(BOOL on_off);
-  void Controls_Update(int number);
+  void Controls_Update(void);
   void HeaterTemperature(char *pBuf); 
   void Monitoring(int on);
 

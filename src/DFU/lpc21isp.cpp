@@ -1,8 +1,9 @@
 //==============================================================================
 //File name:    "lpc21isp.cpp"
-//Purpose:      Source File, CPage2 property page
+//Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    https://github.com/capiman/lpc21isp
+//https://github.com/lnls-dig/lpc21isp/blob/4fbb2a2a9d06677bad9c3f32f3a7247735cc2154/lpc21isp.c
 //==============================================================================
 #include "stdafx.h"
 #include "malloc.h"
@@ -12,7 +13,9 @@
 #include "cmd.h"
 #include "Page6.h"
 
-extern CPage6 *pPG6;
+//#define COMPILE_FOR_LPC21
+
+extern CPage6 *pCPage6;
 
 CDataTX *pBLE = NULL;
 void SetTXpointer(void *p_BT)
@@ -257,7 +260,7 @@ static LPC_DEVICE_TYPE LPCtypes[] =
    { 0x0002FF01, 0x00000000, 0, "2131",                           32,   8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
    { 0x0002FF11, 0x00000000, 0, "2132",                           64,  16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
    { 0x0002FF12, 0x00000000, 0, "2134",                          128,  16, 11, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-   { 0x0002FF23, 0x00000000, 0, "2136",                          256,  32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
+   { 0x0002FF23, 0x00000000, 0, "2136",                          256,  32, 15, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }, ///+
    { 0x0002FF25, 0x00000000, 0, "2138",                          512,  32, 27, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
    { 0x0402FF01, 0x00000000, 0, "2141",                           32,   8,  8, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
    { 0x0402FF11, 0x00000000, 0, "2142",                           64,  16,  9, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
@@ -372,15 +375,13 @@ static void FormatCommand(const char *In, char *Out)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-static int SendAndVerify(ISP_ENVIRONMENT *IspEnvironment, const char *Command,
-                                 char *AnswerBuffer, int AnswerLength)
+static int SendAndVerify(const char *Command, char *AnswerBuffer, int AnswerLength)
 {
-  unsigned long realsize;
-  int cmdlen;
+  int cmdlen, result;
   char *FormattedCommand;
 
-  BT_Send(Command);
-  ReceiveBT(IspEnvironment, AnswerBuffer, AnswerLength - 1, &realsize, 2, 5000);
+  result = BT_Send(Command);
+  result = BT_Receive(AnswerBuffer, AnswerLength, 5000);
 
   cmdlen = strlen(Command);
   FormattedCommand = (char *)alloca(cmdlen+1);
@@ -388,8 +389,10 @@ static int SendAndVerify(ISP_ENVIRONMENT *IspEnvironment, const char *Command,
   FormatCommand(AnswerBuffer, AnswerBuffer);
   cmdlen = strlen(FormattedCommand);
   
-  return (strncmp(AnswerBuffer, FormattedCommand, cmdlen) == 0
-        && strcmp(AnswerBuffer + cmdlen, "0\n") == 0);
+  int ret1 = strncmp(AnswerBuffer, FormattedCommand, cmdlen-1);
+
+  if(ret1==0) return 1;
+  else return -1;
 }
 
 //------------------------------------------------------------------------------
@@ -508,7 +511,7 @@ then it is printed to stdout and an error value of 255 is returned.
 //------------------------------------------------------------------------------
 static unsigned char GetAndReportErrorNumber(const char *Answer)
 {
-    unsigned char Result = 0xFF;                            // Error !!!
+    unsigned char Result = 0xFF; // Error !!!
     unsigned int i = 0;
 
     while (1)
@@ -539,517 +542,110 @@ static unsigned char GetAndReportErrorNumber(const char *Answer)
 
     return Result;
 }
+
 #include <stdio.h>
+
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
+int EraseChip(ISP_ENVIRONMENT *IspEnvironment)
 {
-  unsigned long realsize;
-  char Answer[128];
-  char ExpectedAnswer[128];
-  char temp[128];
-  char send[128];
-  /*const*/ char *strippedAnswer, *endPtr;
-  int strippedsize;
-  int nQuestionMarks;
-  int found;
-  unsigned long Sector;
-  unsigned long SectorLength;
-  unsigned long SectorStart, SectorOffset, SectorChunk;
   char tmpString[128];
-  char uuencode_table[64];
-  int Line;
-  unsigned long tmpStringPos;
-  unsigned long BlockOffset;
-  unsigned long Block;
-  unsigned long Pos;
-  unsigned long Id[2];
-  unsigned long Id1Masked;
-  unsigned long CopyLength;
-  int c,k=0,i;
-  unsigned long ivt_CRC;          // CRC over interrupt vector table
-  unsigned long block_CRC;
-  time_t tStartUpload=0, tDoneUpload=0;
-  char tmp_string[64];
-  char * cmd_string;
+  char Answer[128];
 
-  int repeat = 0;
-  int result;
-  
-  // Puffer for data to resend after "RESEND\r\n" Target responce
-  char sendbuf0[128];
-  char sendbuf1[128];
-  char sendbuf2[128];
-  char sendbuf3[128];
-  char sendbuf4[128];
-  char sendbuf5[128];
-  char sendbuf6[128];
-  char sendbuf7[128];
-  char sendbuf8[128];
-  char sendbuf9[128];
-  char sendbuf10[128];
-  char sendbuf11[128];
-  char sendbuf12[128];
-  char sendbuf13[128];
-  char sendbuf14[128];
-  char sendbuf15[128];
-  char sendbuf16[128];
-  char sendbuf17[128];
-  char sendbuf18[128];
-  char sendbuf19[128];
+  DebugPrintf( "Chip Erase: ");
 
-  char * sendbuf[20] = { sendbuf0,  sendbuf1,  sendbuf2,  sendbuf3,  sendbuf4,
-                         sendbuf5,  sendbuf6,  sendbuf7,  sendbuf8,  sendbuf9,
-                         sendbuf10, sendbuf11, sendbuf12, sendbuf13, sendbuf14,
-                         sendbuf15, sendbuf16, sendbuf17, sendbuf18, sendbuf19};
-  
-  //очистить буфер экрана 
-  pPG6->txt_info.Empty();
-
-  //Переключить процессор печи в режим программирования
-  DebugPrintf("Jump to bootloader mode\r\n");
-   
-  result = pBLE->Tx(CMD_NRF_OVEN_PROG_MODE, NULL, 0);
-  if(!result){ return (NO_ANSWER_QM);}
-
- 
-
-  //ждем перехода в загрузку 
-  Sleep(1400);
-  DebugPrintf("Connect ");
-  found = 0;
-
-  //инициализация auto boud
-  for(int i=0; i<12; i++)
-  {	  
-	 //посылаем ? для работы алгоритма
-     //result = BT_Send("?");
-	 pPG6->ev_BootDataRx.ResetEvent();
-	 result = pBLE->Tx(CMD_NRF_OVEN_PROG_DATA, (char*)"?", 1);
-	 if(!result)
-	 { 
-	   return (NO_ANSWER_QM);
-	 }
-	 
-	 Sleep(10);
-	 memset(Answer, 0, sizeof(Answer));
-
-	 //ждем ответа 
-	 result = BT_Receive(Answer, sizeof(Answer), 500);
-	 if(result==1)
-	 {
-	    std::string boot_answ(Answer); 
-		result = boot_answ.find("Synchronized");
-		
-		if(result>=0)
-		{
-		  found = 1;
-		  break;
-		}
-	 }
-	  
-	 DebugPrintf(".");
-  }
-
-  if(found==0)
+  if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
+      LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
   {
-    DebugPrintf(" Error\r\n");
-	  
-	//no answer on '?'\n
-	DebugPrintf("Bootloader no answer, Reset\r\n");
-	
-	pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
-	 
-	Sleep(1000);
-	
-	//очистить буфер экрана 
-    pPG6->txt_info.Empty();
-	pPG6->m_edit_info.SetWindowTextA("");
-
-    return (NO_ANSWER_QM);
-  }
-
-  DebugPrintf( " OK\r\n");
-
-
-  Sleep(50);
-
-  //===========================================================
-  //проверка перехода процессора в boot mode по эху
-  //53 79 6E 63 68 72 6F 6E 69 7A 65 64 0D 0A 
-  found=0;
-  memset(send,0,sizeof(send));
-  memcpy(send, "Synchronized", 12);
-  //result = BT_Send(send);
-  pPG6->ev_BootDataRx.ResetEvent();
-  result = pBLE->Tx(CMD_NRF_OVEN_PROG_DATA, (char*)send, 12);
-
-  //ждем ответа  Synchronized OK
-  result = BT_Receive(Answer, sizeof(Answer), 4000);
-  if(result==1)
-  {
-	 std::string boot_answ(Answer); 
-     result = boot_answ.find("Synchronized");
-		
-	 if(result>=0)
-	 {
-		found = 1;
-	 }
-  }	
-
-  if (found==0)
-  {
-    DebugPrintf( "No answer on 'Synchronized'\r\n");
-    return (NO_ANSWER_SYNC);
-  }
-
-  DebugPrintf("Synchronized OK\r\n");
-
-  //===========================================================
-  DebugPrintf("Setting oscillator\r\n");    
-  memset(send,0,sizeof(send));
-  memcpy(send, "014740\r\n", 6);
-  
-  found = 0;
-  BT_Send(send);
-  memset(Answer,0,sizeof(Answer));
-  result = BT_Receive(Answer, sizeof(Answer), 1000);
-  if(result==1)
-  {
-	std::string boot_answ(Answer); 
-	result = boot_answ.find("OK");
-	if(result>=0)
-	{
-	  found = 1;
-	}
-    
-	result = boot_answ.find("014740\n1\r\n");	
-	if(result>=0)
-	{
-	  found = 1;
-	}
-  }  
-	
-  if(found==0)
-  {
-    DebugPrintf( "No answer on Oscillator-Command\r\n");
-    return (NO_ANSWER_OSC);
-  }
-
-
-  //===========================================================
-  DebugPrintf("Unlock\r\n");
-
-  cmd_string = "U 23130\r\n";
-
-  if(!SendAndVerify(IspEnvironment, cmd_string, Answer, sizeof Answer))
-  {
-    DebugPrintf( "Unlock-Command: Error\r\n");
-    return -1;//(UNLOCK_ERROR + GetAndReportErrorNumber(Answer));
-  }
-   
-  //===========================================================
-  DebugPrintf( "Read bootcode version: ");
-  cmd_string = "K\r\n";
-
-  BT_Send(cmd_string);
-  ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 4,5000);
-
-  FormatCommand(cmd_string, temp);
-  FormatCommand(Answer, Answer);
-  if(strncmp(Answer, temp, strlen(temp)) != 0)
-  {
-    DebugPrintf( "no answer on Read Boot Code Version\r\n");
-    return (NO_ANSWER_RBV);
-  }
-
-  if(strncmp(Answer + strlen(temp), "0\n", 2) == 0)
-  {
-    strippedAnswer = Answer + strlen(temp) + 2;
-        /*
-        int maj, min, build;
-        if (sscanf(strippedAnswer, "%d %d %d", &build, &min, &maj) == 2) {
-        maj = min;
-        min = build;
-        build = 0;
-        } // if
-        DebugPrintf( "%d.%d.%d\n", maj, min, build);
-        */
-        DebugPrintf( strippedAnswer);
+    // TODO: Quick and dirty hack to address bank 0
+    sprintf(tmpString, "P %d %d 0\r\n", 0, 
+		    LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
   }
   else
   {
-        DebugPrintf( "unknown\r\n");
+    sprintf(tmpString, "P %d %d\r\n", 0, 
+		    LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
   }
-   
-  
-  //===========================================================
-  DebugPrintf("Read part ID: ");
 
-  cmd_string = "J\r\n";
-  BT_Send(cmd_string);
-
-  ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 3, 5000);
-
-  FormatCommand(cmd_string, temp);
-  FormatCommand(Answer, Answer);
-  if (strncmp(Answer, temp, strlen(temp)) != 0)
+  if(!SendAndVerify(tmpString, Answer, sizeof Answer))
   {
-    DebugPrintf( "no answer on Read Part Id\n");
-    return (NO_ANSWER_RPID);
+    DebugPrintf( "Wrong answer on Prepare-Command\r\n");
+    return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
   }
 
-    strippedAnswer = (strncmp(Answer, "J\n0\n", 4) == 0) ? Answer + 4 : Answer;
+  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
+     LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
+  {
+    // TODO: Quick and dirty hack to address bank 0
+    sprintf(tmpString, "E %d %d 0\r\n", 0, 
+		    LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+  }
+  else
+  {
+    sprintf(tmpString, "E %d %d\r\n", 0, 
+		    LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+  }
 
-    Id[0] = strtoul(strippedAnswer, &endPtr, 10);
-    Id[1] = 0UL;
-    *endPtr = '\0'; /* delete \r\n */
-    for (i = sizeof LPCtypes / sizeof LPCtypes[0] - 1; i > 0 && LPCtypes[i].id != Id[0]; i--)
-        /* nothing */;
-    IspEnvironment->DetectedDevice = i;
-    if (LPCtypes[IspEnvironment->DetectedDevice].EvalId2 != 0)
-    {
-        /* Read out the second configuration word and run the search again */
-        *endPtr = '\n';
-        endPtr++;
-        if ((endPtr[0] == '\0') || (endPtr[strlen(endPtr)-1] != '\n'))
-        {
-            /* No or incomplete word 2 */
-            ReceiveBT(IspEnvironment, endPtr, sizeof(Answer)-(endPtr-Answer)-1, &realsize, 1, 100);
-        }
+  //----------------------------------------------
+  int result = BT_Send(tmpString);
+  if(!result){ return (NO_ANSWER_QM);}
+  
+  //ждем ответ
+  result = BT_Receive(Answer, sizeof(Answer), 10000);
+  if(result==1)
+  {
+	std::string boot_answ(Answer); 
+	result = boot_answ.find(tmpString);
+	if(result)
+	{ 
+      DebugPrintf("Wrong answer on Erase-Command\r\n");
+      return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
+	}
+  }  
 
-        FormatCommand(endPtr, endPtr);
-        if ((*endPtr == '\0') || (*endPtr == '\n'))
-        {
-            DebugPrintf( "incomplete answer on Read Part Id (second configuration word missing)\n");
-            return (NO_ANSWER_RPID);
-        }
+  //----------------------------------------------
+  //Chrck sectors empty
+  sprintf(tmpString, "I %d %d\r\n", 0, 
+		  LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
+  
+  result = BT_Send(tmpString);
+  if(!result){ return (NO_ANSWER_QM);}
+  
+  //ждем ответ
+  result = BT_Receive(Answer, sizeof(Answer), 10000);
+  if(result==1)
+  {
+	std::string boot_answ(Answer); 
+	result = boot_answ.find("0");
+	if(result<0)
+	{ 
+      DebugPrintf("Wrong Mem Erase\r\n");
+      return (WRONG_ANSWER_ERAS);
+	}
+  }  
 
-        Id[1] = strtoul(endPtr, &endPtr, 10);
-        *endPtr = '\0'; /* delete \r\n */
+  DebugPrintf("OK\r\n");
 
-        Id1Masked = Id[1] & 0xFF;
+  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
+     LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
+  {
+     DebugPrintf("ATTENTION: Only bank A was erased!!!\r\n");
+  }
 
-        /* now search the table again */
-        for (i = sizeof LPCtypes / sizeof LPCtypes[0] - 1; i > 0 && (LPCtypes[i].id != Id[0] || LPCtypes[i].id2 != Id1Masked); i--)
-            /* nothing */;
-        IspEnvironment->DetectedDevice = i;
-    }
-    if (IspEnvironment->DetectedDevice == 0) {
-        DebugPrintf( "unknown");
-    }
-    else {
-        DebugPrintf( "LPC%s, %d kiB FLASH / %d kiB SRAM",
-            LPCtypes[IspEnvironment->DetectedDevice].Product,
-            LPCtypes[IspEnvironment->DetectedDevice].FlashSize,
-            LPCtypes[IspEnvironment->DetectedDevice].RAMSize);
-    }
-    if (LPCtypes[IspEnvironment->DetectedDevice].EvalId2 != 0)
-    {
-        DebugPrintf( " (0x%08lX / 0x%08lX -> %08lX)\n", Id[0], Id[1], Id1Masked);
-    }
-    else
-    {
-        DebugPrintf( " (0x%08lX)\n", Id[0]);
-    }
+  return 0;
+}
 
-    if (!IspEnvironment->DetectOnly)
-    {
-        // Build up uuencode table
-        uuencode_table[0] = 0x60;           // 0x20 is translated to 0x60 !
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+int EraseSector(ISP_ENVIRONMENT *IspEnvironment)
+{
+  char tmpString[128];
+  char Answer[128];
 
-        for (i = 1; i < 64; i++)
-        {
-            uuencode_table[i] = (char)(0x20 + i);
-        }
-
-        if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
-        {
-            // Patch 0x14, otherwise it is not running and jumps to boot mode
-
-            ivt_CRC = 0;
-
-            // Clear the vector at 0x14 so it doesn't affect the checksum:
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x14] = 0;
-            }
-
-            // Calculate a native checksum of the little endian vector table:
-            for (i = 0; i < (4 * 8);) {
-                ivt_CRC += IspEnvironment->BinaryContent[i++];
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
-            }
-
-            /* Negate the result and place in the vector at 0x14 as little endian
-            * again. The resulting vector table should checksum to 0. */
-            ivt_CRC = (unsigned long) (0 - ivt_CRC);
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x14] = (unsigned char)(ivt_CRC >> (8 * i));
-            }
-
-            DebugPrintf("Position 0x14 patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
-        }
-        else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
-        {
-            // Patch 0x1C, otherwise it is not running and jumps to boot mode
-
-            ivt_CRC = 0;
-
-            // Clear the vector at 0x1C so it doesn't affect the checksum:
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x1C] = 0;
-            }
-
-            // Calculate a native checksum of the little endian vector table:
-            for (i = 0; i < (4 * 8);) {
-                ivt_CRC += IspEnvironment->BinaryContent[i++];
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
-                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
-            }
-
-            /* Negate the result and place in the vector at 0x1C as little endian
-            * again. The resulting vector table should checksum to 0. */
-            ivt_CRC = (unsigned long) (0 - ivt_CRC);
-            for (i = 0; i < 4; i++)
-            {
-                IspEnvironment->BinaryContent[i + 0x1C] = (unsigned char)(ivt_CRC >> (8 * i));
-            }
-
-            DebugPrintf("Position 0x1C patched: ivt_CRC = 0x%08lX\n", ivt_CRC);
-        }
-        else
-        {
-          DebugPrintf( "Internal error: wrong chip variant %d (detected device %d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant, IspEnvironment->DetectedDevice);
-          exit(1);
-        }
-    }
-
-#if 0
-    DebugPrintf( "Read Unique ID:\n");
-
-    cmd_string = "N\r\n";
-
-    SendComPort(IspEnvironment, cmd_string);
-
-    ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 5,5000);
-
-    FormatCommand(cmd_string, temp);
-    FormatCommand(Answer, Answer);
-    if (strncmp(Answer, temp, strlen(temp)) != 0)
-    {
-        DebugPrintf( "no answer on Read Unique ID\n");
-        return (NO_ANSWER_RBV);
-    }
-
-    if (strncmp(Answer + strlen(cmd_string), "0\n", 2) == 0)
-    {
-        strippedAnswer = Answer + strlen(temp) + 2;
-        DebugPrintf( strippedAnswer);
-    }
-    else
-    {
-        DebugPrintf( "unknown\n");
-    }
-#endif // 0
-
-    /* In case of a download to RAM, use full RAM for downloading
-    * set the flash parameters to full RAM also.
-    * This makes sure that all code is downloaded as one big sector
-    */
-
-    if ( (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment))
-       &&(IspEnvironment->BinaryOffset + IspEnvironment->BinaryLength <= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
-    {
-        LPCtypes[IspEnvironment->DetectedDevice].FlashSectors = 1;
-        LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize  = LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024 - (ReturnValueLpcRamBase(IspEnvironment) - ReturnValueLpcRamStart(IspEnvironment));
-        LPCtypes[IspEnvironment->DetectedDevice].SectorTable  = SectorTable_RAM;
-        SectorTable_RAM[0] = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
-    }
-    if (IspEnvironment->DetectOnly)
-        return (0);
-
-    if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
-    {
-      // XON/XOFF must be switched off for LPC8XX
-      // otherwise problem during binary transmission of data to LPC8XX
-      DebugPrintf("Switch off XON/XOFF !!!\n");
-      ControlXonXoffSerialPort(IspEnvironment, 0);
-    }
-
-    // Start with sector 1 and go upward... Sector 0 containing the interrupt vectors
-    // will be loaded last, since it contains a checksum and device will re-enter
-    // bootloader mode as long as this checksum is invalid.
-    DebugPrintf( "Will start programming at Sector 1 if possible, and conclude with Sector 0 to ensure that checksum is written last.\n");
-    if (LPCtypes[IspEnvironment->DetectedDevice].SectorTable[0] >= IspEnvironment->BinaryLength)
-    {
-        Sector = 0;
-        SectorStart = 0;
-    }
-    else
-    {
-        SectorStart = LPCtypes[IspEnvironment->DetectedDevice].SectorTable[0];
-        Sector = 1;
-    }
-
-    if (IspEnvironment->WipeDevice == 1)
-    {
-        DebugPrintf( "Wiping Device. ");
-
-        if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-            LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-        {
-            // TODO: Quick and dirty hack to address bank 0
-            sprintf(tmpString, "P %d %d 0\r\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-        }
-        else
-        {
-            sprintf(tmpString, "P %d %d\r\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-        }
-
-        if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
-        {
-            DebugPrintf( "Wrong answer on Prepare-Command\n");
-            return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
-        }
-
-        if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-            LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-        {
-            // TODO: Quick and dirty hack to address bank 0
-            sprintf(tmpString, "E %d %d 0\r\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-        }
-        else
-        {
-            sprintf(tmpString, "E %d %d\r\n", 0, LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-        }
-        if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
-        {
-            DebugPrintf( "Wrong answer on Erase-Command\n");
-            return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
-        }
-        DebugPrintf( "OK \n");
-
-        if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-            LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-        {
-          DebugPrintf( "ATTENTION: Only bank A was wiped!!!\n");
-        }
-    }
-    else{
-        //no wiping requested: erasing sector 0 first
-        DebugPrintf( "Erasing sector 0 first, to invalidate checksum. ");
+  //no wiping requested: erasing sector 0 first
+  DebugPrintf( "Erasing sector 0 first, to invalidate checksum. \r\n");
 
         if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
             LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
@@ -1062,7 +658,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             sprintf(tmpString, "P %d %d\r\n", 0, 0);
         }
 
-        if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+        if(!SendAndVerify(tmpString, Answer, sizeof Answer))
         {
             DebugPrintf( "Wrong answer on Prepare-Command\n");
             return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
@@ -1079,158 +675,24 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             sprintf(tmpString, "E %d %d\r\n", 0, 0);
         }
 
-        if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+        if (!SendAndVerify(tmpString, Answer, sizeof Answer))
         {
-            DebugPrintf( "Wrong answer on Erase-Command\n");
+            DebugPrintf( "Wrong answer on Erase-Command\r\n");
             return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
         }
-        DebugPrintf( "OK \n");
-    }
-    while (1)
-    {
-        if (Sector >= LPCtypes[IspEnvironment->DetectedDevice].FlashSectors)
-        {
-            DebugPrintf( "Program too large; running out of Flash sectors.\n");
-            return (PROGRAM_TOO_LARGE);
-        }
+        DebugPrintf( "OK\r\n");
 
-        DebugPrintf( "Sector %ld: ", Sector);
-        fflush(stdout);
+  return 0;
+}
 
-        if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))  // Skip Erase when running from RAM
-           ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
-        {
-            if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-            {
-                // TODO: Quick and dirty hack to address bank 0
-                sprintf(tmpString, "P %ld %ld 0\r\n", Sector, Sector);
-            }
-            else
-            {
-                sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
-            }
-
-            if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
-            {
-                DebugPrintf( "Wrong answer on Prepare-Command (1) (Sector %ld)\n", Sector);
-                return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
-            }
-
-            DebugPrintf( ".");
-            fflush(stdout);
-            if (IspEnvironment->WipeDevice == 0 && (Sector!=0)) //Sector 0 already erased
-            {
-                if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-                    LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-                {
-                    // TODO: Quick and dirty hack to address bank 0
-                    sprintf(tmpString, "E %ld %ld 0\r\n", Sector, Sector);
-                }
-                else
-                {
-                    sprintf(tmpString, "E %ld %ld\r\n", Sector, Sector);
-                }
-
-                if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
-                {
-                    DebugPrintf( "Wrong answer on Erase-Command (Sector %ld)\n", Sector);
-                    return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
-                }
-
-                DebugPrintf( ".");
-                fflush(stdout);
-            }
-        }
-
-        SectorLength = LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
-        if (SectorLength > IspEnvironment->BinaryLength - SectorStart)
-        {
-            SectorLength = IspEnvironment->BinaryLength - SectorStart;
-        }
-
-        for (SectorOffset = 0; SectorOffset < SectorLength; SectorOffset += SectorChunk)
-        {
-            // Check if we are to write only 0xFFs - it would be just a waste of time..
-            if (SectorOffset == 0) {
-                for (SectorOffset = 0; SectorOffset < SectorLength; ++SectorOffset)
-                {
-                    if (IspEnvironment->BinaryContent[SectorStart + SectorOffset] != 0xFF)
-                        break;
-                }
-                if (SectorOffset == SectorLength) // all data contents were 0xFFs
-                {
-                    DebugPrintf( "Whole sector contents is 0xFFs, skipping programming.");
-                    fflush(stdout);
-                    break;
-                }
-                SectorOffset = 0; // re-set otherwise
-            }
-
-            if (SectorOffset > 0)
-            {
-                // Add a visible marker between segments in a sector
-                DebugPrintf( "|");  /* means: partial segment copied */
-                fflush(stdout);
-            }
-
-            // If the Flash ROM sector size is bigger than the number of bytes
-            // we can copy from RAM to Flash, we must "chop up" the sector and
-            // copy these individually.
-            // This is especially needed in the case where a Flash sector is
-            // bigger than the amount of SRAM.
-            SectorChunk = SectorLength - SectorOffset;
-            if (SectorChunk > (unsigned)LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize)
-            {
-                SectorChunk = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
-            }
-
-            // Write multiple of 45 * 4 Byte blocks to RAM, but copy maximum of on sector to Flash
-            // In worst case we transfer up to 180 byte too much to RAM
-            // but then we can always use full 45 byte blocks and length is multiple of 4
-            CopyLength = SectorChunk;
-
-            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
-            {
-                if ((CopyLength % (45 * 4)) != 0)
-                {
-                    CopyLength += ((45 * 4) - (CopyLength % (45 * 4)));
-                }
-            }
-
-            sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
-
-            if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
-            {
-                DebugPrintf( "Wrong answer on Write-Command\n");
-                return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
-            }
-
-            DebugPrintf( ".");
-            fflush(stdout);
-
-            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
-            {
-                block_CRC = 0;
-                Line = 0;
-
+ /*
                 // Transfer blocks of 45 * 4 bytes to RAM
                 for (Pos = SectorStart + SectorOffset; (Pos < SectorStart + SectorOffset + CopyLength) && (Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
                 {
                     for (Block = 0; Block < 4; Block++)  // Each block 45 bytes
                     {
-                        DebugPrintf( ".");
-                        fflush(stdout);
+                     //   DebugPrintf( ".");
+                        //fflush(stdout);
 
 #if defined INTEGRATED_IN_WIN_APP
                         // inform the calling application about having written another chuck of data
@@ -1280,20 +742,34 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
 
 #if !defined COMPILE_FOR_LPC21
+
+						//DebugPrintf("\r\n");
                         sendbuf[Line][tmpStringPos++] = '\r';
                         sendbuf[Line][tmpStringPos++] = '\n';
                         sendbuf[Line][tmpStringPos++] = 0;
+						
+						char *SendSt = sendbuf[Line];
+						int length = strlen(sendbuf[Line]);
 
-                        BT_Send(sendbuf[Line]);
+                        result = BT_Send(sendbuf[Line]);
                         // receive only for debug proposes
-                        ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 1, 5000);
-                        FormatCommand(sendbuf[Line], tmpString);
-                        FormatCommand(Answer, Answer);
-                        if (strncmp(Answer, tmpString, strlen(tmpString)) != 0)
+						result = BT_Receive(Answer, sizeof(Answer), 2000);						
+						int ret = strncmp(SendSt, Answer, length);
+                        if(ret != 0)
                         {
-                            DebugPrintf( "Error on writing data (1)\n");
-                            return (ERROR_WRITE_DATA);
-                        }
+						   //send again
+						   BT_Send(sendbuf[Line]);
+                           //receive only for debug proposes
+						   result = BT_Receive(Answer, sizeof(Answer), 2000);
+						   ret = strncmp(SendSt, Answer, length);
+						   if(ret != 0)
+                           {
+                             DebugPrintf("Error on writing data\r\n");
+                             return (ERROR_WRITE_DATA);
+                           }
+						}
+						//show progress
+						pCPage6->Progress_Step();
 #else
                         tmpString[tmpStringPos++] = '\r';
                         tmpString[tmpStringPos++] = '\n';
@@ -1312,41 +788,47 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
                         Line++;
 
-                        DebugPrintf("Line = %d\n", Line);
+                        DebugPrintf("Write Line = %d\r\n", Line);
 
                         if (Line == 20)
                         {
 #if !defined COMPILE_FOR_LPC21
                             for (repeat = 0; repeat < 3; repeat++)
                             {
-
                                 // DebugPrintf( "block_CRC = %ld\n", block_CRC);
-
                                 sprintf(tmpString, "%ld\r\n", block_CRC);
 
-                                BT_Send(tmpString);
-
-                                ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2, 5000);
-
-                                sprintf(tmpString, "%ld\nOK\n", block_CRC);
-
-                                FormatCommand(tmpString, tmpString);
-                                FormatCommand(Answer, Answer);
-                                if (strcmp(Answer, tmpString) != 0)
-                                {
-                                    for (i = 0; i < Line; i++)
-                                    {
-                                        BT_Send(sendbuf[i]);
-                                        ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 1, 5000);
-                                    }
-                                }
-                                else
-                                    break;
+								BT_Send(tmpString);
+								result = BT_Receive(Answer, sizeof(Answer), 1000);
+								if(result==1)
+								{
+								 	std::string boot_answ(Answer); 
+	                                result = boot_answ.find("OK");
+	                                if(result<0)
+									{
+								      /*
+									 for (i = 0; i < Line; i++)
+                            {
+                                BT_Send(sendbuf[i]);
+                                BT_Receive(Answer, sizeof(Answer), 100);
+                            }	*/
+							/*			
+								     DebugPrintf( "Error on writing block CRC\r\n");
+									 return (ERROR_WRITE_CRC);
+								    }
+								}
+								else
+								{
+								     DebugPrintf( "Error on writing block CRC\r\n");
+									 return (ERROR_WRITE_CRC);								
+								}
+                                    
+							  break;
                             }
 
                             if (repeat >= 3)
                             {
-                                DebugPrintf( "Error on writing block_CRC (1)\n");
+                                DebugPrintf( "Error on writing block CRC\r\n");
                                 return (ERROR_WRITE_CRC);
                             }
 #else
@@ -1369,21 +851,649 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                             block_CRC = 0;
                         }
                     }
+                }*/
+
+
+int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line, int , int, int );
+
+  // Puffer for data to resend after "RESEND\r\n" Target responce
+  char sendbuf0[128];
+  char sendbuf1[128];
+  char sendbuf2[128];
+  char sendbuf3[128];
+  char sendbuf4[128];
+  char sendbuf5[128];
+  char sendbuf6[128];
+  char sendbuf7[128];
+  char sendbuf8[128];
+  char sendbuf9[128];
+  char sendbuf10[128];
+  char sendbuf11[128];
+  char sendbuf12[128];
+  char sendbuf13[128];
+  char sendbuf14[128];
+  char sendbuf15[128];
+  char sendbuf16[128];
+  char sendbuf17[128];
+  char sendbuf18[128];
+  char sendbuf19[128];
+
+  char * sendbuf[20] = { sendbuf0,  sendbuf1,  sendbuf2,  sendbuf3,  sendbuf4,
+                         sendbuf5,  sendbuf6,  sendbuf7,  sendbuf8,  sendbuf9,
+                         sendbuf10, sendbuf11, sendbuf12, sendbuf13, sendbuf14,
+                         sendbuf15, sendbuf16, sendbuf17, sendbuf18, sendbuf19};
+
+  char uuencode_table[64];
+  int Line;
+  unsigned long tmpStringPos;
+  unsigned long block_CRC;
+  int k=0;
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
+{
+  unsigned long realsize;
+  char Answer[128];
+  char ExpectedAnswer[128];
+  char temp[128];
+  /*const*/ char *strippedAnswer, *endPtr;
+  int found;
+  unsigned long Sector;
+  unsigned long SectorLength;
+  unsigned long SectorStart, SectorOffset, SectorChunk;
+  char tmpString[128];
+  //char uuencode_table[64];
+  //int Line;
+  //unsigned long tmpStringPos;
+  unsigned long BlockOffset;
+  unsigned long Block;
+  unsigned long Pos;
+  unsigned long Id[2];
+  unsigned long Id1Masked;
+  unsigned long CopyLength;
+  int c, k=0, i;
+  unsigned long ivt_CRC;          // CRC over interrupt vector table
+ // unsigned long block_CRC;
+  time_t tStartUpload=0, tDoneUpload=0;
+  char * cmd_string;
+  int repeat = 0;
+  int result;
+  
+  
+  //очистить буфер экрана 
+  pCPage6->txt_info.Empty();
+  pCPage6->Progress_Ini(IspEnvironment->BinaryLength);
+
+  //===========================================================
+  //Переключить процессор печи в режим программирования
+  DebugPrintf("Jump to Bootloader mode\r\n");
+   
+  result = pBLE->Tx(CMD_NRF_OVEN_PROG_MODE, NULL, 0);
+  if(!result){ return (NO_ANSWER_QM);}
+
+  //===========================================================
+  //ждем перехода в загрузку 
+  Sleep(1400);
+  DebugPrintf("Connect ");
+  found = 0;
+
+  //инициализация auto boud
+  for(int i=0; i<24; i++)
+  {	  
+	 //посылаем ? для работы алгоритма
+     result = BT_Send("?\r\n");
+	 if(!result)
+	 { 
+	   return (NO_ANSWER_QM);
+	 }
+	 
+	 //ждем ответ
+	 result = BT_Receive(Answer, sizeof(Answer), 100);
+	 if(result==1)
+	 {
+	    std::string boot_answ(Answer); 
+		result = boot_answ.find("Synchronized");
+		
+		if(result>=0)
+		{
+		  found = 1;
+		  break;
+		}
+	 }
+	  
+	 DebugPrintf(".");
+  }
+
+  if(found==0)
+  {
+    DebugPrintf(" Error\r\n");
+	  
+	//no answer on '?'\n
+	DebugPrintf("Chip no answer, Reset\r\n");
+	//Reset device!
+	///pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
+	Sleep(1000);
+    return (NO_ANSWER_QM);
+  }
+
+  DebugPrintf( " OK\r\n");
+
+  //===========================================================
+  DebugPrintf("Synchronized: ");
+  //проверка перехода процессора в boot mode по эху
+  //53 79 6E 63 68 72 6F 6E 69 7A 65 64 0D 0A 
+  found=0;
+  result = BT_Send("Synchronized\r\n");
+  if(!result){ return (NO_ANSWER_QM);}
+ 
+  //ждем ответ for Synchronized = OK
+  result = BT_Receive(Answer, sizeof(Answer), 1000);
+  if(result==1)
+  {
+	 std::string boot_answ(Answer); 
+     result = boot_answ.find("Synchronized\r\nOK");
+		
+	 if(result>=0)
+	 {
+		found = 1;
+	 }
+  }	
+
+  if(found==0)
+  {
+    DebugPrintf( "Error, No answer, Reset\r\n");
+    //Reset device!
+	pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
+	Sleep(1000);
+    return (NO_ANSWER_SYNC);
+  }	
+
+  DebugPrintf("OK\r\n");
+
+  //===========================================================
+  DebugPrintf("Set Oscillator Freq: ");  
+  found = 0; 
+  result = BT_Send("014740\r\n");
+  if(!result){ return (NO_ANSWER_QM);}
+  
+  //ждем ответ
+  result = BT_Receive(Answer, sizeof(Answer), 1000);
+  if(result==1)
+  {
+	std::string boot_answ(Answer); 
+	result = boot_answ.find("014740\r\nOK");	
+	if(result>=0)
+	{ 
+	   found = 1;
+	   DebugPrintf("14740 KHz\r\n"); 
+	}
+  }  
+	
+  if(found==0)
+  {
+    DebugPrintf( "Error, No answer\r\n");
+	//Reset device!
+	pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
+    return (NO_ANSWER_OSC);
+  }
+
+  //===========================================================
+  DebugPrintf("Chip Unlock: ");
+
+  BT_Send("U 23130\r\n");
+  result = BT_Receive(Answer, sizeof(Answer), 1000);
+  if(!result)
+  {
+    DebugPrintf( "Error\r\n");
+	//Reset device!
+	pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
+    return (UNLOCK_ERROR + GetAndReportErrorNumber(Answer));
+  }
+  DebugPrintf("OK\r\n");
+
+  //===========================================================
+  DebugPrintf( "BootCode version: ");
+  cmd_string = "K\r\n";
+  BT_Send("K\r\n");
+
+  result = BT_Receive(Answer, sizeof(Answer), 1000);
+  if(result != 1)
+  {
+    DebugPrintf( "Error, No answer\r\n");
+	//Reset device!
+	pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
+    return (NO_ANSWER_RBV);
+  }
+
+  FormatCommand(cmd_string, temp);
+  FormatCommand(Answer, Answer);
+  if(strncmp(Answer + strlen(temp), "0\n", 2) == 0)
+  {
+    strippedAnswer = Answer + strlen(temp) + 2;
+        
+	int maj, min, build;
+    if(sscanf(strippedAnswer, "%d %d %d", &build, &min, &maj) == 2) 
+	{
+      maj = min;
+      min = build;
+      build = 0;
+    }
+    DebugPrintf( "%d.%d.%d\r\n", maj, min, build);
+    //DebugPrintf( strippedAnswer);
+  }
+  else
+  {
+    DebugPrintf("Unknown\r\n");
+  }
+   
+  //===========================================================
+  DebugPrintf("Part ID: ");
+  
+  cmd_string = "J\r\n";
+  BT_Send(cmd_string);
+  
+  result = BT_Receive(Answer, sizeof(Answer), 1000);
+  memcpy(Answer, &Answer[6], 6);
+  memset(&Answer[6], 0, 12);
+  FormatCommand(Answer, Answer);
+  std::string id(Answer);
+  endPtr = "\r\n";
+
+  Id[0] = strtoul(id.c_str(), &endPtr, 10);
+  Id[1] = 0UL;
+  
+  i = sizeof(LPCtypes)/sizeof(LPCtypes[0])-1;
+  for (i; i > 0 && LPCtypes[i].id != Id[0]; i--){};
+  IspEnvironment->DetectedDevice = i;
+  
+  if(LPCtypes[IspEnvironment->DetectedDevice].EvalId2 != 0)
+  {
+        /* Read out the second configuration word and run the search again */
+        *endPtr = '\n';
+        endPtr++;
+        if ((endPtr[0] == '\0') || (endPtr[strlen(endPtr)-1] != '\n'))
+        {
+            /* No or incomplete word 2 */
+            ReceiveBT(endPtr, sizeof(Answer)-(endPtr-Answer)-1, &realsize, 1, 100);
+        }
+
+        FormatCommand(endPtr, endPtr);
+        if ((*endPtr == '\0') || (*endPtr == '\n'))
+        {
+            DebugPrintf( "incomplete answer on Read Part Id (second configuration word missing)\r\n");
+            return (NO_ANSWER_RPID);
+        }
+
+        Id[1] = strtoul(endPtr, &endPtr, 10);
+        *endPtr = '\0'; /* delete \r\n */
+
+        Id1Masked = Id[1] & 0xFF;
+
+        /* now search the table again */
+        for (i = sizeof LPCtypes / sizeof LPCtypes[0] - 1; i > 0 && (LPCtypes[i].id != Id[0] || LPCtypes[i].id2 != Id1Masked); i--)
+            /* nothing */;
+        IspEnvironment->DetectedDevice = i;
+    }
+
+    if(IspEnvironment->DetectedDevice == 0)
+	{
+        DebugPrintf( "unknown");
+    }
+    else 
+	{
+        DebugPrintf( "LPC%s, %d kiB FLASH / %d kiB SRAM",
+            LPCtypes[IspEnvironment->DetectedDevice].Product,
+            LPCtypes[IspEnvironment->DetectedDevice].FlashSize,
+            LPCtypes[IspEnvironment->DetectedDevice].RAMSize);
+    }
+    
+	if(LPCtypes[IspEnvironment->DetectedDevice].EvalId2 != 0)
+    {
+        DebugPrintf( " (0x%08lX / 0x%08lX -> %08lX)\r\n", Id[0], Id[1], Id1Masked);
+    }
+    else
+    {
+        DebugPrintf( " (0x%08lX)\r\n", Id[0]);
+    }
+
+    if(!IspEnvironment->DetectOnly)
+    {
+        // Build up uuencode table
+        uuencode_table[0] = 0x60;           // 0x20 is translated to 0x60 !
+
+        for (i = 1; i < 64; i++)
+        {
+            uuencode_table[i] = (char)(0x20 + i);
+        }
+
+        if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+        {
+            // Patch 0x14, otherwise it is not running and jumps to boot mode
+
+            ivt_CRC = 0;
+
+            // Clear the vector at 0x14 so it doesn't affect the checksum:
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x14] = 0;
+            }
+
+            // Calculate a native checksum of the little endian vector table:
+            for (i = 0; i < (4 * 8);) {
+                ivt_CRC += IspEnvironment->BinaryContent[i++];
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
+            }
+
+            /* Negate the result and place in the vector at 0x14 as little endian
+            * again. The resulting vector table should checksum to 0. */
+            ivt_CRC = (unsigned long) (0 - ivt_CRC);
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x14] = (unsigned char)(ivt_CRC >> (8 * i));
+            }
+
+            DebugPrintf("Position 0x14 patched: ivt_CRC = 0x%08lX\r\n", ivt_CRC);
+        }
+        else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
+        {
+            // Patch 0x1C, otherwise it is not running and jumps to boot mode
+
+            ivt_CRC = 0;
+
+            // Clear the vector at 0x1C so it doesn't affect the checksum:
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x1C] = 0;
+            }
+
+            // Calculate a native checksum of the little endian vector table:
+            for (i = 0; i < (4 * 8);) {
+                ivt_CRC += IspEnvironment->BinaryContent[i++];
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 8;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 16;
+                ivt_CRC += IspEnvironment->BinaryContent[i++] << 24;
+            }
+
+            /* Negate the result and place in the vector at 0x1C as little endian
+            * again. The resulting vector table should checksum to 0. */
+            ivt_CRC = (unsigned long) (0 - ivt_CRC);
+            for (i = 0; i < 4; i++)
+            {
+                IspEnvironment->BinaryContent[i + 0x1C] = (unsigned char)(ivt_CRC >> (8 * i));
+            }
+
+            DebugPrintf("Position 0x1C patched: ivt_CRC = 0x%08lX\r\n", ivt_CRC);
+        }
+        else
+        {
+          DebugPrintf( "Internal error: wrong chip variant %d (detected device %d)\r\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant, IspEnvironment->DetectedDevice);
+          return -1;
+        }
+    }
+
+#if 0
+    DebugPrintf( "Unique ID: \r\n");
+
+    cmd_string = "N\r\n";
+
+    SendComPort(IspEnvironment, cmd_string);
+
+    ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 5,5000);
+
+    FormatCommand(cmd_string, temp);
+    FormatCommand(Answer, Answer);
+    if (strncmp(Answer, temp, strlen(temp)) != 0)
+    {
+        DebugPrintf( "no answer on Read Unique ID\n");
+        return (NO_ANSWER_RBV);
+    }
+
+    if (strncmp(Answer + strlen(cmd_string), "0\n", 2) == 0)
+    {
+        strippedAnswer = Answer + strlen(temp) + 2;
+        DebugPrintf( strippedAnswer);
+    }
+    else
+    {
+        DebugPrintf( "unknown\n");
+    }
+#endif // 0
+
+    /* In case of a download to RAM, use full RAM for downloading
+    * set the flash parameters to full RAM also.
+    * This makes sure that all code is downloaded as one big sector
+    */
+
+    if ( (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment))
+       &&(IspEnvironment->BinaryOffset + IspEnvironment->BinaryLength <= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
+    {
+        LPCtypes[IspEnvironment->DetectedDevice].FlashSectors = 1;
+        LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize  = LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024 - (ReturnValueLpcRamBase(IspEnvironment) - ReturnValueLpcRamStart(IspEnvironment));
+        LPCtypes[IspEnvironment->DetectedDevice].SectorTable  = SectorTable_RAM;
+        SectorTable_RAM[0] = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
+    }
+    if(IspEnvironment->DetectOnly)
+        return (0);
+
+    if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
+    {
+      // XON/XOFF must be switched off for LPC8XX
+      // otherwise problem during binary transmission of data to LPC8XX
+      DebugPrintf("Switch off XON/XOFF !!!\r\n");
+      ///ControlXonXoffSerialPort(IspEnvironment, 0);
+    }
+
+    // Start with sector 1 and go upward... Sector 0 containing the interrupt vectors
+    // will be loaded last, since it contains a checksum and device will re-enter
+    // bootloader mode as long as this checksum is invalid.
+    DebugPrintf( "Will start programming at Sector 1 if possible, and conclude with Sector 0 to ensure that checksum is written last.\r\n");
+    if(LPCtypes[IspEnvironment->DetectedDevice].SectorTable[0] >= IspEnvironment->BinaryLength)
+    {
+        Sector = 0;
+        SectorStart = 0;
+    }
+    else
+    {
+        SectorStart = LPCtypes[IspEnvironment->DetectedDevice].SectorTable[0];
+        Sector = 1;
+    }
+
+	//---------------------------------------------
+	//Erase
+	//---------------------------------------------
+    if(IspEnvironment->WipeDevice == 1) 
+	{ 
+	   int ret = EraseChip(IspEnvironment);
+	   if(ret !=0) return ret;
+	}
+    else
+	{ 
+	   int ret = EraseSector(IspEnvironment);
+	   if(ret !=0) return ret;
+    }
+
+	//---------------------------------------------
+	//Write loop
+	//---------------------------------------------
+    while (1)
+    {
+        if (Sector >= LPCtypes[IspEnvironment->DetectedDevice].FlashSectors)
+        {
+            DebugPrintf( "Program too large; running out of Flash sectors.\r\n");
+            return (PROGRAM_TOO_LARGE);
+        }
+
+        DebugPrintf( "Sector %ld: ", Sector);
+
+        if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))  // Skip Erase when running from RAM
+           ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
+        {
+            if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
+                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
+            {
+                // TODO: Quick and dirty hack to address bank 0
+                sprintf(tmpString, "P %ld %ld 0\r\n", Sector, Sector);
+            }
+            else
+            {
+                sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
+            }
+
+            if (!SendAndVerify(tmpString, Answer, sizeof Answer))
+            {
+                DebugPrintf( "Wrong answer on Prepare-Command (1) (Sector %ld)\n", Sector);
+                return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
+            }
+
+            DebugPrintf( ".");
+            //fflush(stdout);
+            if (IspEnvironment->WipeDevice == 0 && (Sector!=0)) //Sector 0 already erased
+            {
+                if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
+                    LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
+                {
+                    // TODO: Quick and dirty hack to address bank 0
+                    sprintf(tmpString, "E %ld %ld 0\r\n", Sector, Sector);
+                }
+                else
+                {
+                    sprintf(tmpString, "E %ld %ld\r\n", Sector, Sector);
                 }
 
+                if(!SendAndVerify(tmpString, Answer, sizeof Answer))
+                {
+                    DebugPrintf( "Wrong answer on Erase-Command (Sector %ld)\n", Sector);
+                    return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
+                }
+
+                DebugPrintf( ".");
+
+            }
+        }
+
+        SectorLength = LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
+        if (SectorLength > IspEnvironment->BinaryLength - SectorStart)
+        {
+            SectorLength = IspEnvironment->BinaryLength - SectorStart;
+        }
+
+        for (SectorOffset = 0; SectorOffset < SectorLength; SectorOffset += SectorChunk)
+        {
+            // Check if we are to write only 0xFFs - it would be just a waste of time..
+            if (SectorOffset == 0) {
+                for (SectorOffset = 0; SectorOffset < SectorLength; ++SectorOffset)
+                {
+                    if (IspEnvironment->BinaryContent[SectorStart + SectorOffset] != 0xFF)
+                        break;
+                }
+                if (SectorOffset == SectorLength) // all data contents were 0xFFs
+                {
+                    DebugPrintf( "Whole sector contents is 0xFFs, skipping programming.");
+                    //fflush(stdout);
+                    break;
+                }
+                SectorOffset = 0; // re-set otherwise
+            }
+
+            if (SectorOffset > 0)
+            {
+                // Add a visible marker between segments in a sector
+                DebugPrintf( "|");  /* means: partial segment copied */
+            }
+
+            // If the Flash ROM sector size is bigger than the number of bytes
+            // we can copy from RAM to Flash, we must "chop up" the sector and
+            // copy these individually.
+            // This is especially needed in the case where a Flash sector is
+            // bigger than the amount of SRAM.
+            SectorChunk = SectorLength - SectorOffset;
+            if (SectorChunk > (unsigned)LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize)
+            {
+                SectorChunk = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
+            }
+
+            // Write multiple of 45 * 4 Byte blocks to RAM, but copy maximum of on sector to Flash
+            // In worst case we transfer up to 180 byte too much to RAM
+            // but then we can always use full 45 byte blocks and length is multiple of 4
+            CopyLength = SectorChunk;
+
+            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
+            {
+                if ((CopyLength % (45 * 4)) != 0)
+                {
+                    CopyLength += ((45 * 4) - (CopyLength % (45 * 4)));
+                }
+            }
+
+            sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
+
+            if(!SendAndVerify(tmpString, Answer, sizeof Answer))
+            {
+                DebugPrintf( "Wrong answer on Write-Command\n");
+                return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
+            }
+
+            DebugPrintf( ".");
+
+            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
+               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
+            {
+                block_CRC = 0;
+                Line = 0;
+
+                // Transfer blocks of 45 * 4 bytes to RAM
+                for (Pos = SectorStart + SectorOffset; 
+					(Pos < SectorStart + SectorOffset + CopyLength) && 
+					(Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
+                {
+					for(;;)
+					{
+					  int ret = SendToRAM(IspEnvironment, Line, Pos, 1, 1);
+					  if(ret!=0)
+					  {
+					     sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
+					     if(!SendAndVerify(tmpString, Answer, sizeof Answer))
+                         {
+                           DebugPrintf( "Wrong answer on Write-Command\n");
+                           return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
+                         }
+					  }
+					  else 
+						 break;
+                     }
+				}
                 if (Line != 0)
                 {
 #if !defined COMPILE_FOR_LPC21
                     for (repeat = 0; repeat < 3; repeat++)
                     {
                         sprintf(tmpString, "%ld\r\n", block_CRC);
+														
+						//clear buffer
+						result = BT_Receive(Answer, sizeof(Answer), 100);
 
                         BT_Send(tmpString);
+						result = BT_Receive(Answer, sizeof(Answer), 100);
 
-                        ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2,5000);
-
-                        sprintf(tmpString, "%ld\nOK\n", block_CRC);
-
+                        sprintf(tmpString, "%ld\nOK\r\n", block_CRC);
                         FormatCommand(tmpString, tmpString);
                         FormatCommand(Answer, Answer);
                         if (strcmp(Answer, tmpString) != 0)
@@ -1391,7 +1501,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                             for (i = 0; i < Line; i++)
                             {
                                 BT_Send(sendbuf[i]);
-                                ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 1,5000);
+                                BT_Receive(Answer, sizeof(Answer), 100);
                             }
                         }
                         else
@@ -1400,7 +1510,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
                     if (repeat >= 3)
                     {
-                        DebugPrintf( "Error on writing block_CRC (3)\n");
+                        DebugPrintf( "Error on writing block_CRC (3)\r\n");
                         return (ERROR_WRITE_CRC2);
                     }
 #else
@@ -1420,39 +1530,6 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 #endif
                 }
             }
-            else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
-            {
-                unsigned char BigAnswer[4096];
-                unsigned long CopyLengthPartialOffset = 0;
-                unsigned long CopyLengthPartialRemainingBytes;
-
-                while(CopyLengthPartialOffset < CopyLength)
-                {
-                    CopyLengthPartialRemainingBytes = CopyLength - CopyLengthPartialOffset;
-                    if(CopyLengthPartialRemainingBytes > 256)
-                    {
-                      // There seems to be an error in LPC812:
-                      // When too much bytes are written at high speed,
-                      // bytes get lost
-                      // Workaround: Use smaller blocks
-                      CopyLengthPartialRemainingBytes = 256;
-                    }
-
-///                    SendComPortBlock(IspEnvironment, &IspEnvironment->BinaryContent[SectorStart + SectorOffset + CopyLengthPartialOffset], CopyLengthPartialRemainingBytes);
-
-///                    if (ReceiveBTBlockComplete(IspEnvironment, &BigAnswer, CopyLengthPartialRemainingBytes, 10000) != 0)
-///                    {
-///                        return (ERROR_WRITE_DATA);
-///                    }
-
-                    if(memcmp(&IspEnvironment->BinaryContent[SectorStart + SectorOffset + CopyLengthPartialOffset], BigAnswer, CopyLengthPartialRemainingBytes))
-                    {
-                        return (ERROR_WRITE_DATA);
-                    }
-
-                    CopyLengthPartialOffset += CopyLengthPartialRemainingBytes;
-                }
-            }
 
             if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))
                ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
@@ -1469,7 +1546,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
                 }
 
-                if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+                if (!SendAndVerify(tmpString, Answer, sizeof Answer))
                 {
                     DebugPrintf( "Wrong answer on Prepare-Command (2) (Sector %ld)\n", Sector);
                     return (WRONG_ANSWER_PREP2 + GetAndReportErrorNumber(Answer));
@@ -1501,9 +1578,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
                 sprintf(tmpString, "C %ld %ld %ld\r\n", IspEnvironment->BinaryOffset + SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
 
-                if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+                if (!SendAndVerify(tmpString, Answer, sizeof Answer))
                 {
-                    DebugPrintf( "Wrong answer on Copy-Command\n");
+                    DebugPrintf( "Wrong answer on Copy-Command\r\n");
                     return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
                 }
 
@@ -1522,17 +1599,14 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                         sprintf(tmpString, "M %ld %ld %ld\r\n", SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
                     }
 
-                    if (!SendAndVerify(IspEnvironment, tmpString, Answer, sizeof Answer))
+                    if (!SendAndVerify(tmpString, Answer, sizeof Answer))
                     {
-                        DebugPrintf( "Wrong answer on Compare-Command\n");
+                        DebugPrintf( "Wrong answer on Compare-Command\r\n");
                         return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
                     }
                 }
             }
         }
-
-        DebugPrintf( "\n");
-        fflush(stdout);
 
         if ((SectorStart + SectorLength) >= IspEnvironment->BinaryLength && Sector!=0)
         {
@@ -1549,16 +1623,16 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     }
 
     tDoneUpload = time(NULL);
-    if (IspEnvironment->Verify)
-        DebugPrintf( "Download Finished and Verified correct... taking %d seconds\n", tDoneUpload - tStartUpload);
+    if(IspEnvironment->Verify)
+        DebugPrintf( "Download Finished\r\nVerified correct... taking %d seconds\r\n", tDoneUpload - tStartUpload);
     else
-        DebugPrintf( "Download Finished... taking %d seconds\n", tDoneUpload - tStartUpload);
+        DebugPrintf( "Download Finished... taking %d seconds\r\n", tDoneUpload - tStartUpload);
 
     // For LPC18xx set boot bank to 0
     if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
         LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
     {
-        if (!SendAndVerify(IspEnvironment, "S 0\r\n", Answer, sizeof Answer))
+        if(!SendAndVerify("S 0\r\n", Answer, sizeof Answer))
         {
             DebugPrintf( "Wrong answer on SetActiveBootFlashBank-Command\n");
             return (WRONG_ANSWER_BTBNK + GetAndReportErrorNumber(Answer));
@@ -1568,7 +1642,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
     if(IspEnvironment->DoNotStart == 0)
     {
         DebugPrintf( "Now launching the brand new code\n");
-        fflush(stdout);
+        //fflush(stdout);
 
         if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
         {
@@ -1596,7 +1670,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))
            ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
         { // Skip response on G command - show response on Terminal instead
-            ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2, 5000);
+            ReceiveBT(Answer, sizeof(Answer)-1, &realsize, 2, 5000);
             /* the reply string is frequently terminated with a -1 (EOF) because the
             * connection gets broken; zero-terminate the string ourselves
             */
@@ -1635,12 +1709,123 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                 return (FAILED_RUN + GetAndReportErrorNumber(Answer));
             }
         }
-
-        fflush(stdout);
     }
     return (0);
 }
-//#endif // LPC_SUPPORT
+
+//-----------------------------------------------------------------------------
+// Transfer blocks of 45 * 4 bytes to RAM
+//-----------------------------------------------------------------------------
+int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line2, int Pos, int, int )
+{
+  int c, repeat, Block, BlockOffset, result, k=0;
+  int temp_crc;
+  char Answer[128]; 
+  char tmpString[128];
+  
+  // Each block 45 bytes
+  for(Block = 0; Block < 4; Block++)  
+  {
+
+  //Uuencode one 45 byte block
+  tmpStringPos = 0;
+
+  sendbuf[Line][tmpStringPos++] = (char)(' ' + 45);    // Encode Length of block
+
+  for(BlockOffset = 0; BlockOffset < 45; BlockOffset++)
+  {
+    if((IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))	||
+       (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+
+	   (LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
+    { 
+	  //Flash: use full memory
+      c = IspEnvironment->BinaryContent[Pos + Block * 45 + BlockOffset];
+    }
+    else
+    { 
+      //RAM: Skip first 0x200 bytes, these are used by the download program in LPC21xx
+      c = IspEnvironment->BinaryContent[Pos + Block * 45 + BlockOffset + 0x200];
+    }
+	
+	block_CRC += c;
+    k = (k << 8) + (c & 255);
+	
+	// Collecting always 3 Bytes, then do processing in 4 Bytes
+    if((BlockOffset % 3) == 2)   
+    {
+      sendbuf[Line][tmpStringPos++] = uuencode_table[(k >> 18) & 63];
+      sendbuf[Line][tmpStringPos++] = uuencode_table[(k >> 12) & 63];
+      sendbuf[Line][tmpStringPos++] = uuencode_table[(k >>  6) & 63];
+      sendbuf[Line][tmpStringPos++] = uuencode_table[ k        & 63];
+    }
+  }
+
+  //DebugPrintf("\r\n");
+  sendbuf[Line][tmpStringPos++] = '\r';
+  sendbuf[Line][tmpStringPos++] = '\n';
+  sendbuf[Line][tmpStringPos++] = 0;
+						
+  char *SendSt = sendbuf[Line];
+  int length = strlen(sendbuf[Line]);
+
+  result = BT_Send(sendbuf[Line]);
+  // receive only for debug proposes
+  result = BT_Receive(Answer, sizeof(Answer), 2000);						
+  int ret = strncmp(SendSt, Answer, length);
+  if(ret != 0)
+  {
+	Line = 0;
+	block_CRC = 0;
+    DebugPrintf("Error on send data\r\n");
+    return (ERROR_WRITE_DATA);
+  }
+  //show progress
+  pCPage6->Progress_Step();
+  
+  Line++;
+  DebugPrintf("Write: %d\r\n", Line);
+
+  if(Line == 20)
+  {
+    for(repeat = 0; repeat < 3; repeat++)
+    {
+       // DebugPrintf( "block_CRC = %ld\n", block_CRC);
+       sprintf(tmpString, "%ld\r\n", block_CRC);
+
+	   BT_Send(tmpString);
+	   result = BT_Receive(Answer, sizeof(Answer), 1000);
+	   if(result==1)
+	   {
+		 std::string boot_answ(Answer); 
+	     result = boot_answ.find("OK");
+	     if(result<0)
+		 {	
+		 	Line = 0;
+			block_CRC = 0;
+			DebugPrintf( "Error on send block CRC\r\n");
+			return (ERROR_WRITE_CRC);
+		 }
+	   }
+
+	  break;
+    }
+                     
+	if(repeat >= 3)
+    {
+	   Line = 0;
+	   block_CRC = 0;
+       DebugPrintf( "Error on writing block CRC\r\n");
+       return (ERROR_WRITE_CRC);
+    }
+
+    Line = 0;
+    block_CRC = 0;
+   }
+  }
+
+ return 0;
+}
+
 
 //------------------------------------------------------------------------------
 //Function:
@@ -1677,6 +1862,7 @@ unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment)
   }
   DebugPrintf( "Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
   //exit(1);
+  return 1;
 }
 
 //------------------------------------------------------------------------------
@@ -1714,71 +1900,7 @@ unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
   }
   DebugPrintf( "Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
   //exit(1);
-}
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
- /**  Sends a block of bytes out the opened com port.
-\param [in] s block to send.
-\param [in] n size of the block.
-*/
-void SendComPortBlock(ISP_ENVIRONMENT *IspEnvironment, const void *s, size_t n)
-{
- /*
-
-    unsigned long realsize;
-    size_t m;
-    unsigned long rxsize;
-    char * pch;
-    char * rxpch;
-
-
-    DumpString(4, s, n, "Sending ");
-
-#if defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
-
-    if (IspEnvironment->HalfDuplex == 0)
-    {
-        WriteFile(IspEnvironment->hCom, s, n, &realsize, NULL);
-    }
-    else
-    {
-        pch = (char *)s;
-        rxpch = RxTmpBuf;
-        pRxTmpBuf = RxTmpBuf;
-
-        // avoid buffer otherflow
-        if (n > sizeof (RxTmpBuf))
-            n = sizeof (RxTmpBuf);
-
-        for (m = 0; m < n; m++)
-        {
-            WriteFile(IspEnvironment->hCom, pch, 1, &realsize, NULL);
-
-            if ((*pch != '?') || (n != 1))
-            {
-                do
-                {
-                    ReadFile(IspEnvironment->hCom, rxpch, 1, &rxsize, NULL);
-                }while (rxsize == 0);
-            }
-            pch++;
-            rxpch++;
-        }
-        *rxpch = 0;        // terminate echo string
-    }
-#endif // defined COMPILE_FOR_WINDOWS || defined COMPILE_FOR_CYGWIN
-
-#if defined COMPILE_FOR_LINUX || defined COMPILE_FOR_LPC21
-
-    write(IspEnvironment->fdCom, s, n);
-
-#endif // defined COMPILE_FOR_LINUX || defined COMPILE_FOR_LPC21
-
-    if (IspEnvironment->WriteDelay == 1)
-    {
-        Sleep(100); // 100 ms delay after each block (makes lpc21isp to work with bad UARTs)
-    }  */
+  return 1;
 }
 
 //------------------------------------------------------------------------------
@@ -1807,21 +1929,13 @@ returning.
 \param [in] timeOutMilliseconds the maximum amount of time to wait before
 reading with an incomplete buffer.
 */
-void ReceiveBT(ISP_ENVIRONMENT *IspEnvironment,
-                                    const char *Ans, unsigned long MaxSize,
-                                    unsigned long *RealSize, unsigned long WantedNr0x0A,
-                                    unsigned timeOutMilliseconds)
+void ReceiveBT(const char *Ans, unsigned long MaxSize,
+               unsigned long *RealSize, unsigned long WantedNr0x0A,
+               unsigned timeOutMilliseconds)
 {
-    unsigned long tmp_realsize;
-    unsigned long nr_of_0x0A = 0;
-    unsigned long nr_of_0x0D = 0;
-    int eof = 0;
-    unsigned long p;
     unsigned char *Answer;
     unsigned char *endPtr;
-    char tmp_string[32];
     static char residual_data[128] = {'\0'};
-    int lf = 0;
 	int length;
 
     Answer  = (unsigned char*) Ans;
@@ -1829,152 +1943,12 @@ void ReceiveBT(ISP_ENVIRONMENT *IspEnvironment,
     *RealSize = 0;
     endPtr = NULL;
 
-	/*
-    do
-    {
-        if (residual_data[0] == '\0')
-        {
-            /* Receive new data 
-            ReceiveComPortBlock(IspEnvironment, Answer + (*RealSize), MaxSize - (*RealSize), &tmp_realsize);
-        }
-        else
-        {
-            /* Take over any old residual data 
-            strcpy((char *)Answer, residual_data);
-            tmp_realsize = strlen((char *)Answer);
-            residual_data[0] = '\0';
-        }
-
-        if (tmp_realsize != 0)
-        {
-            for (p = (*RealSize); p < (*RealSize) + tmp_realsize; p++)
-            {
-                /* Torsten Lang 2013-05-06 Scan for 0x0d,0x0a,0x0a and 0x0d,0x0a as linefeed pattern
-                if (Answer[p] == 0x0a)
-                {
-                    if (lf != 0)
-                    {
-                        nr_of_0x0A++;
-                        lf = 0;
-                        if (nr_of_0x0A >= WantedNr0x0A)
-                        {
-                            endPtr = &Answer[p+1];
-                        }
-                    }
-                }
-                else if (Answer[p] == 0x0d)
-                {
-                    nr_of_0x0D++;
-                    lf = 1;
-                }
-                else if (((signed char) Answer[p]) < 0)
-                {
-                    eof = 1;
-                    lf  = 0;
-                }
-                else if (lf != 0)
-                {
-                    nr_of_0x0D++;
-                    nr_of_0x0A++;
-                    lf = 0;
-                    if (nr_of_0x0A >= WantedNr0x0A)
-                    {
-                        endPtr = &Answer[p+1];
-                    }
-                }
-            }
-            (*RealSize) += tmp_realsize;
-        }
-    } while (((*RealSize) < MaxSize) && (SerialTimeoutCheck(IspEnvironment) == 0) && (nr_of_0x0A < WantedNr0x0A) && !eof);
-	 */
 	int result = BT_Receive(residual_data, sizeof(residual_data), timeOutMilliseconds);
-
 	length = strlen(residual_data);
-	
 	memcpy((void*)Ans, residual_data, length);
-
-	/*
-    // Torsten Lang 2013-05-06 Store residual data and cut answer after expected nr. of 0x0a 
-    Answer[*RealSize] = '\0';
-    if (endPtr != NULL)
-    {
-        strcpy(residual_data, (char *)endPtr);
-        *endPtr = '\0';
-        // Torsten Lang 2013-06-28 Update size info
-        
-    }  */
-	
-	*RealSize = length; //endPtr-Answer;
-    
-	//sprintf(tmp_string, "Answer(Length=%ld): ", (*RealSize));
-    //DumpString(3, Answer, (*RealSize), tmp_string);
+	*RealSize = length;
 }
 
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-/***************************** ReceiveComPortBlockComplete **************/
-/**  Receives a fixed block from the open com port. Returns when the
-block is completely filled or the timeout period has passed
-\param [out] block buffer to hold the bytes read from the serial port.
-\param [in] size the size of the buffer pointed to by block.
-\param [in] timeOut the maximum amount of time to wait before guvung up on
-completing the read.
-\return 0 if successful, non-zero otherwise.
-*/
-int ReceiveComPortBlockComplete(ISP_ENVIRONMENT *IspEnvironment,
-                                                    void *block, size_t size, unsigned timeout)
-{
-    unsigned long realsize = 0, read;
-    char *result;
-    char tmp_string[32];
-
-    result = (char*) block;
-
-   /// SerialTimeoutSet(IspEnvironment, timeout);
-   /*
-    do
-    {
-       ReceiveComPortBlock(IspEnvironment, result + realsize, size - realsize, &read);
-
-        realsize += read;
-
-    } while ((realsize < size) && (SerialTimeoutCheck(IspEnvironment) == 0));
-
-    sprintf(tmp_string, "Answer(Length=%ld): ", realsize);
-    DumpString(3, result, realsize, tmp_string);
-   */
-    if (realsize != size)
-    {
-        return 1;
-    }
-    return 0;
-}
-
-
-void ControlXonXoffSerialPort(ISP_ENVIRONMENT *IspEnvironment, unsigned char XonXoff)
-{
-    DCB dcb;
-
-    GetCommState(IspEnvironment->hCom, &dcb);
-
-    if(XonXoff)
-    {
-        dcb.fOutX = TRUE;
-        dcb.fInX  = TRUE;
-    }
-    else
-    {
-        dcb.fOutX = FALSE;
-        dcb.fInX  = FALSE;
-    }
-
-    if (SetCommState(IspEnvironment->hCom, &dcb) == 0)
-    {
-        DebugPrintf( "Can't set XonXoff ! - Error: %ld", GetLastError());
-        exit(3);
-    }
-}
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
@@ -1993,6 +1967,7 @@ void AppException(int exception_level){}
 //------------------------------------------------------------------------------
 void DebugPrintf(const char *fmt, ...)
 {
+  int lines;
   char pTemp[2000];
   memset(pTemp, 0, sizeof(pTemp));
   va_list ap;
@@ -2004,15 +1979,14 @@ void DebugPrintf(const char *fmt, ...)
 
   std::string msg(pTemp);
   
-  pPG6->txt_info += msg.c_str();
+  pCPage6->txt_info += msg.c_str();
   
-  pPG6->m_edit_info.SetWindowTextA(pPG6->txt_info);
-  pPG6->m_edit_info.UpdateWindow();
-
+  pCPage6->m_edit_info.SetWindowTextA(pCPage6->txt_info);
+  lines = pCPage6->m_edit_info.GetLineCount();
+  pCPage6->m_edit_info.LineScroll(lines);
+  //pCPage6->m_edit_info.UpdateWindow();
   ///TRACE(pTemp);
 }
-
-
 
 //------------------------------------------------------------------------------
 //Function:	string to send
@@ -2020,53 +1994,12 @@ void DebugPrintf(const char *fmt, ...)
 int BT_Send(const char *pString)
 {
   int length = strlen(pString);
-  pPG6->ev_BootDataRx.ResetEvent();
-/*
-  unsigned long realsize;
-  size_t m;
-  unsigned long rxsize;
-  char * pch;
-  char * rxpch;
-*/
-  ///DumpString(4, s, n, "Sending ");
+  pCPage6->ev_BootDataRx.ResetEvent();
   
-  /*
-  if (IspEnvironment->HalfDuplex == 0)
-  {
-        WriteFile(IspEnvironment->hCom, s, n, &realsize, NULL);
-  }
-    else
-    {
-        pch = (char *)s;
-        rxpch = RxTmpBuf;
-        pRxTmpBuf = RxTmpBuf;
-
-        // avoid buffer otherflow
-        if (n > sizeof (RxTmpBuf))
-            n = sizeof (RxTmpBuf);
-
-        for (m = 0; m < n; m++)
-        {
-            WriteFile(IspEnvironment->hCom, pch, 1, &realsize, NULL);
-
-            if ((*pch != '?') || (n != 1))
-            {
-                do
-                {
-                    ReadFile(IspEnvironment->hCom, rxpch, 1, &rxsize, NULL);
-                }while (rxsize == 0);
-            }
-            pch++;
-            rxpch++;
-        }
-        *rxpch = 0;        // terminate echo string
-  
-  } */
-
   int result = pBLE->Tx(CMD_NRF_OVEN_PROG_DATA, (char*)pString, length);
 
   //100 ms delay after each block (makes lpc21isp to work with bad UARTs)
-  //Sleep(100); 
+  //Sleep(20); 
 
   return result;
 }
@@ -2076,22 +2009,19 @@ int BT_Send(const char *pString)
 //------------------------------------------------------------------------------
 int BT_Receive(void *pBuf, int size, unsigned timeout)
 {  
-  //pPG6->ev_BootDataRx.ResetEvent();
-  //memset(pBuf, 0, sizeof(size));
+  memset(pBuf, 0, size);
   
-  DWORD ret;
-  ret = WaitForSingleObject(pPG6->ev_BootDataRx.m_hObject, timeout);
-  
-  int copy_length;
+  DWORD ret = WaitForSingleObject(pCPage6->ev_BootDataRx.m_hObject, timeout);
   //TRACE1("%d\n", ret);
 
+  int copy_length;
   if(ret==0)
   {
-	int length = pPG6->boot_txt.length();
+	int length = pCPage6->bootloader_msg.length();
 	if(length<=size) copy_length = length;
 	else { copy_length = size;}
 
-	memcpy(pBuf, pPG6->boot_txt.c_str(), copy_length);
+	memcpy(pBuf, pCPage6->bootloader_msg.c_str(), copy_length);
 	return 1;
   }
 
@@ -2101,3 +2031,1432 @@ int BT_Receive(void *pBuf, int size, unsigned timeout)
 
   return -1;
 }
+
+/*
+Jump to Bootloader mode
+Connect ..................... OK
+Synchronized OK
+Set Oscillator Freq: 14740 KHz
+Chip Unlock: OK
+BootCode version: 2.13.0
+Part ID: LPC2134, 128 kiB FLASH / 16 kiB SRAM (0x0002FF12)
+Position 0x14 patched: ivt_CRC = 0xB8A06F60
+Will start programming at Sector 1 if possible, and conclude with Sector 0 to ensure that checksum is written last.
+Erase Device
+OK 
+Sector 1: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 2: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 3: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 4: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 5: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 6: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 7: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 8: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+|.Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Sector 0: ..Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Write Line = 13
+Write Line = 14
+Write Line = 15
+Write Line = 16
+Write Line = 17
+Write Line = 18
+Write Line = 19
+Write Line = 20
+Write Line = 1
+Write Line = 2
+Write Line = 3
+Write Line = 4
+Write Line = 5
+Write Line = 6
+Write Line = 7
+Write Line = 8
+Write Line = 9
+Write Line = 10
+Write Line = 11
+Write Line = 12
+Download Finished and Verified correct... taking 1680979500 seconds
+Now launching the brand new code
+Failed to run the new downloaded code: 
+*/

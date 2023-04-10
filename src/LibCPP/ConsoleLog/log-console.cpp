@@ -60,9 +60,9 @@ CLOGW::CLOGW()
   pf = NULL;
   
   //размер буфера экрана
-  wnd_width = 100;
-  buf_width = 100;
-  wnd_height = 100;
+  wnd_width = 400;
+  buf_width = 400;
+  wnd_height = 400;
   buf_height = 1000;
   pCLOGW = this;
 }

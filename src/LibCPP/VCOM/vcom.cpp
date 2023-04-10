@@ -450,7 +450,7 @@ int CVCOM::WrFile(char *pBuffer, int length)
   return -1;
 */	
 
-  // создание событие для асинхронной записи
+  //создание событие для асинхронной записи
   memset(&OVR_TX, 0, sizeof(OVR_TX));
   //ResetEvent(OVR_TX.hEvent);
   OVR_TX.hEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
@@ -478,7 +478,7 @@ int CVCOM::WrFile(char *pBuffer, int length)
 	result = GetOverlappedResult(hCOM, &OVR_TX, &TxBytes, FALSE);
   }
 
-  // Закрытие дескриптора сигнального объекта
+  //Закрытие дескриптора сигнального объекта
   CloseHandle(OVR_TX.hEvent);
   		  
   if(result!=TRUE) return -1; 

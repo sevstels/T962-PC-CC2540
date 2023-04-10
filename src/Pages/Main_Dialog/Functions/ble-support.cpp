@@ -202,7 +202,7 @@ void CMainDlg::BLE_Event(int event_id, char *pBuf, int length)
   	//Device was connected	
 	pCMainDlg->LED_Control(1);
 	pCMainDlg->APP.bt_connected = 1;
-    pCMainDlg->GetDeviceSetup();
+
 	//save last address
 	CString str = pCMainDlg->BLE.dev_bd_addr_str.c_str();
 	pCMainDlg->REG.SetTxtVar("last_bt_addr", str);

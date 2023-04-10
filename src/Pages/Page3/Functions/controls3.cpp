@@ -108,7 +108,7 @@ void CPage3::Controls_Enable(int on_off)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage3::Controls_Update(char val_number)
+void CPage3::Controls_Update(void)
 {
   CString txt; 
  			

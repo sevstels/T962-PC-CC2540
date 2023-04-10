@@ -2,7 +2,7 @@
 //File name:   "Page6.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #include <afxwin.h>
 #include <afxcmn.h>
@@ -12,7 +12,6 @@
 #include "log-console.h"
 #include "AppWinReg.h"
 #include "tooltip.h"
- 
 #include "app-setup.h"
 #include "datatx.h"
 
@@ -44,10 +43,26 @@ class CPage6 : public CPropertyPage
   ApplSettings *pAPP;
   CApplSetup *pCSETUP;
   CDataTX *pBT;
+  CToolTip ToolTip;
   CEdit m_edit_info;
   CString txt_info;
   CProgressCtrl m_progress;
   
+  //---- 
+  CButton m_but_eep_show;
+  CButton m_but_eep_erase;
+  CButton m_but_eep_test;
+  CButton m_but_fw_update;
+  CButton m_but_bt_info;
+  CButton m_but_fw_info;
+  CButton m_but_help;
+  CButton m_but_profiles;
+  CButton m_but_profile;
+  CButton m_but_ers_profile;
+  CButton m_but_sensors;
+  CButton m_but_settings;
+  CButton m_but_resetsetup;
+
   //----
   CWinThread *pThread;
   CEvent ev_Quit;	
@@ -60,14 +75,20 @@ class CPage6 : public CPropertyPage
   //----
   void Controls_Ini(void);
   void Controls_Enable(BOOL on_off);
-  void Controls_Update(int number);
+  void Controls_Update(void);
   void PrintInfo(std::string *pTxt);
+  void Progress_Ini(unsigned long bytes);
+  void Progress_Step(void);
+  void Progress_Error(void);
   void Clear(void);
   
   //bootloader
   CEvent ev_BootDataRx;
   void ParseBootMsg(char *pBuf, int length);
-  std::string boot_txt;
+  std::string bootloader_msg;
+  int program_run;
+  int dfu_length;
+  char *pDfuBuf;
 
   //---- Overrides
   protected:

@@ -122,7 +122,7 @@ void CPage4::ControlsGrop(int on_off)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage4::Controls_Update(int number)
+void CPage4::Controls_Update(void)
 { 
  /*
  int value = pDevice->Mode.PCR_InProgress;	

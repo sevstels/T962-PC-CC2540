@@ -163,22 +163,6 @@
 
 
 //---- AMS
-#define CMD_AMS_SET_GAIN          0xCA
-#define CMD_AMS_SET_ATIME         0xCB
-#define CMD_AMS_SET_ASTEP         0xCC
-#define CMD_AMS_SET_CALIBR        0xCD
-#define CMD_AMS_SET_LED_CURR      0xCE
-#define CMD_AMS_SET_SMUX          0xCF
-
-#define CMD_LED_SET_MODE          0xD0
-#define CMD_LED_SET_MODULATION    0xD1
-#define CMD_LED_MODULATION_ENABLE 0xD2
-#define CMD_LED_ENABLE            0xD3
-#define CMD_LED_MEASURE_GROUP     0xD4
-#define CMD_LED_TEST              0xD5
-#define CMD_LED_LIANERIZATION     0xD6
-
-
 #define CMD_MSR_SET_MODE          0xD7
 #define CMD_MSR_MEASUREMENT       0xD8 
 #define CMD_SET_MONITORING_PERIOD 0xD9
