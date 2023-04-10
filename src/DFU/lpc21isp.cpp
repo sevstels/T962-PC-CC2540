@@ -962,7 +962,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 		  break;
 		}
 	 }
-	  
+
 	 DebugPrintf(".");
   }
 
