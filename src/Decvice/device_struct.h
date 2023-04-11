@@ -319,7 +319,8 @@ typedef struct Setup_struct2
     
   //System setup
   unsigned short firmware_version;   
-  unsigned long  firmware_build_data;  
+  unsigned long  firmware_build_data;
+  unsigned char  bootloader;
   unsigned char  CRC;
 
 }Device_Setup2;

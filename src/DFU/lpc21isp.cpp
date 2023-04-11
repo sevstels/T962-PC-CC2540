@@ -928,10 +928,37 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
   //===========================================================
   //Переключить процессор печи в режим программирования
-  DebugPrintf("Jump to Bootloader mode\r\n");
-   
-  result = pBLE->Tx(CMD_NRF_OVEN_PROG_MODE, NULL, 0);
+  //===========================================================
+  //Смотрим в сетапе у печки возможность перехода прямо в бут
+/*  if(pCPage6->pDevice->Bootloader>0)
+  {
+  
+  }*/
+  
+  
+  result = pBLE->Tx(CMD_CHECK_BOOTLOADER, NULL, 0);
   if(!result){ return (NO_ANSWER_QM);}
+
+  result = BT_Receive(Answer, sizeof(Answer), 1000);
+  if(result==1)
+  {
+	 std::string boot_answ(Answer); 
+	 result = boot_answ.find("BootOK");
+	 if(result>=0)
+	 {
+		DebugPrintf("Jump to Bootloader mode\r\n");
+	 }
+  }
+  else 
+  {
+     result = pBLE->Tx(CMD_NRF_OVEN_JUMP_TO_BOOTLOADER, NULL, 0);
+     if(!result){ return (NO_ANSWER_QM);} 
+	// DebugPrintf("Jump to Bootloader mode by Reset\r\n");
+  }		 
+
+  result = pBLE->Tx(CMD_NRF_OVEN_JUMP_TO_BOOTLOADER, NULL, 0);
+  if(!result){ return (NO_ANSWER_QM);} 
+
 
   //===========================================================
   //ждем перехода в загрузку 
@@ -1464,6 +1491,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 					(Pos < SectorStart + SectorOffset + CopyLength) && 
 					(Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
                 {
+
 					for(;;)
 					{
 					  int ret = SendToRAM(IspEnvironment, Line, Pos, 1, 1);

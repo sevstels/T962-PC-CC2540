@@ -2,7 +2,7 @@
 //File name:    "Page1.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2021, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page1.h"
@@ -47,7 +47,23 @@ CPage1::~CPage1()
 {
 
 }
+/*
+Калибровка сенсоров нагревателей
 
+Мы будем использовать максимальную шкалу измерения 400 градусов.
+Калибровку можно делать по двум точкам 0 и 100 градусов. 
+Установите значения калибровок Offset и DGain равными 0;
+
+Термопары погружаются в кипящую воду. Подстроечным резистором 
+регулировки усиления на плате контроллера, установите выход 
+сенсоров равным 100 градусов.
+
+Теперь замкните термопару коротким проводом или пинцетом.
+Значение на индикаторе должно быть равно величине от дачика температуры CJ.
+Если оно не совпадает - введите корректирующую константу в окно Offset.
+
+Разомкните термопару и повторите процесс калибровки несколько раз.
+Параметр DGain нужен для точной подстройки усиления без разборки печки.	*/
 //------------------------------------------------------------------------------
 //CPage1 property page
 //------------------------------------------------------------------------------
@@ -83,30 +99,19 @@ BOOL CPage1::OnInitDialog()
   // TODO:  Add extra initialization here
   Controls_Ini();
   Controls_Enable(FALSE);
-   /*
+
   //tooltips
   struct prj_tooltip tooltips[] = 
   {
-	{&m_radio_GainIntensity[0], "Gain = 1"},
-	{&m_radio_GainIntensity[1], "Gain = 10"},
-	{&m_radio_GainIntensity[2], "Gain = 200"},
-	{&m_radio_GainMonitor[0], "Gain = 1"},
-	{&m_radio_GainMonitor[1], "Gain = 10"},
-	{&m_radio_GainMonitor[2], "Gain = 200"},
-	{&m_but_get_adc_ch12, "Read only Channel 1"},
-    {&m_but_get_adc_ch34, "Read only Channel 2"},
-    {&m_but_get_adc_ch5,  "Read only Channel 3"},
-    {&m_but_get_adc_ch6,  "Read only Channel 4"},
-    {&m_but_get_adc_ch7,  "Read only Channel 5"},
-	{&m_but_get_adc_ch8,  "Read only Channel 6"},
-    {&m_but_get_adc_all,  "Read all channels in one sample"},
-   // {&m_but_offset_remove,"ADC Zero level correction"},
-    {&m_radio_Range5v,    "Set Min range for all ADC channels"},     
-    {&m_radio_Range10v,   "Set Max range for all ADC channels"},
-    {&m_check_adc_offset, "Enable add offset correction value for ADC samples"},
+	{&m_offset[0], "Offset factor"},
+	{&m_offset[1], "Offset factor"},
+	{&m_dgain[0], "Gain factor"},
+	{&m_dgain[1], "Gain factor"},
+	{&m_temperature[0], "Left Top Sensor out"},
+	{&m_temperature[1], "Right Top Sensor out"},
   };
-  
-  ToolTip.SetToolTip(FromHandle(this->m_hWnd), tooltips, _countof(tooltips)); */
+
+  ToolTip.SetToolTip(FromHandle(this->m_hWnd), tooltips, _countof(tooltips));
   //return TRUE unless you set the focus to a control
   return TRUE;  
   //EXCEPTION: OCX Property Pages should return FALSE
@@ -131,24 +136,6 @@ void CPage1::Controls_Ini(void)
   txt = "TC Type-K voltage at 400°C = 16.397mV";
   m_txt.SetWindowText(txt);
 }
-
-/*
-Калибровка сенсоров нагревателей
-
-Мы будем использовать максимальную шкалу измерения 400 градусов.
-Калибровку можно делать по двум точкам 0 и 100 градусов. 
-Установите значения калибровок Offset и DGain равными 0;
-
-Термопары погружаются в кипящую воду. Подстроечным резистором 
-регулировки усиления на плате контроллера, установите выход 
-сенсоров равным 100 градусов.
-
-Теперь замкните термопару коротким проводом или пинцетом.
-Значение на индикаторе должно быть равно величине от дачика температуры CJ.
-Если оно не совпадает - введите корректирующую константу в окно Offset.
-
-Разомкните термопару и повторите процесс калибровки несколько раз.
-Параметр DGain нужен для точной подстройки усиления без разборки печки.	*/
 
 //------------------------------------------------------------------------------
 //Function:
@@ -250,7 +237,7 @@ BOOL CPage1::PreTranslateMessage(MSG* pMsg)
 
   }
 
-  ///ToolTip.PreTranslateMessage(pMsg);
+  ToolTip.PreTranslateMessage(pMsg);
   return CPropertyPage::PreTranslateMessage(pMsg);
 }
 

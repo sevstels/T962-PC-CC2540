@@ -28,11 +28,6 @@
 #define CMD_GET_DEVICE_SETUP		0x0C
 #define CMD_SAVE_DEVICE_SETUP		0x0D
 #define CMD_GET_DEVICE_VERSION		0x0E
-#define CMD_JUMP_TO_BOOTLOADER		0x0F
-
-
-
-#define CMD_DEVICE_BLINK		    0x75
 
 //==============================================================================
 //PID Controller
@@ -139,12 +134,15 @@
 #define CMD_SET_PAUSE             0x6A
 #define CMD_CHECK_PROFILE_CRC	  0x6B
 #define CMD_BOOT_SEND_TXT         0x6C
+#define CMD_CHECK_BOOTLOADER      0x6D
+#define CMD_LED_BLINK		      0x6E
 
 //CMD for Nordic chip
-#define CMD_NRF_OVEN_RESET        0xB0
-#define CMD_NRF_OVEN_PROG_DATA    0xB1
-#define CMD_NRF_OVEN_PROG_MODE    0xB2
-#define CMD_NRF_GET_BT_INFO       0xB3
+#define CMD_NRF_OVEN_RESET              0xB0
+#define CMD_NRF_OVEN_PROG_DATA          0xB1
+#define CMD_NRF_OVEN_PROG_MODE_BY_RESET 0xB2
+#define CMD_NRF_OVEN_JUMP_TO_BOOTLOADER 0xB3
+#define CMD_NRF_GET_BT_INFO             0xB4
 
 
 #define EVT_REFLOW_DONE           0

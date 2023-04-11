@@ -620,6 +620,7 @@ void CMainDlg::OnButtonGetSetup()
 //-----------------------------------------------------------------------------
 void CMainDlg::OnButtonOvenReset()
 {
+  pPage6->Clear();
   //Tx
   BT.Tx(CMD_NRF_OVEN_RESET, NULL, 0);
 }
