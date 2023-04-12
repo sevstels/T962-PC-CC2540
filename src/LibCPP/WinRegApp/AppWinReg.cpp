@@ -131,22 +131,24 @@ int CAppWinReg::SetBinVar(CString var_name, const char *pBuf, long length)
 int CAppWinReg::GetBinVar(CString var_name, const char *pBuf, long length)
 {  
   BOOL res;
-  UINT array_length = (UINT)length;
-  LPBYTE pData = new BYTE[array_length];
-  //----
-  if(pData==NULL) return 0;
+  BYTE *pDataBuf = NULL;
+  UINT array_length;
 
   //read from WinRegistry
   res = pApp->GetProfileBinary((LPCTSTR)section, (LPCTSTR)var_name, 
-	                           (LPBYTE*)&pData, &array_length);
-  
-  if(res==1){memcpy((void*)pBuf, pData, length);}
-  delete [] pData; 
-  pData = NULL; 
-
+	                           (LPBYTE*)&pDataBuf, &array_length);
+  //if array not found
   if(res==FALSE) return 0;
+  
+  //if array error
+  //if(array_length!=length )return 0;
+
+  memcpy((void*)pBuf, pDataBuf, length);
+  delete [] pDataBuf; pDataBuf = NULL; 
+
   return 1;
 }
+
 //------------------------------------------------------------------------------
 //Function: 
 //------------------------------------------------------------------------------

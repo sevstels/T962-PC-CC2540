@@ -2,16 +2,16 @@
 //File name:    "Page2.cpp"
 //Purpose:      Source File, CPage2 property page
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page2.h"
 #include "MainDlg.h"
 #include "float.h"
 #include "cmd.h"
-#include "dlg_pid-test.h"
 #include "datatx.h"
 #include "parse-value.h"
+#include "dlg_pid-test.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -24,11 +24,6 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
- 
-//==============================================================================
-//Thread: Monitoring CAN bus, receive CAN data
-//==============================================================================
-DWORD CAN_BUS_MONITORING3(LPVOID lParam);
 
 IMPLEMENT_DYNCREATE(CPage2, CPropertyPage)
 
@@ -218,14 +213,7 @@ BOOL CPage2::PreTranslateMessage(MSG* pMsg)
 //Click MODE
 //------------------------------------------------------------------------------
 void CPage2::OnModePidEnable()
-{  /*
-  pDevice->PID.chn_enable |= (1<<PID_channel);
-  
-  m_radio_pid_remote_dac.SetCheck(0);
-  
-  ///CAN_SendCommand(pCAN,CAN_device_ID,0,CMD_PID_SET_MODE,
-	              PID_channel, CHN_MODE_PID);
-   */
+{ 
   Controls_Update();
 }
 
@@ -234,11 +222,6 @@ void CPage2::OnModePidEnable()
 //------------------------------------------------------------------------------
 void CPage2::OnModePidDisable()
 {
-  ////pDevice->PID.chn_mode[PID_channel] = 1;
- 
-//  m_radio_pid_enable.SetCheck(0);
-//  m_radio_pid_remote_dac.SetCheck(0);
-  
   Controls_PIDEnable(false);
 }
 
@@ -255,11 +238,7 @@ BOOL CPage2::OnInitDialog()
   //tooltips
   struct prj_tooltip tooltips[] = 
   {  
-//    {&m_check_low_noise_mode, "Not in use..."},
-//    {&m_check_onoff_I, "ON or OFF I-factor"},
-//    {&m_check_onoff_D, "ON or OFF D-factor"},
-    {&m_check_LogFix, "Schedule log delay compensation"},
-//    {&m_radio_pid_remote_dac, "Stop PID, run Remote access to ADC or DAC"},
+    {&m_check_LogFix, "Delay compensation"},
     {&m_PID_Period, "PID loop period"},
     {&m_KP, "Set P-factor"},
     {&m_KI, "Set I-factor"},
@@ -280,7 +259,7 @@ BOOL CPage2::OnInitDialog()
 //------------------------------------------------------------------------------
 //Click button Reset channel setup
 //------------------------------------------------------------------------------
-void CPage2::OnBnSetDefault()
+void CPage2::OnButtonSetDefault()
 {  
   //return pid current setup
 ///  GetDeviceSetup(CAN_device_ID);
@@ -291,15 +270,7 @@ void CPage2::OnBnSetDefault()
 //Click button DAC inversion
 //------------------------------------------------------------------------------
 void CPage2::ShowMode(char number)
-{ /*
-  m_radio_pid_enable.SetCheck(0);
-  m_radio_pid_remote_dac.SetCheck(0);
-
-  switch(number)
-  {
-    case 0: m_radio_pid_enable.SetCheck(1); break;
-    case 2: m_radio_pid_remote_dac.SetCheck(1); break;    
-  }														    */
+{ 			
 }
 
 #define OVSP_TEMPERATURE     0
@@ -369,9 +340,7 @@ void CPage2::OnButtonTestLinerity()
 ///  char direction = (char) m_radio_lin_pos.GetCheck();
 ///  PID_TuneOpenFile();
  
-  //Send cmd
-  ///CAN_SendCommand(pCAN, CAN_device_ID, CAN_CMD_CHANNEL, 
-	///              CMD_TEC_TEST_LINERITY, direction, 0);
+  //Send cmd CMD_TEC_TEST_LINERITY, direction, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -380,9 +349,7 @@ void CPage2::OnButtonTestLinerity()
 void CPage2::OnButtonTestStep()
 {
   PID_TuneOpenFile();
-  //Send cmd
-  ///CAN_SendCommand(pCAN, CAN_device_ID, CAN_CMD_CHANNEL, 
-	///              CMD_TEC_TEST_STEP, 0, 0);
+  //Send cmd CMD_TEC_TEST_STEP, 0, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -393,7 +360,6 @@ void CPage2::OnButtonPidManualRun()
   if(pDevice->PID.mode==false)
   {
     //Send cmd
-    ///CAN_SendCommand(pCAN, CAN_device_ID, CAN_CMD_CHANNEL, 
 	  ///              CMD_PID_MANUAL_ENABLE, 1, 0);
 
 	pDevice->PID.mode = true;
@@ -402,7 +368,6 @@ void CPage2::OnButtonPidManualRun()
   else
   {
     //Send cmd
-    ///CAN_SendCommand(pCAN, CAN_device_ID, CAN_CMD_CHANNEL, 
 	///                CMD_PID_MANUAL_ENABLE, 0, 0);
 
 	///pDevice->PID.mode = false;
@@ -413,10 +378,7 @@ void CPage2::OnButtonPidManualRun()
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CPage2::OnCheckReflowLogFix()
-{
-	// TODO: Add your control notification handler code here
-}
+void CPage2::OnCheckReflowLogFix(){}
    
 void CPage2::OnRadioPidModeManual(){}
   

@@ -2,7 +2,7 @@
 //File name:    "controls3.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page3.h"
@@ -49,18 +49,17 @@ void CPage3::Controls_Ini(void)
   m_progress_temperature.SetRange(0, 400); //from to	
   m_progress_temperature.SetPos(0);
   m_progress_temperature.SetStep(1); //Set the 1 step increment
-  m_progress_temperature.SetBarColor(RGB(10, 127, 10)); //color
+  m_progress_temperature.SetBarColor(RGB(10, 140, 10)); //color
   m_progress_temperature.SetBkColor(RGB(0xff, 0xff, 0xff)); //color
   m_progress_temperature.ShowWindow(TRUE); //Show window 
   
   //----
-  m_progress_power.SetRange(0, 2000); //from to	
-  m_progress_power.SetPos(0);
-  m_progress_power.SetStep(1); //Set the 1 step increment
-  m_progress_power.SetBarColor(RGB(100, 100,100)); //color
-  m_progress_power.SetBkColor(RGB(0xff, 0xff, 0xff)); //color
-  m_progress_power.ShowWindow(TRUE); //Show window
-  
+  m_progress_heater.SetRange(0, 2000); //from to	
+  m_progress_heater.SetPos(0);
+  m_progress_heater.SetStep(1); //Set the 1 step increment
+  m_progress_heater.SetBarColor(RGB(140, 10, 10)); //color
+  m_progress_heater.SetBkColor(RGB(0xff, 0xff, 0xff)); //color
+  m_progress_heater.ShowWindow(TRUE); //Show window
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +80,7 @@ void CPage3::Controls_Enable(int on_off)
 
   //Progress indicator
   m_progress_temperature.EnableWindow(on_off);
-  m_progress_power.EnableWindow(on_off);
+  m_progress_heater.EnableWindow(on_off);
   
   //Static
   //m_static_info.EnableWindow(on_off);
@@ -94,14 +93,17 @@ void CPage3::Controls_Enable(int on_off)
   if(on_off==0)
   {
    	m_progress_temperature.SetPos(0);
-	m_progress_power.SetPos(0);
+	m_progress_heater.SetPos(0);
   
 	//If panel opened
     if(pPanel_temperature!=NULL) 
 	   pPanel_temperature->SetPos(0);   
     //If panel opened
-    if(pPanel_current!=NULL)
-	   pPanel_current->SetPos(0);  
+    if(pPanel_heater!=NULL)
+	   pPanel_heater->SetPos(0);
+    //If panel opened
+    if(pPanel_fan!=NULL)
+	   pPanel_fan->SetPos(0); 
   }
 }
 
@@ -119,73 +121,40 @@ void CPage3::Controls_Update(void)
   //---
   txt.Format("%d", pDevice->heater_total_power);
   m_edit_heater_power.SetWindowTextA(txt);
-
+  
   //---
   txt.Format("%d", pDevice->heater_tempr_limit);
   m_edit_temperature_limit.SetWindowTextA(txt);
+  m_progress_temperature.SetRange(0, pDevice->heater_tempr_limit+2); //from to
 
   //---
   txt.Format("%d", pDevice->heater_power_limit);
   m_edit_power_limit.SetWindowTextA(txt);
+  m_progress_heater.SetRange(0, pDevice->heater_power_limit+2); //from to
   
-  //---
-  m_progress_temperature.SetRange(0, pDevice->heater_tempr_limit+10); //from to
-  m_progress_power.SetRange(0, pDevice->heater_power_limit+10); //from to	
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-int CPage3::CheckTemperatureSensor(int adc_code)
-{ /*
- //shorted 
- if(adc_code<20)
+  if(pPanel_temperature!=NULL)
   {
-	if(hTimer!=0) return -1;
-
-	CString txt;
-	txt = "Error detected!\nTemperature sensor wire shorted!";
-	m_static_warnings.SetWindowTextA(txt);
-	//m_static_warnings.SetBkColor(RGB(10,0,0));
-    m_static_warnings.SetBlinkTextColors(RGB(255,0,0), RGB(160,0,0));
-	m_static_warnings.StartTextBlink(TRUE, CColorStaticST::ST_FLS_FAST); 
-	
-	//warng_timer
-	hTimer = SetTimer(ID_TIMER_WARNINGS, 10000, 0); 
-
-  	return -1;
+  	pPanel_temperature->SetRange(0, pDevice->heater_tempr_limit+2); //from to
   }
 
- //disconnected
- else if(adc_code>1000)
+  if(pPanel_heater!=NULL)
   {
-	if(hTimer!=0) return -1;
-    CString txt;
-	txt = "Error detected!\nTemperature sensor wire came off!";
-	m_static_warnings.SetWindowTextA(txt);
-	m_static_warnings.SetBlinkTextColors(RGB(255,0,0), RGB(160,0,0));
-	m_static_warnings.StartTextBlink(TRUE, CColorStaticST::ST_FLS_FAST);
-
-	//warng_timer
-	hTimer = SetTimer(ID_TIMER_WARNINGS, 10000, 0); 
-	return -1;
+    pPanel_heater->SetRange(0, pDevice->heater_power_limit+2); //from to
   }
- */
- return 1;
 }
 
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
 void CPage3::ShowWarningMsg(CString *pTxt)
-{  /*
+{ 
   m_static_warnings.SetWindowTextA(*pTxt);
   //m_static_warnings.SetBkColor(RGB(10,0,0));
   m_static_warnings.SetBlinkTextColors(RGB(255,0,0), RGB(160,0,0));
   m_static_warnings.StartTextBlink(TRUE, CColorStaticST::ST_FLS_FAST); 
 	
   //warng_timer
-  hTimer = SetTimer(ID_TIMER_WARNINGS, 20000, 0); */
+  hTimer = SetTimer(ID_TIMER_WARNINGS, 20000, 0);
 }
 
 //------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ class CPage1 : public CPropertyPage
   CStatic m_txt;
   CEdit m_offset[2];
   CEdit m_dgain[2]; 
-  CStatic m_temperature[2];
+  CStatic m_temperature[3];
 
   //----
   CDataTX *pBT;
@@ -57,7 +57,7 @@ class CPage1 : public CPropertyPage
   void Controls_Ini(void);
   void Controls_Enable(BOOL on_off);
   void Controls_Update(void);
-  void HeaterTemperature(char *pBuf); 
+  void MonitoringParser(char *pBuf); 
   void Monitoring(int on);
 
   //----

@@ -72,12 +72,13 @@ void CPage1::DoDataExchange(CDataExchange* pDX)
 	CPropertyPage::DoDataExchange(pDX);
 	//----
 	DDX_Control(pDX, IDC_EDIT_OFFSET1, m_offset[0]);
-	DDX_Control(pDX, IDC_EDIT_DGAIN1, m_dgain[0]);
+	DDX_Control(pDX, IDC_EDIT_DGAIN1,  m_dgain[0]);
 	DDX_Control(pDX, IDC_EDIT_OFFSET2, m_offset[1]);
-	DDX_Control(pDX, IDC_EDIT_DGAIN2, m_dgain[1]);
+	DDX_Control(pDX, IDC_EDIT_DGAIN2,  m_dgain[1]);
 	DDX_Control(pDX, IDC_STATIC_TXTMSG, m_txt);
 	DDX_Control(pDX, IDC_STATIC_TOUT1, m_temperature[0]);
 	DDX_Control(pDX, IDC_STATIC_TOUT2, m_temperature[1]);
+	DDX_Control(pDX, IDC_STATIC_TCJ, m_temperature[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -103,8 +104,8 @@ BOOL CPage1::OnInitDialog()
   //tooltips
   struct prj_tooltip tooltips[] = 
   {
-	{&m_offset[0], "Offset factor"},
-	{&m_offset[1], "Offset factor"},
+	{&m_offset[0],"Offset factor"},
+	{&m_offset[1],"Offset factor"},
 	{&m_dgain[0], "Gain factor"},
 	{&m_dgain[1], "Gain factor"},
 	{&m_temperature[0], "Left Top Sensor out"},
@@ -133,7 +134,7 @@ void CPage1::Controls_Ini(void)
 
   //----
   CString txt;
-  txt = "TC Type-K voltage at 400°C = 16.397mV";
+  txt = "TC1, TC2: Type-K voltage at 400°C = 16.397mV";
   m_txt.SetWindowText(txt);
 }
 
@@ -247,7 +248,7 @@ BOOL CPage1::PreTranslateMessage(MSG* pMsg)
 static void CALLBACK MM_Timer(UINT uID,UINT uMsg,DWORD dwUser,DWORD dw1,DWORD dw2)
 {
   CPage1 *pDlg = reinterpret_cast<CPage1*>(dwUser);
-  char cmd = TC_HEATER_ARRAY;
+  char cmd = TC_HEATER_ALL_SENSORS;
   pDlg->pBT->Tx(CMD_GET_TEMPERATURE, &cmd, 1);
 }
 
@@ -255,12 +256,11 @@ static void CALLBACK MM_Timer(UINT uID,UINT uMsg,DWORD dwUser,DWORD dw1,DWORD dw
 //
 //------------------------------------------------------------------------------
 void CPage1::Monitoring(int on)
-{ 
-
+{
   //----
   if(on==1)
   {
-    int period_ms = 500;
+    int period_ms = 250;
     
     //Launch Multimedia timer
     MM_TimerID = timeSetEvent(period_ms, 0, (LPTIMECALLBACK)&MM_Timer, 
@@ -284,17 +284,19 @@ void CPage1::Monitoring(int on)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage1::HeaterTemperature(char *pBuf)
+void CPage1::MonitoringParser(char *pBuf)
 {
-  CString txt1, txt2; 
-  float heater_temperature[2];
-  memcpy(heater_temperature, pBuf, 8);
+  CString txt1, txt2, txt3; 
+  float temperature[3];
+  memcpy(temperature, pBuf, 12);
 
   //----
-  txt1.Format(" %3.1f °C", heater_temperature[0]);
-  txt2.Format(" %3.1f °C", heater_temperature[1]);
+  txt1.Format(" %3.1f °C", temperature[0]);
+  txt2.Format(" %3.1f °C", temperature[1]);
+  txt3.Format(" %3.1f °C", temperature[2]);
 
   //Print value
   m_temperature[0].SetWindowText(txt1);
   m_temperature[1].SetWindowText(txt2);
+  m_temperature[2].SetWindowText(txt3);
 }

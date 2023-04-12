@@ -2,7 +2,7 @@
 //File name:   "Page2.h"
 //Purpose:      Header File
 //Version:      2.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #include "afxwin.h"
 #include "afxcmn.h"
@@ -105,7 +105,6 @@ class CPage2 : public CPropertyPage
   void prfloat(unsigned char *pBuf, float data);
   
   //==== Time / Freq calculation ================
-  //unsigned long btcontroller_clock_begin;
   LARGE_INTEGER Frequency, tLast, tPeriod; 
   void Calc_Freq(void);
   unsigned long Calc_Delay(LARGE_INTEGER *pTimeStart, LARGE_INTEGER *pTimeEnd);
@@ -121,25 +120,22 @@ class CPage2 : public CPropertyPage
   afx_msg void OnBnClickedCheckPage2UseKp();
   afx_msg void OnBnClickedCheckPage2UseKi();
   afx_msg void OnBnClickedCheckPage2UseKd();
-  afx_msg void OnPushButton_KP_ONOFF();
-  afx_msg void OnPushButton_KI_ONOFF();
-  afx_msg void OnPushButton_KD_ONOFF();
-  afx_msg void OnBnSetDefault();
-
+  //----
   afx_msg void OnModePidEnable();
   afx_msg void OnModePidDisable();
   afx_msg void OnModeRemoteDAC();
-  afx_msg void OnCheckChannelEnable();
-
+  //----
+  afx_msg void OnButtonSetDefault();
   afx_msg void OnButtonPidTest();  
   afx_msg void OnButtonTestStep();
   afx_msg void OnButtonTestLinerity();
   afx_msg void OnCheckFixLog();
-
+  //----
   afx_msg void OnRadioPidModeManual();
   afx_msg void OnRadioPidModeAuto();
   afx_msg void OnButtonPidManualRun();
-  
+  //----
+  afx_msg void OnCheckChannelEnable();
   afx_msg void OnCheckReflowLogFix();
  
 };

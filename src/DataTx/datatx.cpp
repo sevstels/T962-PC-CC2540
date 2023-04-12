@@ -85,7 +85,6 @@ int CDataTX::Tx(unsigned char cmd, char *pBuf, int length)
    tx_send = pBLE->DataTx(pBufOut, block_length);
   }
 
-
   delete [] pBufOut;
   pBufOut = NULL;
    

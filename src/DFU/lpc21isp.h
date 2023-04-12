@@ -2,7 +2,7 @@
 //File name:   "lpc21isp.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #define COMPILE_FOR_WINDOWS
 #define COMPILED_FOR "Windows"
@@ -31,34 +31,27 @@
 #include <stdio.h>      // stdout
 #include <stdarg.h>
 #include <time.h>
-
-#if defined COMPILE_FOR_LPC21
-#include <stdlib.h>
-#include <string.h>
-//#include <lpc_ioctl.h>  // if using libc serial port communication
-#else
 #include <fcntl.h>
-#endif
 
 typedef enum
 {
-    NXP_ARM,
-    ANALOG_DEVICES_ARM
+  NXP_ARM,
+  ANALOG_DEVICES_ARM
 } TARGET;
 
 typedef enum
 {
-    PROGRAM_MODE,
-    RUN_MODE
+  PROGRAM_MODE,
+  RUN_MODE
 } TARGET_MODE;
 
 typedef enum
 {
-    FORMAT_BINARY,
-    FORMAT_HEX
+  FORMAT_BINARY,
+  FORMAT_HEX
 } FILE_FORMAT_TYPE;
 
-typedef unsigned char BINARY;               // Data type used for microcontroller
+typedef unsigned char BINARY; // Data type used for microcontroller
 
 /** Used to create list of files to read in. */
 typedef struct file_list FILE_LIST;
@@ -73,58 +66,44 @@ typedef struct file_list FILE_LIST;
 /** Structure used to build list of input files. */
 struct file_list
 {
-    const char *name;       /**< The name of the input file.	*/
-    FILE_LIST *prev;        /**< The previous file name in the list.*/
-    char hex_flag;          /**< True if the input file is hex.	*/
+  const char *name;       /**< The name of the input file.	*/
+  FILE_LIST *prev;        /**< The previous file name in the list.*/
+  char hex_flag;          /**< True if the input file is hex.	*/
 };
 
 typedef struct
 {
-#if !defined COMPILE_FOR_LPC21
-    TARGET micro;                                // The type of micro that will be programmed.
-    FILE_FORMAT_TYPE FileFormat;
-    unsigned char ProgramChip;                // Normally set
+  TARGET micro;                // The type of micro that will be programmed.
+  FILE_FORMAT_TYPE FileFormat;
+  unsigned char ProgramChip;   // Normally set
+  FILE_LIST *f_list;  // List of files to read in.
+  int nQuestionMarks; // how many times to try to synchronise
+  int DoNotStart;
+  int BootHold;
+  unsigned char WriteDelay;
+  unsigned char DetectOnly;
+  unsigned char WipeDevice;
+  unsigned char Verify;
+  int DetectedDevice;       /* index in LPCtypes[] array */
 
-    unsigned char ControlLines;
-    unsigned char ControlLinesSwapped;
-    unsigned char ControlLinesInverted;
-    unsigned char LogFile;
-    FILE_LIST *f_list;                  // List of files to read in.
-    int nQuestionMarks; // how many times to try to synchronise
-    int DoNotStart;
-    int BootHold;
+  char StringOscillator[6]; /**< Holds representation of oscillator
+                             * speed from the command line.*/
 
-#endif // !defined COMPILE_FOR_LPC21
-
-    unsigned char HalfDuplex;           // Only used for LPC Programming
-    unsigned char WriteDelay;
-    unsigned char DetectOnly;
-    unsigned char WipeDevice;
-    unsigned char Verify;
-    int DetectedDevice;                 /* index in LPCtypes[] array */
-
-    char StringOscillator[6];           /**< Holds representation of oscillator
-                                           * speed from the command line.       */
-
-    BINARY *FileContent;
-    BINARY *BinaryContent;              /**< Binary image of the                */
-                                        /* microcontroller's memory.            */
-    unsigned long BinaryLength;
-    unsigned long BinaryOffset;
-    unsigned long StartAddress;
-    unsigned long BinaryMemSize;
-
-#ifdef INTEGRATED_IN_WIN_APP
-    unsigned char NoSync;
-#endif
+  BINARY *FileContent;
+  BINARY *BinaryContent;    /**< Binary image of the*/
+                            /* microcontroller's memory.*/
+  unsigned long BinaryLength;
+  unsigned long BinaryOffset;
+  unsigned long StartAddress;
+  unsigned long BinaryMemSize;
+  unsigned char NoSync;
 
 } ISP_ENVIRONMENT;
 
 #if defined COMPILE_FOR_LPC21
-
 #define DebugPrintf(in, ...)
-
 #else
+
 extern int debug_level;
 
 #if defined INTEGRATED_IN_WIN_APP
@@ -146,8 +125,6 @@ void DebugPrintf(const char *fmt, ...);
 //#define DebugPrintf(level, ...) if (level <= debug_level) { TRACE( __VA_ARGS__ ); }
 #endif
 
-#endif
-
 /*
 debug levels
 0 - very quiet          - Nothing gets printed at this level
@@ -158,16 +135,15 @@ debug levels
 5 - log comm's          - log serial I/O
 */
 
-void ReceiveBT(const char *Ans, unsigned long MaxSize,
-               unsigned long *RealSize, unsigned long WantedNr0x0A,
-               unsigned timeOutMilliseconds);
 void PrepareKeyboardTtySettings(void);
 void ResetKeyboardTtySettings(void);
 void ResetTarget(ISP_ENVIRONMENT *IspEnvironment, TARGET_MODE mode);
 
 void DumpString(int level, const void *s, size_t size, const char *prefix_string);
-int NxpDownload(ISP_ENVIRONMENT *IspEnvironment);
+int  NxpDownload(ISP_ENVIRONMENT *IspEnvironment);
 
 void SetTXpointer(void *pBT);
-int BT_Send(const char *pString);
-int BT_Receive(void *block, int size, unsigned timeout);
+int  BT_Send(const char *pString);
+int  BT_Receive(void *block, int size, unsigned timeout);
+
+#endif

@@ -2,7 +2,7 @@
 //File name:    "MainDlg.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "PIDPC.h"
@@ -25,7 +25,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
+/*
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
@@ -62,7 +62,7 @@ void BT_AddrToStr(char *pAddr, long long Addr)
 	if(i!=5)txt.Format("%X:", buf[5-i]);
 	else txt.Format("%X", buf[5-i]);
 	 
-	//*pTxt += txt;
+	// *pTxt += txt;
   }
 }
 
@@ -91,7 +91,9 @@ int CMainDlg::BLE_Open(void)
 
   return 1;
 }
-
+ 
+*/
+  /*
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
@@ -109,7 +111,7 @@ void BT_VecAddrToStr(char *pAddr, std::vector <char> *pAdrr)
 	 
 	//*pTxt += txt;
   }
-}
+} */
 
 //------------------------------------------------------------------------------
 //	BT ADDR: D1:A3:5D:1B:6E:11

@@ -99,6 +99,7 @@ class CMainDlg : public CDialog
   int monitoring_ack;
   int exit_request;
   int tab_opened;
+  int first_launch;
   
   //----
   int  BLE_ini(void);
@@ -109,20 +110,20 @@ class CMainDlg : public CDialog
   void BLE_SelchangeAdapters(int index);
   static void BLE_DataRx(char *pBuf, int length);
   static void BLE_Event(int event_id, char *pBuf, int length);
-
+  
+  //----
   void DataRx(char *pBuf, int length);
   void DeviceMsgHandler(char cmd, char *pBuf, int length);
   int  ReadDeviceSetup(char *pBuf, int length);
   void Print_MemBuffer(char *pBuf, int length);
   void ParseDeviceEvents(char *pBuf, int length);
-
+  
+  //----
   void DeviceList(int param);
   int  GetDeviceSetup(void);
   int  OpenCommunication(void);
   void Controls_Enable(BOOL on_off);
   void LED_Control(int online);
-  void ThreadLaunch(void);
-  void ThreadStop(void);
   void TimerControl(int period);
   void Parse_DeviceAnswer(unsigned char *pBuf);
   void Parse_Monitoring(unsigned char *pBuf);

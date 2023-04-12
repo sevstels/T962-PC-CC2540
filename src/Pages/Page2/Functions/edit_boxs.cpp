@@ -2,11 +2,10 @@
 //File name:    "edits.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2016, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page2.h"
-//#include "candll.h"
 #include "cmd.h"
 
 //---- Mem Leakage Debug
@@ -50,8 +49,7 @@ int CPage2::EditBoxs(MSG *pMsg)
       }
      Board.TestPulsePeriod = value;
      //Send 2 Byte    
-     ///CAN_SendCommand(pCAN, CAN_board_ID, CAN_CMD_CHANNEL, cmd, 
-                    (unsigned char)value,(unsigned char)(value>>8));
+
      Beep(1000, 5);  
      return 1;
    }
@@ -80,8 +78,7 @@ int CPage2::EditBoxs(MSG *pMsg)
      Board.TestPulseDuration = value;
      
      //Send 2 Byte
-     ///CAN_SendCommand(pCAN, CAN_board_ID, CAN_CMD_CHANNEL, cmd, 
-                     (unsigned char)(value),(unsigned char)(value>>8));
+
      Beep(1000, 5);
      return 1;
    }

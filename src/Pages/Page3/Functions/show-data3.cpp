@@ -2,7 +2,7 @@
 //File name:    "show-data3.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2021, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page3.h"
@@ -24,49 +24,42 @@ static char THIS_FILE[] = __FILE__;
 //------------------------------------------------------------------------------
 void CPage3::Show_Temperature(void)
 {
-  static int progress_temperature_old = 0;
-  static short HeaterTemperature_old = 0x0FFF;
+  float temperature = pParams->Heater_Temperature;
 
   //--------------------------------------------------
   //integrator for progress indicator
   //--------------------------------------------------
-  short position = (short)pParams->Heater_Temperature;
+  short position = (short) temperature;
   INTG_TEMP.AddInputValue(position);
   INTG_TEMP.Integration();
   position = INTG_TEMP.result;
 
   //set progress indicator
-  //если значение не изменилось - не перерисовывать
-  if(progress_temperature_old!=position)
-  {
-	m_progress_temperature.SetPos(position);
-  }
-  progress_temperature_old = position;
-  //If panel opened
-  if(pPanel_temperature!=NULL) 
-	 pPanel_temperature->SetPos(position); 
-  //---------------------------------------------------
-
-  //если значение не изменилось - не считать
-  if(HeaterTemperature_old==position) return;
-  HeaterTemperature_old = position;
-
+  m_progress_temperature.SetPos(position);
+        
   CString txt;
-  txt.Format("%3.2f °C", pParams->Heater_Temperature);
+  txt.Format("T: %3.2f°C", temperature);
   m_txt_temperature.SetWindowTextA(txt);
   
-  //if panel dlg opened
+  //If panel dlg opened
+  if(pPanel_temperature!=NULL)
+  {
+    pPanel_temperature->SetPos(position); 
+  }	 
+
+  //If panel dlg opened	
   if(pPanel_Txt_temperature!=NULL)
-	 pPanel_Txt_temperature->SetWindowTextA(txt);
+  {
+	pPanel_Txt_temperature->SetWindowTextA(txt);
+  }
 }
 
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage3::Show_Power(void)
+void CPage3::Show_HeaterPower(void)
 {
-  static unsigned short Heater_power_old = 4000;
-  static int progress_power_old = 0;
+  CString txt;
   float heater_pwm_power = ((float)pParams->pwm_heater)/256;
 	  
   unsigned short heater_power;
@@ -81,30 +74,24 @@ void CPage3::Show_Power(void)
   position = INTG_HTRPWR.result;
 
   //set progress indicator
-  //если значение не изменилось - не перерисовывать
-  if(progress_power_old!=position)
-  {
-	m_progress_power.SetPos(position);
-  }
-  progress_power_old = position;
-  //If panel opened
-  if(pPanel_current!=NULL)
-	 pPanel_current->SetPos((int)position);
-  //---------------------------------------------------
-
-  //если значение не изменилось - не считать
-  if(Heater_power_old==heater_power) return;
-  Heater_power_old = heater_power;
-
-  CString txt;
-  txt.Format("%d Watt", heater_power);
-
+  m_progress_heater.SetPos(position);
+  txt.Format("P: %d Watt", heater_power);
   m_txt_power.SetWindowTextA(txt);
-  
+
   //If panel opened
-  if(pPanel_Txt_current!=NULL)
-	 pPanel_Txt_current->SetWindowTextA(txt);
-  
+  if(pPanel_heater!=NULL)
+  {
+	 pPanel_heater->SetPos((int)position);
+  }
+
+  //If panel opened
+  if(pPanel_Txt_heater!=NULL)
+  {
+	 txt.Format("Pwr: %d W", heater_power);
+	 pPanel_Txt_heater->SetWindowTextA(txt);
+  }
+
+  //---------------------------------------------------  
   /*
   COLORREF color = RGB(100,100,100);    
   
@@ -121,49 +108,37 @@ void CPage3::Show_Power(void)
 	color = RGB(100+delta,100-minus,100-minus); 
   }
 
-  m_progress_power.SetBarColor(color);
-  m_progress_power.SetPos((int)current);
+  m_progress_heater.SetBarColor(color);
+  m_progress_heater.SetPos((int)current);
   	*/
 }
 
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage3::Show_Voltage(void)
+void CPage3::Show_FanSpeed(void)
 {
-  static float TEC_voltage_old = -1000;
-  static int progress_voltage_old = 0;
-  float TEC_voltage = pParams->TEC_voltage;
+  unsigned char FAN_speed = pParams->pwm_fan;
 
   //--------------------------------------------------
   //integrator for progress indicator
   //--------------------------------------------------
-  short position = (short)(TEC_voltage*10);
-  INTG_VOLT.AddInputValue(position);
-  INTG_VOLT.Integration();
-  position = INTG_VOLT.result;
+  short position = FAN_speed;
+  INTG_FANPWM.AddInputValue(position);
+  INTG_FANPWM.Integration();
+  position = INTG_FANPWM.result;
 
-  //set progress indicator
-  //если значение не изменилось - не перерисовывать
-/*  if(progress_voltage_old!=position)
-    {m_progress_voltage.SetPos(position);}
-  progress_voltage_old = position; */
-  //---------------------------------------------------
-
-  //если значение не изменилось - не считать
-  if(TEC_voltage_old==TEC_voltage) return;
-  TEC_voltage_old = TEC_voltage;
-
-  CString txt;
-/*  txt.Format("%2.2f V", TEC_voltage);
-  m_txt_voltage.SetWindowTextA(txt); */
-
-  //calc power
-  float power;
-  power = TEC_voltage;
-  power *= pParams->TEC_current;
-  power /= 1000; 
-  //
-  txt.Format("%2.2f Watt", power);
-  m_txt_power.SetWindowTextA(txt);
+  //If panel dlg opened
+  if(pPanel_fan!=NULL)
+  {
+	//если значение не изменилось - не рисовать 
+	pPanel_fan->SetPos(position); 
+	
+	if(pPanel_Txt_fan!=NULL)
+	{
+      CString txt;
+      txt.Format("Fan: %d", FAN_speed);  
+      pPanel_Txt_fan->SetWindowTextA(txt);
+	} 
+  }
 }

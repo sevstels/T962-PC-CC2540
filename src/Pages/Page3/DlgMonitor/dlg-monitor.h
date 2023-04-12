@@ -42,9 +42,13 @@ class CMonDlg : public CDialog
 
   //----
   CProgressCtrl m_progress_temperature;
-  CProgressCtrl m_progress_power;
+  CProgressCtrl m_progress_heater;
+  CProgressCtrl m_progress_fan;
+  
+  //----
   CStatic m_static_temperature;
-  CStatic m_static_current;
+  CStatic m_static_heater;
+  CStatic m_static_fan;
 
   //----func
   void CloseDlg(void);

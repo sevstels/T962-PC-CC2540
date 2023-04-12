@@ -77,14 +77,13 @@ void CPage4::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON_SHOW_FILE, m_but_FileShow);
 
 	DDX_Control(pDX, IDC_BUTTON_READ_PROFILE, m_but_ProfileRead);
-	DDX_Control(pDX, IDC_BUTTON_WRITE_PROFILE1, m_but_ProfileWrite);
+	DDX_Control(pDX, IDC_BUTTON_WRITE_PROFILE, m_but_ProfileWrite);
 	DDX_Control(pDX, IDC_BUTTON_REFLOW_RUN, m_but_ReflowRun);
 	DDX_Control(pDX, IDC_BUTTON_FOPEN_PCR, m_but_FileOpen);
 	DDX_Control(pDX, IDC_BUTTON_FSAVE_PCR, m_but_FileSave);
 	DDX_Control(pDX, IDC_BUTTON_FROM_BEGIN, m_but_FromBegin);
 
 	DDX_Control(pDX, IDC_PROGRESS_WRITE, m_Progress_Write);
-	///DDX_Control(pDX, IDC_STATIC_PCR_NUMBER, m_txt_PCRnumber);
 	DDX_Control(pDX, IDC_SCROLLBAR1, m_Scroll);
 	DDX_Control(pDX, IDC_COMBO_PCR_WRITE, m_combo_SelectProfile);
 	DDX_Control(pDX, IDC_BUTTON_ANALYSIS, m_but_Analysis);
@@ -120,13 +119,7 @@ BEGIN_MESSAGE_MAP(CPage4, CPropertyPage)
 
   ON_COMMAND(ID_PAGE5_ADDVERTEX, &CPage4::OnPage5_AddVertex)
   ON_COMMAND(ID_PAGE5_DELETEVERTEX, &CPage4::OnPage5_DeleteVertex)
-  ON_COMMAND(ID_PAGE5_DELETESEGMENT, &CPage4::OnPage5_DeleteSegment)
-//  ON_COMMAND(ID_PAGE5_ADDSEGMENT, &CPage4::OnPage5_AddSegment)
-
-//  ON_COMMAND(ID_PAGE5_SET_TO_STANDARD_DEFAULT, &CPage4::OnPage5_SetpProfileDefault)
-  //ON_COMMAND(ID_PAGE5_WRITE_TO_DEVICE, &CPage4::OnPage5_WriteProfileToDevice)
-  //ON_COMMAND(ID_PAGE5_SAVE_PROFILE, &CPage4::OnPage5_SaveProfileToFile)
-  
+  ON_COMMAND(ID_PAGE5_DELETESEGMENT, &CPage4::OnPage5_DeleteSegment)  
   ON_BN_CLICKED(IDC_BUTTON_SHOW_FILE, &CPage4::OnButtonShowFile)
   ON_BN_CLICKED(IDC_BUTTON_ANALYSIS, &CPage4::OnButtonAnalysis)
   //----
@@ -136,6 +129,7 @@ BEGIN_MESSAGE_MAP(CPage4, CPropertyPage)
   ON_BN_CLICKED(IDC_BUTTON_SETTINGS, &CPage4::OnButtonSettings)
   ON_BN_CLICKED(IDC_BUTTON_PCR_PAUSE, &CPage4::OnButtonReflowPause)
   ON_CBN_SELCHANGE(IDC_COMBO_PCR_WRITE, &CPage4::OnSelchangeProfile)
+
 END_MESSAGE_MAP()
 
 //------------------------------------------------------------------------------
@@ -148,7 +142,6 @@ BOOL CPage4::OnInitDialog()
 
   //Add extra initialization here
   GRPH.SetHWnd(this->m_hWnd);
-  m_but_ShowGraph.EnableWindow(FALSE);
  
   //----
   DSPL.pMonitor = &m_monitor;

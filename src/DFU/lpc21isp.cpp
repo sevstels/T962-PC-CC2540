@@ -934,8 +934,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   {
   
   }*/
-  
-  
+
   result = pBLE->Tx(CMD_CHECK_BOOTLOADER, NULL, 0);
   if(!result){ return (NO_ANSWER_QM);}
 
@@ -1143,7 +1142,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         if ((endPtr[0] == '\0') || (endPtr[strlen(endPtr)-1] != '\n'))
         {
             /* No or incomplete word 2 */
-            ReceiveBT(endPtr, sizeof(Answer)-(endPtr-Answer)-1, &realsize, 1, 100);
+            ///ReceiveBT(endPtr, sizeof(Answer)-(endPtr-Answer)-1, &realsize, 1, 100);
+			//debug this!!!
+		    result = BT_Receive(Answer, sizeof(Answer), 1000);
         }
 
         FormatCommand(endPtr, endPtr);
@@ -1353,7 +1354,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	//---------------------------------------------
     while (1)
     {
-        if (Sector >= LPCtypes[IspEnvironment->DetectedDevice].FlashSectors)
+     
+        if(Sector >= LPCtypes[IspEnvironment->DetectedDevice].FlashSectors)
         {
             DebugPrintf( "Program too large; running out of Flash sectors.\r\n");
             return (PROGRAM_TOO_LARGE);
@@ -1362,7 +1364,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         DebugPrintf( "Sector %ld: ", Sector);
 
         if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))  // Skip Erase when running from RAM
-           ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
+           ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment) + 
+		      (LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
         {
             if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
                 LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
@@ -1382,7 +1385,6 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             }
 
             DebugPrintf( ".");
-            //fflush(stdout);
             if (IspEnvironment->WipeDevice == 0 && (Sector!=0)) //Sector 0 already erased
             {
                 if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
@@ -1465,7 +1467,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     CopyLength += ((45 * 4) - (CopyLength % (45 * 4)));
                 }
             }
+again:
 
+			//Write to RAM W <start address> <number of bytes>
             sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
 
             if(!SendAndVerify(tmpString, Answer, sizeof Answer))
@@ -1491,26 +1495,14 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 					(Pos < SectorStart + SectorOffset + CopyLength) && 
 					(Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
                 {
-
-					for(;;)
-					{
 					  int ret = SendToRAM(IspEnvironment, Line, Pos, 1, 1);
 					  if(ret!=0)
 					  {
-					     sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
-					     if(!SendAndVerify(tmpString, Answer, sizeof Answer))
-                         {
-                           DebugPrintf( "Wrong answer on Write-Command\n");
-                           return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
-                         }
+					    goto again; 
 					  }
-					  else 
-						 break;
-                     }
 				}
                 if (Line != 0)
                 {
-#if !defined COMPILE_FOR_LPC21
                     for (repeat = 0; repeat < 3; repeat++)
                     {
                         sprintf(tmpString, "%ld\r\n", block_CRC);
@@ -1539,23 +1531,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     if (repeat >= 3)
                     {
                         DebugPrintf( "Error on writing block_CRC (3)\r\n");
+						goto again; 
                         return (ERROR_WRITE_CRC2);
                     }
-#else
-                    sprintf(tmpString, "%ld\r\n", block_CRC);
-                    SendComPort(IspEnvironment, tmpString);
-
-                    ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 2,5000);
-
-                    sprintf(tmpString, "%ld\nOK\n", block_CRC);
-                    FormatCommand(tmpString, tmpString);
-                    FormatCommand(Answer, Answer);
-                    if (strcmp(Answer, tmpString) != 0)
-                    {
-                        DebugPrintf( "Error on writing block_CRC (4)\n");
-                        return (ERROR_WRITE_CRC2);
-                    }
-#endif
                 }
             }
 
@@ -1570,7 +1548,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     sprintf(tmpString, "P %ld %ld 0\r\n", Sector, Sector);
                 }
                 else
-                {
+                {	
+					//Prepare sector(s) for write operation P <start sector number> <end sector number>
                     sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
                 }
 
@@ -1604,6 +1583,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     CopyLength = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
                 }
 
+				//Copy RAM to Flash
                 sprintf(tmpString, "C %ld %ld %ld\r\n", IspEnvironment->BinaryOffset + SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
 
                 if (!SendAndVerify(tmpString, Answer, sizeof Answer))
@@ -1641,8 +1621,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             Sector = 0;
             SectorStart = 0;
         }
-        else if (Sector == 0) {
-            break;
+        else if (Sector == 0)
+		{
+          break;
         }
         else {
             SectorStart += LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
@@ -1697,9 +1678,13 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         BT_Send(tmpString); //goto 0 : run this fresh new downloaded code code
         if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))
            ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
-        { // Skip response on G command - show response on Terminal instead
-            ReceiveBT(Answer, sizeof(Answer)-1, &realsize, 2, 5000);
-            /* the reply string is frequently terminated with a -1 (EOF) because the
+        { 
+			// Skip response on G command - show response on Terminal instead
+            ///ReceiveBT(Answer, sizeof(Answer)-1, &realsize, 2, 5000);
+ 			//debug this!!!
+		    result = BT_Receive(Answer, sizeof(Answer), 1000);
+
+			/* the reply string is frequently terminated with a -1 (EOF) because the
             * connection gets broken; zero-terminate the string ourselves
             */
             while (realsize > 0 && ((signed char) Answer[(int)realsize - 1]) < 0)

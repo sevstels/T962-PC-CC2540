@@ -49,9 +49,6 @@
     <Filter Include="LibCPP\Dialog Position">
       <UniqueIdentifier>{ff1c03d2-8e22-4bfe-a9a5-2a68ed12753d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pages\Main Dialog\Thread">
-      <UniqueIdentifier>{c46ebea2-f128-4be5-af5d-bb4ceef73a3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LibCPP\Images">
       <UniqueIdentifier>{e1271c2f-c921-4f20-9dbc-302c6e72c5aa}</UniqueIdentifier>
     </Filter>
@@ -163,9 +160,6 @@
     <Filter Include="Pages\Main Dialog\Functions">
       <UniqueIdentifier>{6633bfa1-2cc5-4c41-b0b0-50242fc67563}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Firmware Update">
-      <UniqueIdentifier>{fa20e4c9-9372-4613-8959-eb8a9f178e8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Pages\Page 6\Thread">
       <UniqueIdentifier>{73d5ff9c-aa34-4af2-809f-d9a0cf05e10f}</UniqueIdentifier>
     </Filter>
@@ -196,6 +190,9 @@
     <Filter Include="Pages\Bluetooth Dialog">
       <UniqueIdentifier>{85ee0cad-0803-47fd-afdb-6c5ba39599b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LPC21isp">
+      <UniqueIdentifier>{fa20e4c9-9372-4613-8959-eb8a9f178e8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -215,9 +212,6 @@
     </ClCompile>
     <ClCompile Include="src\Pages\Main_Dialog\MainDlg.cpp">
       <Filter>Pages\Main Dialog</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Main_Dialog\Thread\ThreadMain.cpp">
-      <Filter>Pages\Main Dialog\Thread</Filter>
     </ClCompile>
     <ClCompile Include="src\Pages\Page2\Functions\controls2.cpp">
       <Filter>Pages\Page 2\Functions</Filter>
@@ -322,7 +316,7 @@
       <Filter>Pages\Main Dialog\Functions</Filter>
     </ClCompile>
     <ClCompile Include="src\DFU\lpc21isp.cpp">
-      <Filter>Firmware Update</Filter>
+      <Filter>LPC21isp</Filter>
     </ClCompile>
     <ClCompile Include="src\Pages\Page6\Thread\thread-dfu.cpp">
       <Filter>Pages\Page 6\Thread</Filter>
@@ -555,7 +549,7 @@
       <Filter>Pages\Reflow Dlg</Filter>
     </ClInclude>
     <ClInclude Include="src\DFU\lpc21isp.h">
-      <Filter>Firmware Update</Filter>
+      <Filter>LPC21isp</Filter>
     </ClInclude>
     <ClInclude Include="src\BT-Dlg\bt-dlg.h">
       <Filter>Pages\Bluetooth Dialog</Filter>

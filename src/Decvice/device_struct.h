@@ -113,16 +113,16 @@ typedef struct {
 typedef enum eTempSensor 
 {
   TC_COLD_JUNCTION = 0,
-  TC_HEATER_ARRAY,
-  TC_HEATER_LEFT,
-  TC_HEATER_RIGHT,
-  TC_PCB_ARRAY,
+  TC_HEATER_ALL_SENSORS,
+  TC_HEATER_SENSOR_LEFT,
+  TC_HEATER_SENSOR_RIGHT,
+  TC_PCB_ALL_SENSORS,
   TC_PCB1,
   TC_PCB2,
   TC_PCB3,
   TC_PCB4,
   TC_PCB,
-  TC_HEATER,  
+  TC_TMPR_HEATER_FAN,  
   TC_COUNT_END //terminator
 
 } TempSensor_t;

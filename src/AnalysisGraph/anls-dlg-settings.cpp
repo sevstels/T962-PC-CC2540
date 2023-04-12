@@ -51,7 +51,7 @@ void CAnGraphDlg::DoDataExchange(CDataExchange* pDX)
 
 	//}}AFX_DATA_MAP 
 /*	DDX_Control(pDX, IDC_PROGRESS_TEMPERATURE, m_progress_temperature);
-	DDX_Control(pDX, IDC_PROGRESS_CURRENT, m_progress_power);
+	DDX_Control(pDX, IDC_PROGRESS_CURRENT, m_progress_heater);
 	DDX_Control(pDX, IDC_STATIC_T, m_static_temperature);
 	DDX_Control(pDX, IDC_STATIC_C, m_static_current);  */
 }														  
@@ -86,12 +86,12 @@ BOOL CAnGraphDlg::OnInitDialog()
   m_progress_temperature.ShowWindow(TRUE); //Show window 
 
   //----
-  m_progress_power.SetRange(0, 5000); //from to	
-  m_progress_power.SetPos(0);
-  m_progress_power.SetStep(1); //Set the 1 step increment
-  m_progress_power.SetBarColor(RGB(100, 100, 100)); //color
-  m_progress_power.SetBkColor(RGB(0xff, 0xff, 0xff)); //color
-  m_progress_power.ShowWindow(TRUE); //Show window
+  m_progress_heater.SetRange(0, 5000); //from to	
+  m_progress_heater.SetPos(0);
+  m_progress_heater.SetStep(1); //Set the 1 step increment
+  m_progress_heater.SetBarColor(RGB(100, 100, 100)); //color
+  m_progress_heater.SetBkColor(RGB(0xff, 0xff, 0xff)); //color
+  m_progress_heater.ShowWindow(TRUE); //Show window
 
   POS.SetWindowPositon(this->m_hWnd);
  */
@@ -105,7 +105,7 @@ void CAnGraphDlg::IniPointers(HANDLE hClass)
 { /*
   pPage4 = (CPage4*) hClass;
   pPage4->pPanel_temperature = & m_progress_temperature;
-  pPage4->pPanel_current = & m_progress_power;
+  pPage4->pPanel_current = & m_progress_heater;
   pPage4->pPanel_Txt_temperature = &m_static_temperature;
   pPage4->pPanel_Txt_current = &m_static_current; */
 }

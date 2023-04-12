@@ -41,7 +41,7 @@ class CAnGraphDlg : public CDialog
 
   //----
   CProgressCtrl m_progress_temperature;
-  CProgressCtrl m_progress_power;
+  CProgressCtrl m_progress_heater;
   CStatic m_static_temperature;
   CStatic m_static_current;
 

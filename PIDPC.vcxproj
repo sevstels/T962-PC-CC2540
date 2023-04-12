@@ -309,7 +309,6 @@
     <ClCompile Include="src\Pages\AboutDialog\about_dlg.cpp" />
     <ClCompile Include="src\Pages\Main_Dialog\Functions\ble-support.cpp" />
     <ClCompile Include="src\Pages\Main_Dialog\MainDlg.cpp" />
-    <ClCompile Include="src\Pages\Main_Dialog\Thread\ThreadMain.cpp" />
     <ClCompile Include="src\Pages\Page1\Page1.cpp" />
     <ClCompile Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.cpp" />
     <ClCompile Include="src\Pages\Page2\Functions\controls2.cpp" />

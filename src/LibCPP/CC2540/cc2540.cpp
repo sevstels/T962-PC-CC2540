@@ -9,7 +9,7 @@
 #include "trace.h"
 
 CC2540 *pTI;
-
+static CCriticalSection CC2540TX_CS;
 //------------------------------------------------------------------------------ 
 //Constructor 
 //------------------------------------------------------------------------------
@@ -125,7 +125,11 @@ int CC2540::CheckCOM(void)
 //------------------------------------------------------------------------------
 int CC2540::TxCOM(char *pBuf, int length)
 { 
-  return COM.WrFile(pBuf, length);
+  CC2540TX_CS.Lock();
+  int send = COM.WrFile(pBuf, length);
+  CC2540TX_CS.Unlock();
+
+  return send;
 }
 
 void DeviceInformation(char *pBuf, int length);
@@ -164,8 +168,18 @@ void CC2540::RxCOM(char *pBuf, int length)
   if(rx_event==2)
   {	 
 	//scan completed
-	if(cmd==0x0106)	//GAP_DeviceInformation
-	if(pTI->pEventsHandler!=NULL){pTI->pEventsHandler(BT_DEV_INFO,(char*)"Scan Done", 4);}
+	if(cmd==0x0106)
+	{ 
+	  //GAP_DeviceInformation
+	  if(pTI->pEventsHandler!=NULL)
+	    {pTI->pEventsHandler(BT_DEV_INFO,(char*)"Scan Done", 4);}
+	}
+
+	if(cmd==0x7f06)
+	{
+	  if(pTI->pRXhandler!=NULL)
+	    {pTI->pRXhandler((char*)pTI->data, length);}	
+	}
   }
 }
 
@@ -371,7 +385,10 @@ int CC2540::DataTx(char *pBuf, int length)
   DBG_TRACE(msg.c_str());
   #endif
 
+  CC2540TX_CS.Lock();
   int send = COM.WrFile(cmd, 8+length);
+  CC2540TX_CS.Unlock();
+
   send -= 8;
 
   return send;

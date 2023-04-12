@@ -2,13 +2,11 @@
 //File name:   "dlg_pid-test.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "cmd.h"
 #include "dlg_pid-test.h"
-//Using Dll
-//#include "candll.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -211,9 +209,6 @@ BOOL CPidTestDlg::PreTranslateMessage(MSG* pMsg)
    //Send to device
    if(cmd>0) 
    {
-     //DLL
-     ///CAN_SendCommand(pPage2->pCAN, pPage2->CAN_device_ID, 0, 
-		///             CMD_PID_TEST_SETUP, cmd, value);
 	 return TRUE;
    }
   }
@@ -268,9 +263,6 @@ void CPidTestDlg::OnButtonTestOnoff()
   pPage2->pDevice->Mode.PID_TEST_enable = true;}
   m_butt_testrun.SetWindowTextA(txt);
  */
-  //DLL
-  ///CAN_SendCommand(pPage2->pCAN, pPage2->CAN_device_ID, 0, 
-	///	          CMD_PID_TEST_ENABLE, enable, 0);
 }
 
 //------------------------------------------------------------------------------ 
@@ -280,8 +272,4 @@ void CPidTestDlg::OnComboTestFunction()
 {
   unsigned char function, cmd = PID_TEST_FUNCTION;
   function = (unsigned char) m_combo_function.GetCurSel();
-  
-  //DLL
-  ///CAN_SendCommand(pPage2->pCAN, pPage2->CAN_device_ID, 0, 
-	///	          CMD_PID_TEST_SETUP, cmd, function);
 }

@@ -116,6 +116,7 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
 
   //clear pointers
   pThread = NULL;
+  first_launch = 1;
   monitoring_ack = 0;
   exit_request = 0;
   tab_opened = 0;
@@ -134,11 +135,6 @@ CMainDlg::~CMainDlg()
   BLE.CMD_Disconnect();
   BLE.Close();
 
-  ThreadStop();
-  
-  //ждем завершения цикла, таймаут если данных нет
-  //WaitForSingleObject(ev_WaitEnd.m_hObject, 10000);
-
   //Free objects memory   
   delete pPage6;
   pPage6 = NULL;
@@ -152,9 +148,15 @@ CMainDlg::~CMainDlg()
   pPage2 = NULL;
   delete pPage1;
   pPage1 = NULL;
+  
+  if(pBTDlg!=NULL) delete [] pBTDlg; 
+  pBTDlg = NULL;
 
+  //----
+  DeleteObject(hLED_red);
   DeleteObject(hLED_grey);
-  DeleteObject(hLED_green);   
+  DeleteObject(hLED_green);
+  hLED_red = NULL;
   hLED_grey = NULL;
   hLED_green = NULL;
 }
@@ -261,7 +263,7 @@ BOOL CMainDlg::OnInitDialog()
 
   LED_Control(0); 
 
-  pPage2->Controls_Ini();
+  ///pPage2->Controls_Ini();
 
   //==========================================================
   //Set the tooltip (help hints)
@@ -276,9 +278,6 @@ BOOL CMainDlg::OnInitDialog()
 
   ToolTip.SetToolTip(FromHandle(this->m_hWnd), tooltips, _countof(tooltips));
   
-  //Monitoring thread 
-  ThreadLaunch();
-
   //Bluetooth support
   int port, result;
   int tx_power, rx_gain;
@@ -421,12 +420,15 @@ HCURSOR CMainDlg::OnQueryDragIcon()
 }
 
 //------------------------------------------------------------------------------
-//Handler: page change    (rus: обработчик смены закладок)
+//Handler: page change (rus: обработчик смены закладок)
 //------------------------------------------------------------------------------
-#pragma warning(disable : 4100)
+//#pragma warning(disable : 4100)
 void CMainDlg::OnTcnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 {	
   int iTab = m_Tab.GetCurSel();
+  //Do not change Tab if chip programming
+  if(pPage6->program_run!=0) iTab = 5;
+
   TC_ITEM tci;
   tci.mask = TCIF_PARAM;
   m_Tab.GetItem(iTab, &tci);
@@ -442,7 +444,7 @@ void CMainDlg::OnTcnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
      //Open Tab Page1
      case 0:
      //Launch device monitorng
-	 pPage1->Monitoring(1);
+	 pPage1->Monitoring(TRUE);
      break;
         
      //Open Tab Page2
@@ -453,6 +455,7 @@ void CMainDlg::OnTcnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
      //Open Tab Page3
      case 2:
      //Launch device monitorng
+	 pPage3->Monitoring(TRUE);
      break;
      
 	 //Open Tab Page4
@@ -476,6 +479,9 @@ void CMainDlg::OnTcnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 void CMainDlg::OnTcnSelchangingTab(NMHDR *pNMHDR, LRESULT *pResult)
 {	
   int iTab = m_Tab.GetCurSel();
+  //Do not change Tab if chip programming
+  if(pPage6->program_run!=0) return;
+
   TC_ITEM tci;
   tci.mask = TCIF_PARAM;
   m_Tab.GetItem(iTab, &tci);
@@ -486,11 +492,13 @@ void CMainDlg::OnTcnSelchangingTab(NMHDR *pNMHDR, LRESULT *pResult)
   switch (iTab)
    { 
      case 0:
-	 pPage1->Monitoring(0);
+	 //Stop device monitorng
+	 pPage1->Monitoring(FALSE);
      break;
-
-     case 2:
-//	 pPage4->Monitoring(0);
+     
+	 case 2:
+	 //Stop device monitorng
+	 pPage3->Monitoring(FALSE);
      break;
 
      default:
@@ -500,7 +508,7 @@ void CMainDlg::OnTcnSelchangingTab(NMHDR *pNMHDR, LRESULT *pResult)
   tab_opened = iTab;   
  *pResult = 0;
 }
-#pragma warning(push)
+//#pragma warning(push)
 
 //-----------------------------------------------------------------------------
 //Function: запрос к устройству предоставить настройки
@@ -637,59 +645,6 @@ void CMainDlg::OnButtonConsoleCls()
 	
 extern int boot_mode;
 
-
-/*
-RX < Bytes:  04 00 04 00 1B 0B 00 0F |                         
-
-BLE 1
-RX < Bytes:  04 00 04 00 1B 0B 00 AC |                         
-
-BLE 1
-RX < Bytes:  04 00 04 00 1B 0B 00 65 |                         
-
-BLE 1
-RX < Bytes:  05 00 04 00 1B 0B 00 00 | 60                      
-
-BLE 2
-RX < 
-ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
---------------------------------------------------------
-Bytes:  17 00 04 00 1B 0B 00 7F | 1E 00 24 00 2D 00 32 00 
-Bytes:  3C 00 46 00 55 00 5A 00 | 5F 00 64                
-
-BLE 20
-RX < 
-ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
---------------------------------------------------------
-Bytes:  17 00 04 00 1B 0B 00 00 | 66 00 69 00 6B 00 6E 00 
-Bytes:  70 00 73 00 75 00 78 00 | 7A 00 7F                
-
-BLE 20
-RX < 
-ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
---------------------------------------------------------
-Bytes:  17 00 04 00 1B 0B 00 00 | 84 00 8A 00 94 00 A0 00 
-Bytes:  A5 00 A0 00 94 00 8A 00 | 82 00 7A                
-
-BLE 20
-RX < 
-ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
---------------------------------------------------------
-Bytes:  17 00 04 00 1B 0B 00 00 | 72 00 6A 00 62 00 5A 00 
-Bytes:  52 00 4A 00 42 00 3A 00 | 00 00 00                
-
-BLE 20
-RX < 
-ADDR:	00 01 02 03 04 05 06 07 | 08 09 0A 0B 0C 0D 0E 0F 
---------------------------------------------------------
-Bytes:  17 00 04 00 1B 0B 00 00 | 00 00 00 00 00 00 00 00 
-Bytes:  00 00 00 00 00 00 00 00 | A8 0F AC                
-
-BLE 20
-RX < Bytes:  09 00 04 00 1B 0B 00 63 | 00 01 E0 01 FE          
-
-BLE 6
-*/
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
@@ -914,6 +869,20 @@ void CMainDlg::DeviceMsgHandler(char cmd, char *pBuf, int length)
 	       //----
 		   LED_Control(1);
 		   Controls_Enable(1);
+
+		   //Check, if Tab opened, enable monitoring
+		   if(first_launch==1)
+		   {
+		   	 first_launch = 0;
+		     //Do it, if this page is open 
+             int tab = m_Tab.GetCurSel(); 
+             //Opened Tab Page1, Launch device monitorng
+	         if(tab==0) pPage1->Monitoring(TRUE);
+             //Opened Tab Page3, Launch device monitorng
+	         if(tab==2) pPage3->Monitoring(TRUE);	
+			 //Opened Tab Page4, Load T-ptofile
+	         if(tab==3) pPage4->LoadProfile();
+		   }
 		 }
      break;
 
@@ -964,11 +933,11 @@ void CMainDlg::DeviceMsgHandler(char cmd, char *pBuf, int length)
     case CMD_GET_TEMPERATURE:
 		 cmd_temp = pBuf[0];
 		 //Page1
-		 if(cmd_temp==TC_HEATER_ARRAY)
-		    pPage1->HeaterTemperature(&pBuf[1]);
+		 if(cmd_temp==TC_HEATER_ALL_SENSORS)
+		    pPage1->MonitoringParser(&pBuf[1]);
 		 //Page4
-		 if(cmd_temp==TC_HEATER)
-		    pPage3->HeaterParser(&pBuf[1]);
+		 if(cmd_temp==TC_TMPR_HEATER_FAN)
+		    pPage3->MonitoringParser(&pBuf[1]);
     break;
  
     //----

@@ -106,7 +106,7 @@ void CPage4::ControlsGrop(int on_off)
   m_Scroll.EnableWindow(on_off);
 
   //Buttons
-  m_but_ShowGraph.EnableWindow(on_off);
+  //m_but_ShowGraph.EnableWindow(on_off);
   m_but_FileShow.EnableWindow(on_off);
   m_but_ReflowRun.EnableWindow(on_off);
   m_but_FileSave.EnableWindow(on_off);

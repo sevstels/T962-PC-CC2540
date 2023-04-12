@@ -75,7 +75,6 @@
 #define IDC_PROGRESS_TMPR               1186
 #define IDC_PROGRESS_CURR               1187
 #define IDC_COMBO_PCR_WRITE             1196
-#define IDC_BUTTON_WRITE_PROFILE1       1206
 #define IDC_BUTTON_WRITE_PROFILE        1206
 #define IDC_EDIT_MONITOR                1207
 #define IDC_BUTTON_FOPEN_PCR            1208
@@ -95,7 +94,7 @@
 #define IDC_STATIC5                     1228
 #define IDC_EDIT_HEATER_PWR             1229
 #define IDC_STATIC_WARNINGS             1232
-#define IDC_PROGRESS_CURRENT            1233
+#define IDC_PROGRESS_FAN                1233
 #define IDC_STATIC_TEMPERATURE_VAL      1239
 #define IDC_STATIC_POWER_VAL            1242
 #define IDC_BUTTON_RESET                1251
@@ -115,15 +114,17 @@
 #define IDC_EDIT_CYCLES2                1304
 #define IDC_BUTTON_TEST_ONOFF           1305
 #define IDC_BUTTON_PANEL                1308
-#define IDC_PROGRESS_TEMPERATURE        1309
+#define IDC_PROGRESS_HEATER             1309
 #define IDC_STATIC_T                    1310
+#define IDC_STATIC_TEMPERATURE          1310
 #define IDC_STATIC_C                    1311
+#define IDC_STATIC_HEATER               1311
+#define IDC_PROGRESS_TEMPERATURE        1312
+#define IDC_STATIC_FAN                  1313
 #define IDC_BUTTON_TEST_STEP            1318
 #define IDC_BUTTON_SETTINGS             1337
 #define IDC_BUTTON_PCR_PAUSE            1338
 #define IDC_BUTTON_PID_MANUAL_RUN       1347
-#define IDC_COMBO_DEVICE_LIST           1348
-#define IDC_BUTTON_GET_DEVICE_LIST      1384
 #define IDC_BUTTON_BT_INFO              1385
 #define IDC_BUTTON_BT                   1385
 #define IDC_BUTTON_FW_INFO              1391
@@ -164,6 +165,8 @@
 #define IDC_STATIC_TOUT2                1421
 #define IDC_BUTTON_EEPROM_ERASE         1421
 #define IDC_STATIC_H                    1422
+#define IDC_STATIC_TOUT3                1422
+#define IDC_STATIC_TCJ                  1422
 #define IDC_STATIC_F                    1423
 #define IDC_STATIC_P1                   1425
 #define IDC_STATIC_txt45                1426
@@ -181,7 +184,6 @@
 #define IDC_CHECK_ALG_SN3               1439
 #define IDC_CHECK_ALG_SN4               1440
 #define IDC_COMBO_ALG_MODE              1443
-#define IDC_COMBO_BT                    1444
 #define IDC_EDIT_INFO                   1445
 #define IDC_EDIT_COM                    1445
 #define IDC_FW_PROGRESS                 1446
@@ -190,10 +192,8 @@
 #define IDC_BUTTON_DISCONNECT           1453
 #define IDC_LIST1                       1454
 #define IDC_EDIT_ADDR                   1455
-#define IDC_BUTTON1                     1456
 #define IDC_BUTTON_COM                  1456
 #define IDC_COMBO_TX_POWER              1458
-#define IDC_COMBO3                      1459
 #define IDC_COMBO_RX_GAIN               1459
 #define IDC_STATIC_RX                   1460
 #define ID_PAGE5_ADDVERTEX              32775

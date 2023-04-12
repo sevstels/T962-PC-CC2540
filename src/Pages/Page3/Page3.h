@@ -2,7 +2,7 @@
 //File name:   "Page3.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #include "afxcmn.h"
 #include "afxwin.h"
@@ -40,7 +40,8 @@ class CPage3 : public CPropertyPage
   CDataTX *pBT;
   CINTG INTG_TEMP;
   CINTG INTG_HTRPWR;
-  CINTG INTG_VOLT;
+  CINTG INTG_FANPWM;
+  CINTG INTG_HTRPWM;
 
   //----
   CAppWinReg *pREG;
@@ -49,20 +50,21 @@ class CPage3 : public CPropertyPage
   Device_Params *pParams;
 
   void TabOpen(void);
-  
+
   //----
   virtual BOOL OnInitDialog();
   void Controls_Ini(void);
   void Controls_Enable(int on_off);
   void Controls_Update(void);
   void Manual_Enable(int on_off);
+  void MonitoringParser(char *pBuf);
   void Monitoring(int on);
-  void HeaterParser(char *pBuf);
+  void DeletePanel(void);
 
   //----
   void Show_Temperature(void);  
-  void Show_Power(void);
-  void Show_Voltage(void);
+  void Show_HeaterPower(void);
+  void Show_FanSpeed(void);
   void ShowCurrent(CEdit *pEdit, unsigned short current);
   int  Calc_HeaterPowerLimit(void);
 
@@ -78,16 +80,20 @@ class CPage3 : public CPropertyPage
 
   //----
   CProgressCtrl m_progress_temperature;
-  CProgressCtrl m_progress_power;
+  CProgressCtrl m_progress_heater;
+  //----
   CProgressCtrl *pPanel_temperature;
-  CProgressCtrl *pPanel_current;
+  CProgressCtrl *pPanel_heater;
+  CProgressCtrl *pPanel_fan;
 
   //----
   CStatic m_txt_power;
   CStatic m_txt_temperature;
   CStatic *pPanel_Txt_temperature;
-  CStatic *pPanel_Txt_current;
-  
+  CStatic *pPanel_Txt_heater;
+  CStatic *pPanel_Txt_fan;
+  HANDLE hPanelDlg;
+
   //----
   CColorStaticST m_static_warnings;
   
@@ -106,7 +112,7 @@ class CPage3 : public CPropertyPage
   virtual void DoDataExchange(CDataExchange* pDX);
   //Generated message map functions
   DECLARE_MESSAGE_MAP()
-  //int hTimer;
+  int hTimer;
   int slider_old_pwr;
   int slider_old_fan;
   UINT MM_TimerID;

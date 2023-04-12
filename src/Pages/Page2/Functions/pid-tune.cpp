@@ -72,7 +72,6 @@ void CPage2::PID_TestFileTxt(void)
 
   unsigned long data_size = for_save.GetLength();
   Save_File("pid-samples.txt",(char*)for_save.GetBuffer(), 0, data_size);
-
 }
 
 //------------------------------------------------------------------------------

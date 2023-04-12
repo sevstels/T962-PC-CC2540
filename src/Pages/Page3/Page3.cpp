@@ -2,14 +2,14 @@
 //File name:    "Page3.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page3.h"
 #include "cmd.h"
 #include "datatx.h"
-#include "dlg-monitor.h"
 #include "parse-value.h"
+#include "dlg-monitor.h"
 
 //Using multimedia timer
 #include "Mmsystem.h" //MM_Timer
@@ -36,14 +36,17 @@ IMPLEMENT_DYNCREATE(CPage3, CPropertyPage)
 //------------------------------------------------------------------------------
 CPage3::CPage3() : CPropertyPage(CPage3::IDD)
 {
-  //hTimer = 0;
+  hTimer = 0;
   MM_TimerID = 0;
   slider_old_pwr = -1;
   slider_old_fan = -1;
   pPanel_temperature = NULL;
-  pPanel_current = NULL;
+  pPanel_heater = NULL;
+  pPanel_fan = NULL;
   pPanel_Txt_temperature = NULL;
-  pPanel_Txt_current = NULL;
+  pPanel_Txt_heater = NULL;
+  pPanel_Txt_fan = NULL;
+  hPanelDlg = NULL;
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +54,7 @@ CPage3::CPage3() : CPropertyPage(CPage3::IDD)
 //------------------------------------------------------------------------------
 CPage3::~CPage3()
 {
-
+  DeletePanel();
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +64,7 @@ void CPage3::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PROGRESS_TMPR, m_progress_temperature);
-	DDX_Control(pDX, IDC_PROGRESS_CURR, m_progress_power);
+	DDX_Control(pDX, IDC_PROGRESS_CURR, m_progress_heater);
 	DDX_Control(pDX, IDC_EDIT_FAN,  m_edit_fan);
 	DDX_Control(pDX, IDC_EDIT_HEATER_PWR, m_edit_heater_power);
 	DDX_Control(pDX, IDC_EDIT_MAX_POWER, m_edit_power_limit);
@@ -102,14 +105,16 @@ BOOL CPage3::OnInitDialog()
 
   //ini progress line integrator
   INTG_TEMP.ResetZero(); 
-  INTG_HTRPWR.ResetZero(); 
-  INTG_VOLT.ResetZero(); 
+  INTG_HTRPWR.ResetZero();
+  INTG_HTRPWM.ResetZero(); 
+  INTG_FANPWM.ResetZero(); 
   
   //set integration time 
   INTG_TEMP.IntDivChange(1);
   INTG_HTRPWR.IntDivChange(1);
-  INTG_VOLT.IntDivChange(1);
- 
+  INTG_HTRPWM.IntDivChange(1);
+  INTG_FANPWM.IntDivChange(1);
+
   //return TRUE unless you set the focus to a control
   return TRUE;  
   //EXCEPTION: OCX Property Pages should return FALSE
@@ -129,7 +134,8 @@ void CPage3::TabOpen(void)
 static void CALLBACK MM_Timer(UINT uID,UINT uMsg,DWORD dwUser,DWORD dw1,DWORD dw2)
 {
   CPage3 *pDlg = reinterpret_cast<CPage3*>(dwUser);
-  char cmd = TC_HEATER;
+  //T-result + Heater pwm value + Fan pwm value
+  char cmd = TC_TMPR_HEATER_FAN;
   pDlg->pBT->Tx(CMD_GET_TEMPERATURE, &cmd, 1);
 }
 
@@ -154,6 +160,33 @@ void CPage3::Monitoring(int on)
     timeKillEvent(MM_TimerID);
     MM_TimerID = 0;
   }
+}
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void CPage3::MonitoringParser(char *pBuf)
+{
+  //CString txt1, txt2; 
+  float heater_temperature;
+  unsigned char pwm_heater;
+  unsigned char pwm_fan;
+  
+  //parse data
+  memcpy(&heater_temperature, pBuf, 4);
+  pBuf +=4;
+  pwm_heater = *pBuf++;
+  pwm_fan = *pBuf;
+  
+  //save data
+  pParams->Heater_Temperature = heater_temperature;
+  pParams->pwm_heater = pwm_heater;
+  pParams->pwm_fan = pwm_fan;
+
+  //show data
+  Show_Temperature();
+  Show_HeaterPower();
+  Show_FanSpeed();
 }
 
 //------------------------------------------------------------------------------
@@ -212,7 +245,7 @@ int CPage3::Calc_HeaterPowerLimit(void)
   float temp = pDevice->heater_power_limit;
   temp /= pDevice->heater_total_power;  
   temp *= 256;
- // temp += 1;
+  // temp += 1;
   if(temp>255) temp = 255;
   
   //set limit 
@@ -240,7 +273,9 @@ void CPage3::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	limit = Calc_HeaterPowerLimit();
 	if(position<=limit)
 	{
-	  pBT->Tx(CMD_SET_HEATER, (char*)&position, 2); 
+	  pBT->Tx(CMD_SET_HEATER, (char*)&position, 2);
+	  //pParams->pwm_heater = position;
+	  //Show_HeaterPower();
 	}
 	else m_slider_heater.SetPos(limit);
  }
@@ -280,6 +315,7 @@ BOOL CPage3::PreTranslateMessage(MSG* pMsg)
 	   //----
 	   pDevice->heater_total_power = value;
 	   pBT->Tx(command, (char*)&value, 2);
+	   Controls_Update();
 		
 	   //запрет дальнейшей обработки
        return TRUE;	
@@ -295,7 +331,8 @@ BOOL CPage3::PreTranslateMessage(MSG* pMsg)
 	   //----
 	   pDevice->heater_tempr_limit = value;
 	   pBT->Tx(command, (char*)&value, 2);
-		
+	   Controls_Update();
+
 	   //запрет дальнейшей обработки
        return TRUE;	
 	}	
@@ -310,7 +347,8 @@ BOOL CPage3::PreTranslateMessage(MSG* pMsg)
 	   //----
 	   pDevice->heater_power_limit = value;
 	   pBT->Tx(command, (char*)&value, 2);
-		
+	   Controls_Update();
+
 	   //запрет дальнейшей обработки	
        return TRUE;	
 	}	    
@@ -353,28 +391,22 @@ void CPage3::OnTimer(UINT_PTR nIDEvent)
 //------------------------------------------------------------------------------
 void CPage3::OnButtonPanel()
 {
-  CMonDlg *pPanelDlg;
-  pPanelDlg = new CMonDlg();
+  if(hPanelDlg != NULL) return;
+  CMonDlg *pPanelDlg = new CMonDlg();
   pPanelDlg->Create(IDD_MONITOR_TEMPR, this->GetWindow(IDD_Page4));
   pPanelDlg->ShowWindow(SW_SHOW);
-  pPanelDlg->IniPointers(this);
+  pPanelDlg->IniPointers(this);	
+  hPanelDlg	= (HANDLE) pPanelDlg; 
 }
 
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-void CPage3::HeaterParser(char *pBuf)
+void CPage3::DeletePanel(void)
 {
-  //CString txt1, txt2; 
-  float heater_temperature;
-  unsigned char pwm_heater;
-  unsigned char pwm_fan;
+  if(hPanelDlg == NULL) return;
 
-  memcpy(&pParams->Heater_Temperature, pBuf, 4);
-  pBuf +=4;
-  pParams->pwm_heater = *pBuf++;
-  pParams->pwm_fan = *pBuf;
-
-  Show_Temperature();
-  Show_Power();
+  CMonDlg *pPanelDlg = (CMonDlg *) hPanelDlg;
+  delete []	pPanelDlg;
+  pPanelDlg = NULL;
 }

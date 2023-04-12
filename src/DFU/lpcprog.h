@@ -134,6 +134,7 @@ typedef struct
           unsigned int   MaxCopySize;   /* maximum size that can be copied to Flash in a single command */
     const unsigned int  *SectorTable;   /* pointer to a sector table with constant the sector sizes */
     const CHIP_VARIANT   ChipVariant;
+
 } LPC_DEVICE_TYPE;
 
 int NxpDownload(ISP_ENVIRONMENT *IspEnvironment);
