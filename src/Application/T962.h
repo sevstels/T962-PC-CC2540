@@ -1,4 +1,4 @@
-// PIDPC.h : main header file for the PROJECT_NAME application
+//T962.h : main header file for the PROJECT_NAME application
 #pragma once
 
 #ifndef __AFXWIN_H__
@@ -7,12 +7,12 @@
 
 #include "tec-resource.h"		// main symbols
 
-// CPIDPCApp:
-// See PIDPC.cpp for the implementation of this class
-class CPIDPCApp : public CWinAppEx
+// T962App:
+// See T962.cpp for the implementation of this class
+class T962App : public CWinAppEx
 {
   public:
-  CPIDPCApp();
+  T962App();
 
   //Overrides
   public:
@@ -23,4 +23,4 @@ class CPIDPCApp : public CWinAppEx
   afx_msg void OnContextHelp();
   virtual void HtmlHelp(DWORD_PTR dwData, UINT nCmd = 0x000F);
 };
-extern CPIDPCApp theApp;
+extern T962App theApp;

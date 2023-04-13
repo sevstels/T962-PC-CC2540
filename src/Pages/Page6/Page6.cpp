@@ -46,6 +46,7 @@ CPage6::CPage6() : CPropertyPage(CPage6::IDD)
   pAPP = NULL;
   pCSETUP = NULL;
   pBT = NULL;
+  pTab = NULL;
   pThread = NULL;
   pBLE = NULL;
   pAPP = NULL;
@@ -274,12 +275,15 @@ void CPage6::OnButtonFWUpdate()
 {
   if(program_run==0) 
   {
+    //Do not change Tab if chip programming
+    //pTab->EnableWindow(FALSE);
+	program_run = 1;
 	m_but_fw_update.SetWindowTextA("Update Stop");
   	ThreadLaunch();
-	program_run = 1;
   }
   else
   {
+	//pTab->EnableWindow(TRUE);
 	m_but_fw_update.SetWindowTextA("FW Update");
 	ev_ExitRequest.SetEvent();
 	program_run = 0;

@@ -174,6 +174,14 @@ void CC2540::RxCOM(char *pBuf, int length)
 	  if(pTI->pEventsHandler!=NULL)
 	    {pTI->pEventsHandler(BT_DEV_INFO,(char*)"Scan Done", 4);}
 	}
+	
+	//Lost BLE connection
+	if(cmd==0x0606)
+	{ 
+	  //GAP_DeviceInformation
+	  if(pTI->pEventsHandler!=NULL)
+	    {pTI->pEventsHandler(BT_DEV_DISCONNECTED,(char*)"Lost connection", 15);}
+	}
 
 	if(cmd==0x7f06)
 	{

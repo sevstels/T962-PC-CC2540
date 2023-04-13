@@ -5,7 +5,7 @@
 //Copyright:    (c) 2019, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
-#include "PIDPC.h"
+#include "T962.h"
 #include "MainDlg.h"
 #include "user_help.h"
 #include <Htmlhelp.h>

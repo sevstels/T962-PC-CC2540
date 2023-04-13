@@ -542,7 +542,7 @@ void CPage4::OnButtonShowGraph()
   //Set horisontal scale, from 0 to AUTO, step 0.1 sec 
   GRPH.SetRangeX(0, GRPH_WIDTH_AUTO);
   //set vertical scale, from 40deg.. to 100, 0.1degr step 
-  GRPH.SetRangeY(30, 300);
+  GRPH.SetRangeY(25, 300);
   //Height = 800 px = (100-20)*10, 0.1degr step
   GRPH.CreateGraph(310, GRPH_WIDTH_AUTO, "Prf");
   //BZI.LoadArray(DataBufer, 2000);

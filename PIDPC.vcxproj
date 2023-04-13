@@ -254,7 +254,7 @@
   <ItemGroup>
     <ClCompile Include="src\AnalysisGraph\anls-dlg-settings.cpp" />
     <ClCompile Include="src\AnalysisGraph\anls-graph.cpp" />
-    <ClCompile Include="src\Application\PIDPC.cpp" />
+    <ClCompile Include="src\Application\T962.cpp" />
     <ClCompile Include="src\AppSetup\app-setup.cpp" />
     <ClCompile Include="src\BT-Dlg\bt-dlg.cpp" />
     <ClCompile Include="src\DataTx\datatx.cpp" />
@@ -401,7 +401,7 @@
     <ClInclude Include="src\Profiles\profile-file.h" />
     <ClInclude Include="src\Version\firmware_build.h" />
     <ClInclude Include="tec-resource.h" />
-    <ClInclude Include="src\Application\PIDPC.h" />
+    <ClInclude Include="src\Application\T962.h" />
     <ClInclude Include="src\CMD\cmd.h" />
     <ClInclude Include="src\Decvice\device_struct.h" />
     <ClInclude Include="src\Help\user_help.h" />

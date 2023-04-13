@@ -337,13 +337,11 @@ void CBTDlg::OnButtonConnect()
 
   if(pBLE->dev_connected==1) 
   {
-    m_Monitor.ResetContent(); 
     m_Monitor.AddString("Device connected");
 	return;
   }
 
-  m_Monitor.ResetContent(); 
-  m_Monitor.AddString("Connect");
+  m_Monitor.AddString("Wait... Trying Connect");
 
   CString txt;
   m_edit_addr.GetWindowTextA(txt);
@@ -395,7 +393,7 @@ void CBTDlg::OnButtonDisconnect()
   if(pBLE->dev_connected==0) 
   {
     m_Monitor.ResetContent(); 
-    m_Monitor.AddString("Device disconnected");
+    m_Monitor.AddString("Disconnected");
 	return;
   } 
     

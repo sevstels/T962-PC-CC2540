@@ -47,7 +47,8 @@ class CPage6 : public CPropertyPage
   CEdit m_edit_info;
   CString txt_info;
   CProgressCtrl m_progress;
-  
+  CTabCtrl *pTab;
+
   //---- 
   CButton m_but_eep_show;
   CButton m_but_eep_erase;

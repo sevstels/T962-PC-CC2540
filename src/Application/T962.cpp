@@ -1,11 +1,11 @@
 //==============================================================================
-//File name:    "PIDPC.cpp"
+//File name:    "T962.cpp"
 //Purpose:      Source File
 //Version:      1.00
 //Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
-#include "PIDPC.h"
+#include "T962.h"
 #include "MainDlg.h"
 
 //---- Mem Leakage Debug
@@ -20,28 +20,28 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-// CPIDPCApp
-BEGIN_MESSAGE_MAP(CPIDPCApp, CWinAppEx)
+// T962App
+BEGIN_MESSAGE_MAP(T962App, CWinAppEx)
 ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 ///ON_COMMAND(ID_HELP, &CWinApp::HtmlHelp)
-ON_COMMAND(ID_CONTEXT_HELP, &CPIDPCApp::OnContextHelp)
+ON_COMMAND(ID_CONTEXT_HELP, &T962App::OnContextHelp)
 END_MESSAGE_MAP()
 
-// CPIDPCApp construction
-CPIDPCApp::CPIDPCApp()
+// T962App construction
+T962App::T962App()
 {
   //TODO: add construction code here,
   //Place all significant initialization in InitInstance
   ///EnableHtmlHelp();
 }
 
-// The one and only CPIDPCApp object
-CPIDPCApp theApp;
+// The one and only T962App object
+T962App theApp;
 
 //------------------------------------------------------------------------------
-//Function:	CPIDPCApp initialization
+//Function:	T962App initialization
 //------------------------------------------------------------------------------
-BOOL CPIDPCApp::InitInstance()
+BOOL T962App::InitInstance()
 {
 	CWinAppEx::InitInstance();
 
@@ -76,7 +76,7 @@ BOOL CPIDPCApp::InitInstance()
 //------------------------------------------------------------------------------
 //Function:	
 //------------------------------------------------------------------------------
-void CPIDPCApp::OnContextHelp()
+void T962App::OnContextHelp()
 {
   // TODO: Add your command handler code here
 }
@@ -84,7 +84,7 @@ void CPIDPCApp::OnContextHelp()
 //------------------------------------------------------------------------------
 //Function:	
 //------------------------------------------------------------------------------
-void CPIDPCApp::HtmlHelp(DWORD_PTR dwData, UINT nCmd)
+void T962App::HtmlHelp(DWORD_PTR dwData, UINT nCmd)
 {
   //TODO: Add your specialized code here and/or call the base class
   CWinAppEx::HtmlHelp(dwData, nCmd);

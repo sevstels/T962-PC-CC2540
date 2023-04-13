@@ -2,10 +2,10 @@
 //File name:    "MainDlg.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
-#include "PIDPC.h"
+#include "T962.h"
 #include "MainDlg.h"
 #include "cmd.h"
 #include "datatx.h"
@@ -110,7 +110,8 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
   pPage4->pConsole = &Console;
 //  pPage5->pConsole = &Console;
   pPage6->pConsole = &Console;
-
+  pPage6->pTab = &m_Tab;
+  
   //----
   pPage4->pPage2 = pPage2;
 
@@ -426,8 +427,6 @@ HCURSOR CMainDlg::OnQueryDragIcon()
 void CMainDlg::OnTcnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 {	
   int iTab = m_Tab.GetCurSel();
-  //Do not change Tab if chip programming
-  if(pPage6->program_run!=0) iTab = 5;
 
   TC_ITEM tci;
   tci.mask = TCIF_PARAM;
@@ -479,8 +478,6 @@ void CMainDlg::OnTcnSelchangeTab(NMHDR *pNMHDR, LRESULT *pResult)
 void CMainDlg::OnTcnSelchangingTab(NMHDR *pNMHDR, LRESULT *pResult)
 {	
   int iTab = m_Tab.GetCurSel();
-  //Do not change Tab if chip programming
-  if(pPage6->program_run!=0) return;
 
   TC_ITEM tci;
   tci.mask = TCIF_PARAM;

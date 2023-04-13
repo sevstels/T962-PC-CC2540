@@ -198,9 +198,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Application\PIDPC.cpp">
-      <Filter>Application</Filter>
-    </ClCompile>
     <ClCompile Include="src\Pages\Page1\Page1.cpp">
       <Filter>Pages\Page 1</Filter>
     </ClCompile>
@@ -468,6 +465,9 @@
     <ClCompile Include="src\LibCPP\CC2540\cc2540-cmd.cpp">
       <Filter>LibCPP\CC2540</Filter>
     </ClCompile>
+    <ClCompile Include="src\Application\T962.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -478,9 +478,6 @@
     </ClInclude>
     <ClInclude Include="src\CMD\cmd.h">
       <Filter>CMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Application\PIDPC.h">
-      <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="src\Decvice\device_struct.h">
       <Filter>Device setup</Filter>
@@ -622,6 +619,9 @@
     </ClInclude>
     <ClInclude Include="src\LibCPP\ShowErrors\show-err.h">
       <Filter>LibCPP\Show Error</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Application\T962.h">
+      <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

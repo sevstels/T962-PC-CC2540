@@ -5,7 +5,7 @@
 //Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
-#include "PIDPC.h"
+#include "T962.h"
 #include "MainDlg.h"
 #include "cmd.h"
 #include "datatx.h"
@@ -217,6 +217,8 @@ void CMainDlg::BLE_Event(int event_id, char *pBuf, int length)
   	//Device disconnected
 	pCMainDlg->LED_Control(0);
 	pCMainDlg->APP.bt_connected = 0;
+	if(pCMainDlg->pBTDlg!=NULL) 
+	   pCMainDlg->pBTDlg->OnButtonDisconnect();
   }
 
   //----

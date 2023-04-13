@@ -129,6 +129,7 @@ static DWORD DFU_PROGRAMM(LPVOID lParam)
   pBuf = NULL;
   
   pDlg->program_run = 0;
+  pDlg->pTab->EnableWindow(TRUE);
   pDlg->m_but_fw_update.SetWindowTextA("FW Update");
   pDlg->pThread = NULL;
 

@@ -652,7 +652,7 @@ void CGraphs::Draw_ScaleY(CDC *pCDC, int x0, int y0, int width, int height,
     txt_digit += txt_step;
 
     //Text out    
-    pCDC->TextOutA(x0-txt_x_offset, y+txt_y_offset, "ase");
+    pCDC->TextOutA(x0-txt_x_offset, y+txt_y_offset, txt);
   } 
 
   //---- delete graphic objects
