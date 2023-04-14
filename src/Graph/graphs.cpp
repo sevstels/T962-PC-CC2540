@@ -2,12 +2,12 @@
 //File name:   "graphs.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:   (c) 2019, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:   (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "graphs.h"
 #include <math.h>
-#include "cmd.h"
+#include "Arrows.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -26,6 +26,11 @@ static char THIS_FILE[] = __FILE__;
 //------------------------------------------------------------------------------
 CGraphs::CGraphs()
 {   	
+  //----
+  scale_length_x = 0;
+  scale_length_y = 0;
+
+  //----	
   last_file.empty();
   file_number = 0;
   normalize = 0;
@@ -34,11 +39,20 @@ CGraphs::CGraphs()
   curve_length = 0;
   resize_factor_x = 1;
   resize_factor_y = 1;
+  hWnd = NULL;
   hDC = NULL;
-  pBuf = Buf;
-  pBuf2 = Buf2;
-  //curve_length1 = 0;
-  curve_length2 = 0;
+  signal_detected = 0;
+  //----
+  scale_line_width = 1;
+  //----
+  save_bmp = 0;
+  save_jpg = 0;
+  save_gif = 0;
+  save_png = 0;
+  save_svg = 0;
+  control_line_length = 0;
+  test_line_length = 0;
+  memset(graph_line_width, 0, sizeof(graph_line_width));
 }
 
 //------------------------------------------------------------------------------
@@ -54,6 +68,7 @@ CGraphs::~CGraphs()
 //CDC -это контекст графического устройства
 //------------------------------------------------------------------------------
 void CGraphs::SetHWnd(HANDLE hHWnd){hWnd = hHWnd;}
+
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
@@ -62,6 +77,7 @@ void CGraphs::SetRangeX(int from, int to)
   range_x0 = from;
   range_xn = to;
 }
+
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
@@ -72,18 +88,23 @@ void CGraphs::SetRangeY(int from, int to)
 }
 //------------------------------------------------------------------------------
 //
-//------------------------------------------------------------------------------
-void CGraphs::SetMulX(double factor_x)
+//------------------------------------------------------------------------------  
+void CGraphs::SetScaleX(int from, int to, int step)
 {
-  resize_factor_x = factor_x;
+  scale_x_begin = from;
+  scale_x_end = to;
+  scale_x_cell = (to-from)/step;
 }
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CGraphs::SetMulY(double factor_y)
+void CGraphs::SetScaleY(int from, int to, int step)
 {
-  resize_factor_y = factor_y;
+  scale_y_begin = from;
+  scale_y_end = to;
+  scale_y_cell = (to-from)/step;
 }
+
 //------------------------------------------------------------------------------
 //For draw Line
 //------------------------------------------------------------------------------
@@ -116,105 +137,60 @@ void CGraphs::Calc_LinePoints(short *pBuf, int x1, int y1, int x2, int y2)
  }
 }
 
-extern unsigned short GetSampleSetup(float code);
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int CGraphs::Parser(std::vector<Point2D> *pProfile)
+int CGraphs::round(double value)
 {
-  int count = pProfile->size();
-  int last_x = (int) pProfile->at(count-1).x;
-  curve_length = last_x;
-  int y_old = 0;
-  int y1, y2, led = 0;
-  //
-  memset(pBuf, 0, sizeof(Buf));
-  
-  TRACE("Processing PCR\n");
-
-  for(int i=0; i<count-1; i++)
-  {
-    //---- x1 first point
-    int x1 = (int)(pProfile->at(i).x*resize_factor_x);
-    float fl_y = pProfile->at(i).y;
-	//проверка LED    
-    if(fl_y<2000){y1 = (int)(resize_factor_y*fl_y); y_old = y1;}
-	else y1 = y_old; //{y1 = 1000+GetSampleSetup(fl_y); led = 1;}
-	   
-    //---- x2
-    int x2 = (int)(pProfile->at(i+1).x*resize_factor_x);
-    fl_y = pProfile->at(i+1).y;
-    
-	//проверка LED    
-	if(fl_y<2000){y2 = (int)(resize_factor_y*fl_y); y_old = y2;}
-	else  y2 = y_old; //{y2 = 1000+GetSampleSetup(fl_y); led = 1;}
-
-	TRACE2("x1 %d y1 %d , ", x1, y1);
-	TRACE2("x2 %d y2 %d\n", x2, y2);
-
-    if(y1 != y2)
-     {
-       //for ramp lines
-      Calc_LinePoints(Buf, x1, y1, x2, y2);
-     }
-    else
-     {
-       //for horisontal lines
-       //заливаем значение функции
-       for(int n=x1+1; n<x2; n++)
-        {
-           pBuf[n] = y1;
-        }
-     }
-  }
-
-  return 1;
+  return (int)floor(value+(double)0.5);
 }
 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int CGraphs::ParserDots(std::vector<Point2D> *pData)
+void CGraphs::SetSize(int x, int y)
 {
-  int count = pData->size();
+  picture_heigth = y;
+  picture_width = 460;//x;
+}
+
+//------------------------------------------------------------------------------
+//Vertical data resize
+//------------------------------------------------------------------------------
+int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut, 
+	                     std::vector<Point2D> *pBufIn)
+{
+  TRACE("Resize Data by Y\n"); 
+     
+  //пересчитать максимальную точку в данных
+  resize_factor_y = picture_heigth;
+  resize_factor_y /= 225; //scale_y_end;
+  resize_factor_y = 1;
+
+  size_t count = pBufIn->size();
   if(count<1) return 0;
-  int last_x = (int) pData->at(count-1).x;
-  curve_length2 = last_x*resize_factor_x;
-	
-  //
-  memset(pBuf2, 0, sizeof(Buf2));
-  
-  TRACE("Processing TEC\n");
+ 
+  //очистить буфер итоговой картинки
+  pBufOut->empty();
 
-  for(int i=0; i<count-1; i++)
+  //Vertical resizer
+  for(unsigned int x=0; x<count-1; x++)
   {
-    //---- x1 first point
-    int x1 = (int)(pData->at(i).x*resize_factor_x);
-    double dbl_y = (float)pData->at(i).y;
-    int y1 = (int)(resize_factor_y*dbl_y);
+	Point2D p = pBufIn->at(x);
+	double temp = p.y;
+    
+	//---- y point
+	temp *= resize_factor_y;
 
-    //---- x2
-    int x2 = (int)(pData->at(i+1).x*resize_factor_x);
-    dbl_y = (float)pData->at(i+1).y;
-    int y2 = (int)(resize_factor_y*dbl_y);
-
-	TRACE2("x1 %d y1 %d , ", x1, y1);
-	TRACE2("x2 %d y2 %d\n", x2, y2);
-
-    if(y1 != y2)
-     {
-       //for ramp lines
-       Calc_LinePoints(Buf2, x1, y1, x2, y2);
-     }
-    else
-     {
-       //for horisontal lines
-       //заливаем значение функции
-       for(int n=x1+1; n<x2; n++)
-        {
-           pBuf2[n] = y1;
-        }
-     }
+	//величина для графика в пикселях
+	int y = round(temp);
+	PointXY pxy;
+	
+	pxy.y = y;
+	pxy.x = (int)p.x;
+	pBufOut->push_back(pxy);
+	
+	TRACE2("x %d y %d\n", pxy.x, pxy.y);
   }
 
   return 1;
@@ -223,9 +199,81 @@ int CGraphs::ParserDots(std::vector<Point2D> *pData)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int CGraphs::CreateGraph(int height, int width, const char *pFileName)
+int CGraphs::ResizeDataX(std::vector<PointXY> *pBufOut, 
+	                     std::vector<Point2D> *pBufIn)
+{  /*
+  size_t count = pBufIn->size();
+  if(count<1) return 0;
+
+ // int last_x = (int) pBuffer->at(count-1).x;
+ // if(last_x>= curve_length) curve_length = last_x;
+ 
+  TRACE("Resize Data by X\n");
+
+  //очистить буфер итоговой картинки
+ // x.RemoveAll();
+ // y.RemoveAll();
+ // double dbl_x;
+
+  //Vertical resizer
+  for(unsigned int x=0; x<count-1; x++)
+  {
+    //---- y point
+    dbl_y = pBufIn->at(xx).x;
+	dbl_y *= factor_y;
+
+	//величина для графика в пикселях
+	int yi = round(dbl_y);
+	y.Add(yi);
+	x.Add(xx);
+	TRACE2("x %d y %d\n", xx, yi);
+  }	  */
+/*
+  //Horizontal resizer
+  double dk = (double)count;
+  dk = 1;///= 240;
+  
+  unsigned int k = round(dk);
+  unsigned int index_in  = 0;
+  unsigned int index_out = 0;
+    
+  for(unsigned int x=0; x<count-2; x +=k)
+  {
+    dbl_y = 0;
+
+    //считываем блок точек и находим среднее
+    for(unsigned int i=0; i<k; i++)
+    {
+	  dbl_y += y.GetAt(index_in++);
+    }
+    
+    //считаем среднее для группы
+    dbl_y /= k;
+
+    unsigned short out = 900;
+    out -= round(dbl_y);
+    
+    //сохраняем точку
+	y.SetAt(index_out++, out);
+
+	TRACE2("x %d y %d\n", index_out, out);
+  }
+
+  //сколько удалить элементов
+  count = count - index_out -1;
+
+  //удалить не используемую память
+  y.RemoveAt(index_out, count);
+*/
+  return 1;
+}
+
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
+int CGraphs::CreateGraph(const char *pFileName)
 {
-  int i,y;
+  int i, y, width, height;
   double data;
   short *pPic = NULL;
   std::string file = pFileName; 
@@ -242,13 +290,13 @@ int CGraphs::CreateGraph(int height, int width, const char *pFileName)
   HDC hDC = GetDC((HWND)hWnd);   
   CDC *pDC = CDC::FromHandle(hDC);
 
-  //---
-  if(width==GRPH_WIDTH_AUTO) width = (int)curve_length*resize_factor_x;
+  int dots_count = (int) graph_line[0].size();
+	
+  //last poin
+  width = graph_line[0].at(dots_count-1).x;
+  width -= (int)graph_line[0].at(0).x;
   
-  //allocate memory for temp local buffer 
-  pPic = new short[width];
-  if(pPic==NULL) return -1;
-  memcpy(pPic, pBuf, width<<1);
+  height = picture_heigth;
 
   //====================================================================
   //Save signal to text *.h file + signal inversion
@@ -287,40 +335,31 @@ int CGraphs::CreateGraph(int height, int width, const char *pFileName)
   //Установить начало координат	X,Y
   //Set zero point coordinate in the Graph space
   PIC.SetViewportOrg(left_gap, height+top_gap); 
-  
-  //Draw curve
-  Draw_Curve(&PIC, pPic, 3, 0, 0, 0, width-1, RGB(120,160,120));	   
-  
+    
   //Draw graph scale
-  Draw_ScaleY(&PIC, 0,0, width, height, 12, RGB(60,60,60));//RGB(180,180,180)
-  Draw_ScaleX(&PIC, 0,0, width, height, 10, RGB(60,60,60));//RGB(180,180,180)
+  Draw_ScaleY(&PIC, 0,0, width, height); // , 12, RGB(60,60,60)
+  Draw_ScaleX(&PIC, 0,0);
   
-  //Sin graph test
-  //sin_wave((char*)pPic, 60, 60, 2000);
-  //test_Func2((char*)pPic, 60, 60, 400);
-  
-  //Draw Additional curves  
-  //if(curve_length1 > width)curve_length1 = width;
-  //if(curve_length2 > width)curve_length2 = width;
-  
-  Draw_Curve(&PIC, Buf2, 3, 0, 0, 0, curve_length2-1, RGB(255,0,0));
-  
-  //if(pCurveBuf2!=NULL)Draw_Curve(&PIC, pCurveBuf2, 2, 0, 0, 0, 
-	//                  curve_length2-1, RGB(0,0,255));
-
- /* 
-  //Draw Limits lines
-  y = 70*h_scale; 
-  IMG.DrawLine(&PIC,1,0,y,width,y, RGB_YELLOW);
-
-  y = 50*h_scale;
-  IMG.DrawLine(&PIC,1,0,y,width,y, RGB_BLUE);
- */
+  //Curve count
+  int c_count = 1;
+  for(int i=0; i<c_count; i++)
+  {
+	 for(int n=0; n<graph_line[i].size()-1; n++)
+	 {
+		int x0 = (int)graph_line[i].at(n).x;
+		int y0 = (int)graph_line[i].at(n).y;
+	    int x = (int)graph_line[i].at(n+1).x;
+		int y = (int)graph_line[i].at(n+1).y;
+		
+		if(y0!=0)
+		//Draw curve
+	    Draw_Line(&PIC, graph_line_width[i],x0,y0,x,y,graph_line_color[i]);
+	 }   
+  }
 
   //Restore old setup
   PIC.SetMapMode(oldMapMode);
   PIC.SetBkMode(oldBkMode);
-  //PIC.SetTextColor(oldTextColor);
 
   //Release buffer
   if(pPic!=NULL){delete [] pPic; pPic = NULL;}
@@ -353,26 +392,15 @@ int CGraphs::CreateGraph(int height, int width, const char *pFileName)
 //------------------------------------------------------------------------------
 int CGraphs::ShowGraph(const char *pFileName)
 {
-  HINSTANCE Status = 0;
+  HINSTANCE Status;
   std::string msg, file;
-  //int length = 0;
 
   if(pFileName!=NULL){file = pFileName;}
   else file = last_file;
-/*
-  if(length==0)
-  else file = pFileName;
-*/	
-  ///current_filepath = folder_path[0]; 
-  //file_name = last_picture; //"Capture_x.png";
-  ///current_filename = "controller_1.png";
-  ///current_filepath += current_filename;
-
+   
   //------------------------------------
   //launch default picture browser
   //------------------------------------
-  ///if (current_filename.Find(_T(".png"))!=-1)
-  ///{
   //launch picture browser exe
   Status = ShellExecuteA(NULL, "open", file.c_str(), 
                          NULL, NULL, SW_SHOW);
@@ -410,140 +438,11 @@ int CGraphs::ShowGraph(const char *pFileName)
 }
 
 //------------------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-void CGraphs::Normalization(void)
-{
-  int min_x, max_x, min_y, max_y;
-
-  if(curve_length==0) return;
-  int find_min = find_Min(pBuf, 0, curve_length, min_x, min_y);
-  int find_max = find_Max(pBuf, 0, curve_length, max_x, max_y);
-  
-  if(find_min==1 && find_max==1)
-  {
-    //calc resize_factor
-    resize_factor_y = max_y-min_y;
-    resize_factor_y /= curve_height;
-    normalize = 1;
-  }
-  //====================================================================
-  //Calc  
-  //====================================================================
-  /*
-  if(resize_y==1)
-  {
-    //copy from Extern data Bufer to local buffer for normalisation
-    for(i=0; i<width; i++)
-     { 
-       data = (double)pPic[i];
-       data *= resize_factor_y;      
-       pPic[i] = (short)data; 
-     }
-  }*/
-
-  /*
-  if(normalize>0)
-  {
-    //copy from Extern data Bufer to local buffer for normalisation
-    for(i=0; i<width; i++)
-     { 
-       data = (double)pPic[i];
-       data /= resize_factor_y;      
-       pPic[i] = (short)data; 
-     }
-    normalize = 0;
-  }*/ 
-}
-
-//------------------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-int CGraphs::find_Max(signed short *pBuff, int from, int to, int &x, int &y)
-{
-  int i;
-  //int edge = 127+16;
-  int result = -1;
-
-  pBuff += from; 
-  
-  //short minmax = edge;
-  signed short minmax = *pBuff;
-  signed short first_val = minmax;
-
-  pBuff++;
-
-  //check array	
-  for (i = from+1; i<to; i++)
-  {
-      if(*pBuff > minmax)
-       {
-           minmax = *pBuff;
-           x = i;
-           y = minmax;
-           result = 1;
-       }
-      pBuff++;
-  }	
-
-  //for case if max not found in array, set as max first point
-  if(result<0)
-  {
-    x = 0;
-    y = first_val;
-    result = 1;
-  }
-
-  return result;
-}
-
-//------------------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
-int CGraphs::find_Min(signed short *pBuff, int from, int to, int &x, int &y)
-{
-  int i;
-  //int edge = 127-16;
-  int result =-1;
-  
-  pBuff += from; 
-  
-  //short minmax = edge;
-  signed short minmax = *pBuff;
-  signed short first_val = minmax;
-  pBuff++;
-    
-  for (i = from+1; i<to; i++)
-  {
-      if(*pBuff < minmax)
-       {
-           minmax = *pBuff;
-           x = i;
-           y = minmax;
-           result = 1;
-       }
-      pBuff++;
-  }	
-
-  //for case if min not found in array, set as min first point
-  if(result<0)
-  {
-    x = 0;
-    y = first_val;
-    result = 1;
-  }
-
-  return result;
-}
-
-//------------------------------------------------------------------------------
 //Draw Horizontal lines by X-direction
 //------------------------------------------------------------------------------
-void CGraphs::Draw_ScaleX(CDC *pCDC, int x0, int y0, int width, int height,
-                            int line_number, COLORREF color)
+void CGraphs::Draw_ScaleX(CDC *pCDC, int x0, int y0)
 { 
-  CString txt; 
-  char line_width = 1;
+  CString txt;
   int step_x;
   int txt_step;
   int txt_digit = 0;
@@ -555,46 +454,41 @@ void CGraphs::Draw_ScaleX(CDC *pCDC, int x0, int y0, int width, int height,
   //------------------------------------------
   //set font
   CFont font;
-  font.CreateFont(11,0,0,0,FW_BOLD,0,0,0,RUSSIAN_CHARSET,
+  font.CreateFont(16,0,0,0,FW_HEAVY,0,0,0,DEFAULT_CHARSET,//RUSSIAN_CHARSET,
                 OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,
                 PROOF_QUALITY,VARIABLE_PITCH | FF_DONTCARE,"Arial");
-
+ 
   pCDC->SelectObject(&font);
   pCDC->SetTextColor(RGB(0,0,0));
 
-  if(range_xn==GRPH_WIDTH_AUTO)
+/*  if(range_xn==GRPH_WIDTH_AUTO)
   { 
 	range_xn = curve_length;
-  }
+  }	 */
 
-  //Calc horisontal pixel steps 
-  int range_x = range_xn-range_x0; 
-  int xb = (int)(range_x0*resize_factor_x);
-  int xe = (int)(range_xn*resize_factor_x);
-  step_x = (int)((range_x/line_number)*resize_factor_x);
+  //Calc horisontal pixel steps
+  int height = picture_heigth;
+  int line_numbers = scale_x_cell;
   
-  txt_step = (int)(range_x/line_number);
-  txt_digit = range_x0;  
-  
+  int range_x =  scale_x_end - scale_x_begin;  
+  txt_step = (int)(range_x/line_numbers);
+   
+  //Draw vertical lines by X-step  
+  step_x = range_x/scale_x_cell;
+  txt_digit = scale_x_begin;
 
-  //Draw vertical lines by X-step
-  //step_x = (int)(width/50);
-  
-  step_x = 100;
-  txt_digit = range_x0;
-  txt_step = 10;
-
-  for (int x=0; x <=xe-xb; x+=step_x) 
+  for (int x=0; x <=range_x; x+=step_x) 
   {
-    Draw_Line(pCDC, line_width, x, y0, x, height+y0, color);
+    Draw_Line(pCDC, scale_line_width, x, y0, x, 
+		      height+y0, scale_line_color);
 
     //Print horizontal scale digit
     txt.Format("%d", txt_digit);
     txt_digit += txt_step;
 
     if(txt_digit>=10)txt_x_offset=4;
-    if(txt_digit>=100)txt_x_offset=6;
-    if(txt_digit>=1000)txt_x_offset=10;
+    if(txt_digit>=100)txt_x_offset=10;
+    if(txt_digit>=1000)txt_x_offset=14;
     //Text out
     pCDC->TextOutA(x-txt_x_offset, y0+txt_y_offset, txt);	
   }
@@ -606,8 +500,7 @@ void CGraphs::Draw_ScaleX(CDC *pCDC, int x0, int y0, int width, int height,
 //------------------------------------------------------------------------------
 //Draw Vertical lines by X-direction
 //------------------------------------------------------------------------------
-void CGraphs::Draw_ScaleY(CDC *pCDC, int x0, int y0, int width, int height, 
-                            int line_number, COLORREF color)
+void CGraphs::Draw_ScaleY(CDC *pCDC, int x0, int y0, int width, int height)
 { 
   CString txt;
   int line_width = 1;
@@ -617,7 +510,7 @@ void CGraphs::Draw_ScaleY(CDC *pCDC, int x0, int y0, int width, int height,
   //------------------------------------------
   //set font
   CFont font;
-  font.CreateFont(11,0,0,0,FW_BOLD,0,0,0,RUSSIAN_CHARSET,
+  font.CreateFont(16,0,0,0,FW_HEAVY,0,0,0,DEFAULT_CHARSET,//RUSSIAN_CHARSET,
                 OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,
                 PROOF_QUALITY,VARIABLE_PITCH | FF_DONTCARE,"Arial");
  
@@ -633,26 +526,30 @@ void CGraphs::Draw_ScaleY(CDC *pCDC, int x0, int y0, int width, int height,
   int step_y;
   int txt_step;
   int txt_digit = 0;
-  int txt_x_offset = 18;
+  int txt_x_offset = 26;
   int txt_y_offset = 6;
-  
-  int yb = (int)(range_y0*resize_factor_y);
-  int ye = (int)(range_yn*resize_factor_y);
-  step_y = (int)((range_y/line_number)*resize_factor_y);
-  
-  txt_step = (int)(range_y/line_number);
-  txt_digit = range_y0;
 
-  for(int y=0; y<=ye-yb; y+= step_y)
+  width = scale_x_end; 
+  height = picture_heigth;
+
+  step_y = (int)(height/scale_y_cell);
+  txt_step = (int)((scale_y_end-scale_y_begin)/scale_y_cell);
+
+  txt_digit = scale_y_begin;
+
+
+  for(int y=0; y<=height; y+= step_y)
   {
-    Draw_Line(pCDC, line_width, x0, y, width, y, color);
-
     //Print vertical scale digit
-    txt.Format("%d", txt_digit);
-    txt_digit += txt_step;
+    txt.Format("%d", y/*txt_digit*/);
 
-    //Text out    
+    Draw_Line(pCDC, scale_line_width, x0, y, width, y, 
+		            scale_line_color);
+
+	//Text out, vertical digits    
     pCDC->TextOutA(x0-txt_x_offset, y+txt_y_offset, txt);
+
+	txt_digit += txt_step;
   } 
 
   //---- delete graphic objects
@@ -702,8 +599,10 @@ void CGraphs::Draw_Curve(CDC *pDC, short *pBuf, char line_width,
  
   //Start point
   int x, y, lim;
+  
   //offset
-  int offset_y = (int)(range_y0*resize_factor_y);
+  int offset_y = 0;// (int)((range_yn-range_y0)*resize_factor_y);
+  float y_fl;
 
   //--------------------------------------------------------
   //Draw curve line
@@ -714,7 +613,12 @@ void CGraphs::Draw_Curve(CDC *pDC, short *pBuf, char line_width,
 
 	 //Calculation current point position
      x = x0 + x_from; 
-     y = pBuf[x_from];
+     ///y = pBuf[x_from];
+	 //Resize
+	 y_fl = pBuf[x_from];
+	 y_fl *= (float)resize_factor_y;
+	 y = (int)y_fl; 
+  if(y<0)y=0;
 	 if(y<offset_y)
 	 { 
 	   y = offset_y; 
@@ -731,7 +635,13 @@ void CGraphs::Draw_Curve(CDC *pDC, short *pBuf, char line_width,
 
      //Calculation next point position
      x = x0 + x_from; 
-     y = pBuf[x_from];
+     ///y = pBuf[x_from];
+	 //Resize
+	 y_fl = pBuf[x_from];
+	 y_fl *= (float)resize_factor_y;
+	 y = (int)y_fl; 
+	 
+  if(y<0)y=0;
 	 if(y<offset_y)
 	 { 
 	   y = offset_y; 
@@ -749,4 +659,136 @@ void CGraphs::Draw_Curve(CDC *pDC, short *pBuf, char line_width,
  //Set old Pen to DC 
  pDC->SelectObject(pOldPen);
  pen.DeleteObject();
+}
+
+//------------------------------------------------------------------------------
+//Draw
+//------------------------------------------------------------------------------
+void CGraphs::Draw_MsgBox(CDC *pCDC, int x0, int y0, int dx, int dy, CString txt, int yes_no)
+{ 
+  COLORREF bgn_color;
+  COLORREF line_color;
+  COLORREF txt_color;   
+	
+  if(yes_no==1)
+  {
+  	bgn_color = RGB(230,230,230);
+  	line_color = RGB(255,0,0);
+	txt_color = RGB(255,0,0);
+  }
+  else
+  {
+   	bgn_color = RGB(250,250,250);
+  	line_color = RGB(0,180,0);
+	txt_color = RGB(0,180,0);
+  }
+
+  //Fill BGnd
+  pCDC->FillSolidRect(x0, y0, dx, dy+2, bgn_color);
+  
+  //Window edge line верхняя гориз
+  Draw_Line(pCDC, 1, x0, y0, x0+dx, y0, line_color); 
+  //Window edge line нижняя гориз
+  Draw_Line(pCDC, 1, x0, y0+dy+2, x0+dx, y0+dy+2, line_color);
+  //Window edge line вертикальная левая
+  Draw_Line(pCDC, 1, x0, y0, x0, y0+dy+2, line_color); 
+  //Window edge line вертикальная правая
+  Draw_Line(pCDC, 1, x0+dx, y0, x0+dx, y0+dy+2, line_color);
+
+  int x=x0+4, y=y0+26;
+  
+  SetFont(pCDC, 24, 1, 0);
+  pCDC->SetTextColor(txt_color);
+  pCDC->TextOutA(x, y, txt);
+}
+
+//------------------------------------------------------------------------------
+//Draw
+//------------------------------------------------------------------------------
+void CGraphs::Draw_Point(CDC *pCDC, int buf_position)
+{ 
+  int x = 200;
+  int y = 100;
+
+  CPen pen_gray;
+  CString txt;
+  txt.Format("%d  %2.1f v", x, 0.1);
+
+  //left/right arrows ini
+  ARROWSTRUCT ARROW;
+  ARROW.nWidth = 5;
+  ARROW.fTheta = 0.4f;
+  ARROW.bFill = true;
+  ARROW.color = RGB(160,160,160);
+  
+  pen_gray.CreatePen(PS_SOLID, 1, RGB(120,120,120));
+  pCDC->SelectObject(&pen_gray);	//select pancil
+
+  //write arrow
+  ARROW.color = RGB(255,0,0);
+  pCDC->MoveTo(x+30-buf_position, y-10);
+  pCDC->LineTo(x+16-buf_position, y-10);//draw
+  ArrowTo(pCDC->m_hDC, x-buf_position, y,&ARROW);
+  
+  //pCDC->SetBkColor(RGB(255,255,111));//ETO_OPAQUE
+  pCDC->SetBkColor(RGB(240,240,240));//ETO_OPAQUE
+  pCDC->SetTextColor(RGB(40,40,40));
+  pCDC->ExtTextOutA(x+34-buf_position, y-18, ETO_CLIPPED,NULL,"Lock Point:",NULL);
+  pCDC->ExtTextOutA(x+34-buf_position, y, ETO_CLIPPED,NULL,txt,NULL);
+  
+  //----- delete all Pen
+  pen_gray.DeleteObject();
+}
+
+//------------------------------------------------------------------------------
+//Draw
+//------------------------------------------------------------------------------
+void CGraphs::Draw_PointBox(CDC *pCDC, int buf_position)
+{
+ //BOOL CDC::GetTextMetrics(LPTEXTMETRICS TextAtttrib) const;
+}
+
+//------------------------------------------------------------------------------
+//Paint
+//------------------------------------------------------------------------------
+void CGraphs::SetFont(CDC *pCDC, // Гарнитура
+                      int Size, // размер в пунктах
+                      BOOL Bold,// Признак жирного начертания
+                      BOOL Italic) // Признак наклонного начертания
+{
+ /*	
+ //Получим контекст окна
+ CWindowDC winDC = GetDC(this);
+	
+ //Узнаем, сколько пикселей в одном логическом дюйме
+ int pixelsPerInch = winDC.GetDeviceCaps(LOGPIXELSY);
+ 	
+ //Узнаем высоту в пикселях шрифта размером Size пунктов
+ int fontHeight = -MulDiv(Size, pixelsPerInch, 72);
+ 	
+ //Устанавливаем параметр жирности для функции CreateFont()
+ int Weight = FW_NORMAL;
+ if(Bold) Weight = FW_BOLD;
+ 	
+ //Удаляем предыдущий экземпляр шрифта -- нельзя дважды 
+ //инициализировать шрифт вызовом CreateFont().
+ delete m_pFont;
+ */
+
+  //set font
+  CFont font;
+  font.CreateFont(Size,0,0,0,FW_HEAVY,0,0,0,DEFAULT_CHARSET,//RUSSIAN_CHARSET,
+                OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,
+                PROOF_QUALITY,VARIABLE_PITCH | FF_DONTCARE,"Arial");
+ 
+  pCDC->SelectObject(&font);
+  font.DeleteObject();
+ /*
+ m_pFont = new CFont;
+ 
+ //Создание шрифта. Большинство параметров не используются.
+ m_pFont->CreateFont(fontHeight, 0, 0, 0, Weight, Italic, 0, 0, 
+                                DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
+                                CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
+                                DEFAULT_PITCH | FF_DONTCARE, Typeface);	 */
 }

@@ -69,7 +69,6 @@ class CPage4 : public CPropertyPage
   CEvent ev_Quit;
   
   //----
-  //CStatic m_txt_PCRnumber;
   CButton m_but_FileOpen;
   CButton m_but_FileSave;
   CButton m_but_FileShow;
@@ -91,7 +90,7 @@ class CPage4 : public CPropertyPage
   CProgressCtrl *pProgress;
   CProgressCtrl m_Progress_Write;
   CScrollBar m_Scroll;
-
+   
   //----
   void ThreadLaunch(void);
   void ThreadStop(void);

@@ -530,29 +530,46 @@ void CPage4::OnButtonShowGraph()
   m_but_ShowGraph.EnableWindow(FALSE);
 
   //===============================================
+  //Ini picture	class
+  //===============================================
+  GRPH.graph_line_width[0] = 2;
+  GRPH.graph_line_width[1] = 2;
+  GRPH.graph_line_color[0] = RGB(0,120,0);
+  GRPH.graph_line_color[1] = RGB(0,255,0);
+  GRPH.scale_line_color = RGB(200,200,200);
+  GRPH.graph_bgnd_color = RGB(255,255,255);
+  
+  //Save image in format
+  GRPH.save_png = 1; 
+
+  //===============================================
   //Create picture
   //===============================================
-  //By Y x10 = 0.1degr step 
-  GRPH.SetMulY(2);
-  //By X x10, 1Sec = 100px 
-  GRPH.SetMulX(2); 
-  //Add data
-  GRPH.Parser(&DSPL.profile);
-  GRPH.ParserDots(&PidLog);
-  //Set horisontal scale, from 0 to AUTO, step 0.1 sec 
-  GRPH.SetRangeX(0, GRPH_WIDTH_AUTO);
-  //set vertical scale, from 40deg.. to 100, 0.1degr step 
-  GRPH.SetRangeY(25, 300);
-  //Height = 800 px = (100-20)*10, 0.1degr step
-  GRPH.CreateGraph(310, GRPH_WIDTH_AUTO, "Prf");
-  //BZI.LoadArray(DataBufer, 2000);
-  //BZI.DoBezier();
+  int pic_heigth = 400;
+  int pic_width = GRPH_WIDTH_AUTO;  
+  GRPH.SetSize(pic_width, pic_heigth);
+  
+  //Set vertical scale, from 25deg to 300deg, step 25deg 
+  GRPH.SetScaleY(25, 275, 25);  
 
+  //Set horisontal scale, 0sec to 360sec, step 20sec
+  GRPH.SetScaleX(0, 450, 30);
+   
+  //Add and processing data	for Profile Log
+  GRPH.ResizeDataY(&GRPH.graph_line[0], &DSPL.profile); 
+
+  //Add and processing data	for Profile
+  GRPH.ResizeDataX(&GRPH.graph_line[0], &DSPL.profile);
+    
+  //Draw image
+  GRPH.CreateGraph("TmpLog");
+  
   //Show picture
   GRPH.ShowGraph(NULL);
 
   m_but_ShowGraph.EnableWindow(TRUE);
 }
+
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------

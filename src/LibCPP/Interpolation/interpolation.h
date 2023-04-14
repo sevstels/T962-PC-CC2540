@@ -11,6 +11,30 @@
 //------------------------------------------------------------------------------
 //Point2D class
 //------------------------------------------------------------------------------
+class PointXY
+{
+  public:
+  int x, y;
+
+  PointXY() { x = y = 0; };
+  PointXY(int _x, int _y) { x = _x; y = _y; };
+  //----
+  PointXY operator +(const PointXY &point) 
+          const{return PointXY(x + point.x, y + point.y);};
+  //----
+  PointXY operator -(const PointXY &point) 
+          const{return PointXY(x - point.x, y - point.y);};
+  //----
+  PointXY operator *(int v) const { return PointXY(x * v, y * v);};
+  void operator +=(const PointXY &point) {x += point.x; y += point.y;};
+  void operator -=(const PointXY &point) {x -= point.x; y -= point.y;};
+
+  void normalize();
+};
+
+//------------------------------------------------------------------------------
+//Point2D class
+//------------------------------------------------------------------------------
 class Point2D
 {
   public:
