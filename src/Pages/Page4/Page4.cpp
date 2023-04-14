@@ -546,20 +546,23 @@ void CPage4::OnButtonShowGraph()
   //Create picture
   //===============================================
   int pic_heigth = 400;
-  int pic_width = GRPH_WIDTH_AUTO;  
-  GRPH.SetSize(pic_width, pic_heigth);
+  int pic_width = 460;//GRPH_WIDTH_AUTO;
+  int resize = 2;
+  GRPH.SetSize(pic_width*resize, pic_heigth);
   
   //Set vertical scale, from 25deg to 300deg, step 25deg 
   GRPH.SetScaleY(25, 275, 25);  
 
   //Set horisontal scale, 0sec to 360sec, step 20sec
   GRPH.SetScaleX(0, 450, 30);
-   
+    
+  GRPH.ResizeImgX(resize);
+
   //Add and processing data	for Profile Log
   GRPH.ResizeDataY(&GRPH.graph_line[0], &DSPL.profile); 
 
   //Add and processing data	for Profile
-  GRPH.ResizeDataX(&GRPH.graph_line[0], &DSPL.profile);
+  GRPH.ResizeDataX(&GRPH.graph_line[0], &GRPH.graph_line[0]);
     
   //Draw image
   GRPH.CreateGraph("TmpLog");
@@ -677,8 +680,6 @@ void CPage4::OnButtonReflowPause()
 void CPage4::OnButtonReflowRun()
 {
   int result;
- //спросить устройство о состоянии
-/// if(pPage2!=NULL) result = pPage2->GetDeviceSetup(CAN_device_ID);
 
   if(m_Reflow_enabled==0)
   {

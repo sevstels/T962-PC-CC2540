@@ -33,15 +33,15 @@ CGraphs::CGraphs()
   //----	
   last_file.empty();
   file_number = 0;
-  normalize = 0;
   curve_height = 0;
   curve_length = 0;
   curve_length = 0;
   resize_factor_x = 1;
   resize_factor_y = 1;
+  img_resize_x = 1;
+
   hWnd = NULL;
   hDC = NULL;
-  signal_detected = 0;
   //----
   scale_line_width = 1;
   //----
@@ -50,8 +50,7 @@ CGraphs::CGraphs()
   save_gif = 0;
   save_png = 0;
   save_svg = 0;
-  control_line_length = 0;
-  test_line_length = 0;
+
   memset(graph_line_width, 0, sizeof(graph_line_width));
 }
 
@@ -151,7 +150,7 @@ int CGraphs::round(double value)
 void CGraphs::SetSize(int x, int y)
 {
   picture_heigth = y;
-  picture_width = 460;//x;
+  picture_width = x;
 }
 
 //------------------------------------------------------------------------------
@@ -200,72 +199,43 @@ int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut,
 //
 //------------------------------------------------------------------------------
 int CGraphs::ResizeDataX(std::vector<PointXY> *pBufOut, 
-	                     std::vector<Point2D> *pBufIn)
-{  /*
+	                     std::vector<PointXY> *pBufIn)
+{
+  TRACE("Resize Data by X\n");
+
   size_t count = pBufIn->size();
   if(count<1) return 0;
 
- // int last_x = (int) pBuffer->at(count-1).x;
- // if(last_x>= curve_length) curve_length = last_x;
- 
-  TRACE("Resize Data by X\n");
 
-  //очистить буфер итоговой картинки
- // x.RemoveAll();
- // y.RemoveAll();
- // double dbl_x;
+  //Horizontal resizer
+  std::vector<PointXY> Temp;
+  Temp = *pBufIn;
+  PointXY in, out;
+  pBufOut->clear();
 
-  //Vertical resizer
   for(unsigned int x=0; x<count-1; x++)
   {
-    //---- y point
-    dbl_y = pBufIn->at(xx).x;
-	dbl_y *= factor_y;
+	in = Temp.at(x);
+	in.x *= img_resize_x;
+	  
+	pBufOut->push_back(in);
+	pBufOut->push_back(in);
 
-	//величина для графика в пикселях
-	int yi = round(dbl_y);
-	y.Add(yi);
-	x.Add(xx);
-	TRACE2("x %d y %d\n", xx, yi);
-  }	  */
-/*
-  //Horizontal resizer
-  double dk = (double)count;
-  dk = 1;///= 240;
-  
-  unsigned int k = round(dk);
-  unsigned int index_in  = 0;
-  unsigned int index_out = 0;
-    
-  for(unsigned int x=0; x<count-2; x +=k)
-  {
-    dbl_y = 0;
-
-    //считываем блок точек и находим среднее
-    for(unsigned int i=0; i<k; i++)
-    {
-	  dbl_y += y.GetAt(index_in++);
-    }
-    
-    //считаем среднее для группы
-    dbl_y /= k;
-
-    unsigned short out = 900;
-    out -= round(dbl_y);
-    
-    //сохраняем точку
-	y.SetAt(index_out++, out);
-
-	TRACE2("x %d y %d\n", index_out, out);
+	TRACE2("x %d y %d\n", in.x, in.y);
   }
 
-  //сколько удалить элементов
-  count = count - index_out -1;
-
-  //удалить не используемую память
-  y.RemoveAt(index_out, count);
-*/
   return 1;
+}
+
+void CGraphs::ResizeImgX(float factor_x)
+{
+  img_resize_x = factor_x;
+}
+  
+void CGraphs::ResizeImgY(float factor_y)
+{
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -293,9 +263,10 @@ int CGraphs::CreateGraph(const char *pFileName)
   int dots_count = (int) graph_line[0].size();
 	
   //last poin
-  width = graph_line[0].at(dots_count-1).x;
-  width -= (int)graph_line[0].at(0).x;
-  
+  //*width = graph_line[0].at(dots_count-1).x;
+  //width -= (int)graph_line[0].at(0).x;
+   
+  width = picture_width;
   height = picture_heigth;
 
   //====================================================================
@@ -354,7 +325,8 @@ int CGraphs::CreateGraph(const char *pFileName)
 		if(y0!=0)
 		//Draw curve
 	    Draw_Line(&PIC, graph_line_width[i],x0,y0,x,y,graph_line_color[i]);
-	 }   
+	 } 
+	 graph_line[i].clear();
   }
 
   //Restore old setup
@@ -470,8 +442,8 @@ void CGraphs::Draw_ScaleX(CDC *pCDC, int x0, int y0)
   int height = picture_heigth;
   int line_numbers = scale_x_cell;
   
-  int range_x =  scale_x_end - scale_x_begin;  
-  txt_step = (int)(range_x/line_numbers);
+  int range_x = (scale_x_end - scale_x_begin)*img_resize_x;  
+  txt_step = (int)(range_x/line_numbers)/img_resize_x;
    
   //Draw vertical lines by X-step  
   step_x = range_x/scale_x_cell;
@@ -529,7 +501,7 @@ void CGraphs::Draw_ScaleY(CDC *pCDC, int x0, int y0, int width, int height)
   int txt_x_offset = 26;
   int txt_y_offset = 6;
 
-  width = scale_x_end; 
+  width = scale_x_end*img_resize_x; 
   height = picture_heigth;
 
   step_y = (int)(height/scale_y_cell);

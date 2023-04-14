@@ -29,25 +29,21 @@ class CGraphs
 
   //----
   void SetHWnd(HANDLE hHWnd);
+  void SetSize(int x, int y);
   void SetRangeX(int from, int to);
   void SetRangeY(int from, int to);
   void SetScaleX(int from, int to, int step);
   void SetScaleY(int from, int to, int step);
-  void SetSize(int x, int y);
+  void ResizeImgX(float factor_x);
+  void ResizeImgY(float factor_y);
 
   //---
-  void SetMulX(double factor_x);
-  void SetMulY(double factor_y);
-  void SetFont(CDC *pCDC, int Size, BOOL Bold, BOOL Italic);
-  void Normalization(void);
-  int  ResizeDataX(std::vector<PointXY> *pBufOut, std::vector<Point2D> *pBufIn);
   int  ResizeDataY(std::vector<PointXY> *pBufOut, std::vector<Point2D> *pBufIn);
+  int  ResizeDataX(std::vector<PointXY> *pBufOut, std::vector<PointXY> *pBufIn);
   int  ParserDots(std::vector<Point2D> *pData);
-  float Calc_Signal(void);
-  float Calc_Signal2(void);
-  void  Calc_LinePoints(short *pBuf, int x1, int y1, int x2, int y2);
-  int   round(double value);
-  int Recognition(CDC *pCDC, int signal_length);
+  void SetFont(CDC *pCDC, int Size, BOOL Bold, BOOL Italic);
+  void Calc_LinePoints(short *pBuf, int x1, int y1, int x2, int y2);
+  int  round(double value);
 
   //Save to *_x.png file
   int CreateGraph(const char *pFileName);
@@ -70,25 +66,8 @@ class CGraphs
   //------------------------------------
   //DSP
   //------------------------------------
-  CRect WindGraph_Rect;
-  CPoint p_control, p_test;
-  int  DSP_FindMaxs(short *pBuf, int x_from, int x_to);
-  int  DSP_ShowAllMaxs(CDC *pCDC, short *pBuf, int x_from, int x_to);
-  
-  //----
-  void DisplayMax(CDC *pCDC, CPoint point, CString txt);
-  void DisplayMaxLable(CDC *pCDC, CPoint point, CString txt);
-
-  void DisplayList(CDC *pCDC, int x, int y, int buf_position);
-  void Draw_MaxControl(CDC *pCDC, int x, int y, CString txt);
-  void Draw_SearchFrame(CDC *pCDC, int x, int from, int to);
-  void Draw_Report(CDC *pCDC, int x, int y, CString txt);
   void Draw_MsgBox(CDC *pCDC, int x0, int y0, int dx, int dy, CString txt, int yes_no);
   void Draw_Point(CDC *pCDC, int buf_position);
-  int  Draw_0707(CDC *pCDC, int x_max);
-  void Draw_Recognized_C(CDC *pCDC, int x, int y);
-  void Draw_Recognized_T(CDC *pCDC, int x, int y);
-  void Draw_DetectionLine(CDC *pCDC);
   void Draw_Circle(CDC *pCDC, int x, int y, int d, COLORREF color);
   void Draw_PointBox(CDC *pCDC, int buf_position);
   CRect Draw_StringAt(CDC *pDC, int x, int y, 
@@ -100,27 +79,6 @@ class CGraphs
   std::string last_file;
   
   //----
-  int max_control_x;
-  int max_control_y; 
-  int min_control_y[2];
-  int min_control_x[2];
-  int control_offset;
-
-  //----
-  int max_test_y;
-  int max_test_x;
-  int med_test_x;
-  int min_test_y[2];
-  int min_test_x[2];
-  int test_offset;
-
-  int signal_detected;
-  int find_control_line;
-  int find_test_line;
-  int control_line_length;
-  int test_line_length;
-
-  //----
   int max;
   int min;
   int range_x0, range_xn;
@@ -128,18 +86,12 @@ class CGraphs
   int curve_height;
   int curve_length;
   int file_number;
-  int normalize;
   double resize_factor_x;
   double resize_factor_y;
+  float img_resize_x;
   
   int picture_heigth;
   int picture_width;
-
-  int find_Min(short *pBuff, int from, int to, int &x, int &y);
-  int find_Max(short *pBuff, int from, int to, int &x, int &y);
-  int find_LocalMin(short *pBuff, int from, int to, int &x, int &y);
-  int find_Cross(short *pBuff, int from, int to, int value, int &x, int &y);
-  //----
   int scale_length_x;
   int scale_length_y;
   
