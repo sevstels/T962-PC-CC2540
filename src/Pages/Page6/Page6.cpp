@@ -275,86 +275,29 @@ void CPage6::OnButtonFWUpdate()
 {
   if(program_run==0) 
   {
+    //---------------------------------------
+    // Check if the oven is connected ?
+    //---------------------------------------
+    if(pAPP->bt_connected==0)
+    {
+      CString str = "Error: Device disconnected...";
+      m_edit_info.SetWindowText(_T(str));
+      return;
+    }
+
     //Do not change Tab if chip programming
-    //pTab->EnableWindow(FALSE);
+    pTab->EnableWindow(FALSE);
 	program_run = 1;
 	m_but_fw_update.SetWindowTextA("Update Stop");
   	ThreadLaunch();
   }
   else
   {
-	//pTab->EnableWindow(TRUE);
+	pTab->EnableWindow(TRUE);
 	m_but_fw_update.SetWindowTextA("FW Update");
 	ev_ExitRequest.SetEvent();
 	program_run = 0;
   }
-
-/*	
-  CString str, file_path, file_name, txt;
-
-  //---------------------------------------
-  // проверка подключена ли печка
-  //---------------------------------------
-  if(pAPP->bt_connected==0)
-  {
-    str = "Error: Device disconnected...";
-    m_edit_info.SetWindowText(_T(str));
-    return;
-  }
-
-  //Standart file dialog
-  CFileDialog fileDialog(NULL, NULL, _T("*.bin"), 
-                         NULL, _T("firmware file (*.bin)"));
-  //Call dlg window
-  INT_PTR dlg = fileDialog.DoModal();
-
-  if(dlg==IDOK)
-  {
-     file_path = fileDialog.GetPathName();
-     file_name = fileDialog.GetFileName();
-  }
-
-  //---------------------------------------
-  //
-  //---------------------------------------
-  //file_name = "t962fw.bin";
-   
-  int exist = CheckFile(file_path);
-  if(exist!=1)
-  {
-    str = "Error: No Firmware file";
-    m_edit_info.SetWindowText(_T(str));
-    return;
-  }
-
-  unsigned long length = Get_FileSize(file_path);
-  if(length<200)
-  {
-    str = "Error: Firmware file wrong";
-    m_edit_info.SetWindowText(_T(str));
-    return;
-  }
-
-  char *pBuf = (char*) new char[length];
-  if(pBuf==NULL) return;
-
-  unsigned long read_length = Read_File(file_path, pBuf, 0, length);
-  if(read_length != length) return;
-
-  //---------------------------------------
-  //Programming
-  //---------------------------------------
-  ISP_ENVIRONMENT isp;
-  memset(&isp, 0, sizeof(ISP_ENVIRONMENT));
-          
-  isp.BinaryContent = (BINARY*)pBuf;
-  isp.BinaryLength = length;
-  isp.ProgramChip = 1;
-
-  NxpDownload(&isp);
-
-  delete [] pBuf;
-  pBuf = NULL;	*/
 }
 
 //-----------------------------------------------------------------------------

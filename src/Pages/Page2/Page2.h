@@ -11,6 +11,7 @@
 #include "log-console.h"
 #include "AppWinReg.h"
 #include "tooltip.h"
+#include "app-setup.h"
 #include "protocol-ex.h"
  
 #include "datatx.h"
@@ -41,6 +42,7 @@ class CPage2 : public CPropertyPage
   CC2540 *pBLE;
   CAppWinReg *pREG;
   CToolTip ToolTip;
+  ApplSettings *pAPP;
 
   //Buttons
   CButton m_but_test_step;

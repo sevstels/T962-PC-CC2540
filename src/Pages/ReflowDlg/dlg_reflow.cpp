@@ -2,7 +2,7 @@
 //File name:    "dlg_reflow.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "dlg_reflow.h"
@@ -72,7 +72,7 @@ void CReflowSetupDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_PAUSE_TIME, m_edit_pause);
 	DDX_Control(pDX, IDC_EDIT_PREHIT_TIME, m_edit_prehit_time);
 	DDX_Control(pDX, IDC_EDIT_PREHIT_TEMPR, m_edit_prehit_temper);
-/*	DDX_Control(pDX, IDC_STATIC_PIC_ALERT1, m_status[0]);
+	/*	DDX_Control(pDX, IDC_STATIC_PIC_ALERT1, m_status[0]);
 	DDX_Control(pDX, IDC_STATIC_PIC_ALERT2, m_status[1]);
 	DDX_Control(pDX, IDC_STATIC_PIC_ALERT3, m_status[2]);
 	DDX_Control(pDX, IDC_STATIC_PIC_ALERT4, m_status[3]);
@@ -85,6 +85,15 @@ void CReflowSetupDlg::DoDataExchange(CDataExchange* pDX)
 
 	//}}AFX_DATA_MAP
 	DDX_Control(pDX, IDC_COMBO_ALG_MODE, m_combo_align_mode);
+	DDX_Control(pDX, IDC_CHECK_LOG1, m_log[0]);
+    DDX_Control(pDX, IDC_CHECK_LOG2, m_log[1]);
+    DDX_Control(pDX, IDC_CHECK_LOG3, m_log[2]);
+    DDX_Control(pDX, IDC_CHECK_LOG4, m_log[3]);
+    DDX_Control(pDX, IDC_CHECK_LOG5, m_log[4]);
+    DDX_Control(pDX, IDC_CHECK_LOG6, m_log[5]);
+    DDX_Control(pDX, IDC_CHECK_LOG7, m_log[6]);
+    DDX_Control(pDX, IDC_CHECK_LOG8, m_log[7]);
+	DDX_Control(pDX, IDC_CHECK_LOG9, m_log[8]);
 }														  
 
 //------------------------------------------------------------------------------ 
@@ -113,6 +122,16 @@ BEGIN_MESSAGE_MAP(CReflowSetupDlg, CDialog)
   ON_CBN_SELCHANGE(IDC_COMBO_AMBIENT_RES, &CReflowSetupDlg::OnComboAmbientResolution)
  */
 
+ ON_BN_CLICKED(IDC_CHECK_LOG1, &CReflowSetupDlg::OnCheckLog1)
+ ON_BN_CLICKED(IDC_CHECK_LOG2, &CReflowSetupDlg::OnCheckLog2)
+ ON_BN_CLICKED(IDC_CHECK_LOG3, &CReflowSetupDlg::OnCheckLog3)
+ ON_BN_CLICKED(IDC_CHECK_LOG4, &CReflowSetupDlg::OnCheckLog4)
+ ON_BN_CLICKED(IDC_CHECK_LOG5, &CReflowSetupDlg::OnCheckLog5)
+ ON_BN_CLICKED(IDC_CHECK_LOG6, &CReflowSetupDlg::OnCheckLog6)
+ ON_BN_CLICKED(IDC_CHECK_LOG7, &CReflowSetupDlg::OnCheckLog7)
+ ON_BN_CLICKED(IDC_CHECK_LOG8, &CReflowSetupDlg::OnCheckLog8)
+ ON_BN_CLICKED(IDC_CHECK_LOG9, &CReflowSetupDlg::OnCheckLog9)
+
 END_MESSAGE_MAP()
 
 //------------------------------------------------------------------------------ 
@@ -137,6 +156,7 @@ BOOL CReflowSetupDlg::OnInitDialog()
   //hLED_yellow = LoadBitmapA(hInstance, (LPCSTR)IDB_LED_YELLOW);
   
   Controls_Ini();
+  Controls_Update();
   Controls_Enable(FALSE);
 
 /*
@@ -299,6 +319,16 @@ void CReflowSetupDlg::Controls_Update(void)
   //Buttons
   m_but_save.EnableWindow(on_off);
   m_but_default.EnableWindow(on_off);*/
+
+  m_log[0].SetCheck(pAPP->log[1]);
+  m_log[1].SetCheck(pAPP->log[2]);
+  m_log[2].SetCheck(pAPP->log[3]);
+  m_log[3].SetCheck(pAPP->log[4]); 
+  m_log[4].SetCheck(pAPP->log[5]);
+  m_log[5].SetCheck(pAPP->log[6]);
+  m_log[6].SetCheck(pAPP->log[7]);
+  m_log[7].SetCheck(pAPP->log[8]);
+  m_log[8].SetCheck(pAPP->log[9]);
 }
 
 //-----------------------------------------------------------------------------
@@ -599,3 +629,13 @@ void CReflowSetupDlg::LED_Control(unsigned char status)
 
   status_old = status;
 }
+
+void CReflowSetupDlg::OnCheckLog1(){pAPP->log[1] = (char)m_log[0].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog2(){pAPP->log[2] = (char)m_log[1].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog3(){pAPP->log[3] = (char)m_log[2].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog4(){pAPP->log[4] = (char)m_log[3].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog5(){pAPP->log[5] = (char)m_log[4].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog6(){pAPP->log[6] = (char)m_log[5].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog7(){pAPP->log[7] = (char)m_log[6].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog8(){pAPP->log[8] = (char)m_log[7].GetCheck(); pCSETUP->Save();}
+void CReflowSetupDlg::OnCheckLog9(){pAPP->log[9] = (char)m_log[8].GetCheck(); pCSETUP->Save();}

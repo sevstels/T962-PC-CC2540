@@ -121,8 +121,12 @@ static DWORD DFU_PROGRAMM(LPVOID lParam)
   int ret = NxpDownload(&isp);
   if(ret!=0)
   {
+	if(ret==-2)
+	{
+	  DebugPrintf("\r\nProgramming interrupted");
+	}
 	//show Error
-	pDlg->Progress_Error();
+	else pDlg->Progress_Error();
   }
   
   delete [] pBuf;

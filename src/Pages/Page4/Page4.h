@@ -2,7 +2,7 @@
 //File name:   "Page4.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #include "afxcmn.h"
 #include "afxwin.h"
@@ -13,12 +13,11 @@
 #include "graphs.h"
 #include "profile-file.h"
 #include "log-file.h"
-
 #include "log-console.h"
 #include "AppWinReg.h"
 #include "tooltip.h"
 #include "Page2.h"
- 
+#include "Page3.h" 
 #include "app-setup.h"
 #include "dlg_reflow.h"
 
@@ -54,9 +53,12 @@ class CPage4 : public CPropertyPage
   //----
   CDataTX *pBT;
   CPage2 *pPage2;
+  CPage3 *pPage3;
   CC2540 *pBLE;
   CLOGW	*pConsole;
-
+  
+  ApplSettings *pAPP;
+  CApplSetup *pCSETUP;
   CAppWinReg *pREG;  
   CDSPL	DSPL;
   CTPRF PCRF;
@@ -151,7 +153,8 @@ class CPage4 : public CPropertyPage
   int m_Reflow_pause;
   float PID_1sec_old;
   std::vector<Point2D> PidLog;
-  
+  std::vector<PointXY> ReflowLog[10];
+
   CString file_name;
   CString file_path; 
 

@@ -38,7 +38,7 @@ unsigned short GetSampleSetup(float code)
   memcpy(db_code, &code, 4);
 
   //если число больше 2048 - это код RGBY
-  if(db_code[3] == PCR_HEAD_RGBY_SAMPLE)
+/*  if(db_code[3] == PCR_HEAD_RGBY_SAMPLE)
   {
     //----
     led_code = db_code[1];
@@ -48,7 +48,7 @@ unsigned short GetSampleSetup(float code)
 
 	//leds
     return led_code;
-  }
+  }*/
 
   //ошибка
   return 0;
@@ -66,7 +66,7 @@ float SetSampleSetup(unsigned short led_code)
   
   led_code |= 0x8000;
   //----
-  db_code[3] = PCR_HEAD_RGBY_SAMPLE;
+///  db_code[3] = PCR_HEAD_RGBY_SAMPLE;
   db_code[1] = (char)(led_code>>8);
   db_code[0] = (char)led_code;
 

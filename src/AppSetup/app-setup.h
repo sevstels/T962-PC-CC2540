@@ -39,6 +39,9 @@ typedef struct AppSetup_struct
   char dsp_normalize;
   char app_sync;//for sensors debug
 
+  //---- user setup
+  char log[10];
+
   //---- open for user
   char show_img;
   char show_txt;

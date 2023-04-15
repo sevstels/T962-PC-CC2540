@@ -1346,7 +1346,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 					  int ret = SendToRAM(IspEnvironment, Line, Pos, 1, 1);
 					  if(ret!=0)
 					  {
-					    goto again; 
+						if(ret==-2) {return ret;}
+						goto again; 
 					  }
 				}
                 if (Line != 0)
@@ -1485,15 +1486,16 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   else
      DebugPrintf("\r\nDownload Finished... taking %d Min", (tDoneUpload - tStartUpload)/60);
 
-
+  /*
   if(IspEnvironment->DoNotStart == 0)
   {
     DebugPrintf("\r\nLaunching the new code");
     sprintf(tmpString, "G %ld A\r\n", IspEnvironment->StartAddress);
 	BT_Send(tmpString);
-  }
-  else DebugPrintf("\r\nReset Oven for Launch the new code");
+  }	
+  else DebugPrintf("\r\nPress 'Oven Reset' for Launch the new code");	 */
   
+  DebugPrintf("\r\nPress 'Oven Reset' for Launch the new code");
   return 0;
 }
 
@@ -1575,6 +1577,11 @@ int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line2, int Pos, int, int )
 
   //show progress
   pCPage6->Progress_Step();
+  if(pCPage6->program_run!=1)
+  {
+  	//user stop programming
+  	return -2;
+  }
   
   Line++;
   //-----

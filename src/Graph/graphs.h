@@ -36,9 +36,10 @@ class CGraphs
   void SetScaleY(int from, int to, int step);
   void ResizeImgX(float factor_x);
   void ResizeImgY(float factor_y);
-
+  void FlToInt(std::vector<PointXY> *pBufOut, 
+	           std::vector<Point2D> *pBufIn);
   //---
-  int  ResizeDataY(std::vector<PointXY> *pBufOut, std::vector<Point2D> *pBufIn);
+  int  ResizeDataY(std::vector<PointXY> *pBufOut, std::vector<PointXY> *pBufIn);
   int  ResizeDataX(std::vector<PointXY> *pBufOut, std::vector<PointXY> *pBufIn);
   int  ParserDots(std::vector<Point2D> *pData);
   void SetFont(CDC *pCDC, int Size, BOOL Bold, BOOL Italic);
@@ -94,7 +95,7 @@ class CGraphs
   int picture_width;
   int scale_length_x;
   int scale_length_y;
-  
+
   //value range
   int scale_x_begin;
   int scale_x_end;
@@ -109,9 +110,9 @@ class CGraphs
   int graph_max_value_x;
   int graph_max_value_y;
 
-  char graph_line_width[6];
-  std::vector<PointXY> graph_line[6];
-  COLORREF graph_line_color[6];
+  char graph_line_width[10];
+  std::vector<PointXY> graph_line[10];
+  COLORREF graph_line_color[10];
   COLORREF graph_bgnd_color;
 
   //----

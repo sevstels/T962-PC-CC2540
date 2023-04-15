@@ -54,6 +54,7 @@ class CC2540
 
   //HCI commands
   int  CMD_Scan(void);
+  int  CMD_DeviceReset(void);
   int  CMD_ScanCancel(void);
   int  CMD_Connect(char *pAddr);
   int  CMD_ConnectCancel(void);

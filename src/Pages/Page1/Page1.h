@@ -8,7 +8,7 @@
 #include "afxwin.h"
 #include "tec-resource.h"
 #include "device_struct.h"
-
+#include "app-setup.h"
 #include "AppWinReg.h"
 #include "tooltip.h"
 #include "datatx.h"
@@ -52,6 +52,7 @@ class CPage1 : public CPropertyPage
   Device_Params *pParams;
   CAppWinReg *pREG;
   UINT MM_TimerID;
+  ApplSettings *pAPP;
 
   //----
   void Controls_Ini(void);

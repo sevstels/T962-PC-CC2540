@@ -142,7 +142,8 @@ BOOL CPage4::OnInitDialog()
 
   //Add extra initialization here
   GRPH.SetHWnd(this->m_hWnd);
- 
+  GRPH.pAPP = pAPP;
+
   //----
   DSPL.pMonitor = &m_monitor;
   DSPL.DisplayIni(this->m_hWnd, 2,-2, 240, 390);
@@ -529,13 +530,37 @@ void CPage4::OnButtonShowGraph()
 {
   m_but_ShowGraph.EnableWindow(FALSE);
 
+  //check profile data
+  int count = DSPL.profile.size();
+  if(count<1){m_monitor.SetWindowText(_T("Open profile file!")); return;}
+
   //===============================================
   //Ini picture	class
   //===============================================
   GRPH.graph_line_width[0] = 2;
-  GRPH.graph_line_width[1] = 2;
-  GRPH.graph_line_color[0] = RGB(0,120,0);
-  GRPH.graph_line_color[1] = RGB(0,255,0);
+  GRPH.graph_line_width[1] = 1;
+  GRPH.graph_line_width[2] = 1;
+  GRPH.graph_line_width[3] = 1;
+  GRPH.graph_line_width[4] = 1;
+  GRPH.graph_line_width[5] = 1;
+  GRPH.graph_line_width[6] = 1;
+  GRPH.graph_line_width[7] = 2;
+  GRPH.graph_line_width[8] = 2;
+  GRPH.graph_line_width[9] = 2;
+
+  //----
+  GRPH.graph_line_color[0] = RGB(80,80,80);
+  GRPH.graph_line_color[1] = RGB(255,0,0);
+  GRPH.graph_line_color[2] = RGB(255,0,0);
+  GRPH.graph_line_color[3] = RGB(0,0,0);
+  GRPH.graph_line_color[4] = RGB(0,0,0);
+  GRPH.graph_line_color[5] = RGB(0,0,0);
+  GRPH.graph_line_color[6] = RGB(0,0,0);
+  GRPH.graph_line_color[7] = RGB(0,220,0);   //TPCB
+  GRPH.graph_line_color[8] = RGB(250,0,255); //PWM HTR
+  GRPH.graph_line_color[9] = RGB(0,0,250);   //PWM FAN
+
+  //----
   GRPH.scale_line_color = RGB(200,200,200);
   GRPH.graph_bgnd_color = RGB(255,255,255);
   
@@ -559,11 +584,19 @@ void CPage4::OnButtonShowGraph()
   GRPH.ResizeImgX(resize);
 
   //Add and processing data	for Profile Log
-  GRPH.ResizeDataY(&GRPH.graph_line[0], &DSPL.profile); 
+  GRPH.FlToInt(&ReflowLog[0], &DSPL.profile);
 
-  //Add and processing data	for Profile
-  GRPH.ResizeDataX(&GRPH.graph_line[0], &GRPH.graph_line[0]);
-    
+  for(int i=0; i<10; i++)
+  {
+	if(ReflowLog[i].size()>1 && pAPP->log[i]==1)
+	{
+	  //Processing data	for Profile
+      GRPH.ResizeDataY(&GRPH.graph_line[i], &ReflowLog[i]); 
+	  //Processing data	for Profile
+      GRPH.ResizeDataX(&GRPH.graph_line[i], &ReflowLog[i]);
+	}
+  }
+
   //Draw image
   GRPH.CreateGraph("TmpLog");
   
@@ -686,6 +719,18 @@ void CPage4::OnButtonReflowRun()
 	if(m_Reflow_pause==0)
 	{
 	  pConsole->Clear();
+
+	  //Clear graph buffers
+	  GRPH.graph_line[0].empty();
+	  GRPH.graph_line[1].empty();
+	  GRPH.graph_line[2].empty();
+	  GRPH.graph_line[3].empty();
+	  GRPH.graph_line[4].empty();
+	  GRPH.graph_line[5].empty();
+	  GRPH.graph_line[6].empty();
+	  GRPH.graph_line[7].empty();
+	  GRPH.graph_line[8].empty();
+	  GRPH.graph_line[9].empty();
 
 	  //---------------------------------------
       //Open new log file
@@ -852,15 +897,7 @@ BOOL CPage4::PreTranslateMessage(MSG* pMsg)
 //------------------------------------------------------------------------------
 void CPage4::OnButtonAnalysis()
 {
-  //CAN_RxChannelClose(pCAN, MONITORING_CHN, 0);
-  //monitoring = 0;
   
-  //----
-  AnalysisRead();
-  
-  //restore channel 
-  //int res = CAN_RxChannelOpen(pCAN,&ev_DataAccepted, MONITORING_CHN, 0);
-  //if(res>0) monitoring = 1;
 }
 
 //------------------------------------------------------------------------------
@@ -921,8 +958,8 @@ void CPage4::OpenSetupDlg(void)
     pDlg = new CReflowSetupDlg();
     pDlg->pDev = pDevice;
     pDlg->pREG = pREG;
-//	pDlg->chn = chn;
-//	pDlg->enabled = pAPP->bt_connected;
+	pDlg->pAPP = pAPP;
+	pDlg->pCSETUP = pCSETUP;
 	pDlg->pCWnd = FromHandle(this->m_hWnd); 
     pDlg->Create(IDD_REFLOW_SETUP_DIALOG, FromHandle(this->m_hWnd));
     pDlg->ShowWindow(SW_SHOW);

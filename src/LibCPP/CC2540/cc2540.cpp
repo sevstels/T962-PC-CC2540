@@ -267,11 +267,18 @@ int CC2540::Open(int com_port)
 
   //If BT dongle already was connected 
   dev_connected = 1;
-  CMD_Disconnect();
+  
+  result = CMD_Disconnect();
+  CMD_DeviceReset();
+/*  if(result!=1)
+  {
+    result = CMD_DeviceReset();
+    Sleep(1000);
+  }	 */
 
   //HCI cmd 
   result = CMD_DeviceInit();
-  if(result!=1){Error("BT adapter not found\r\nSelect the right COM"); return -1;}
+  if(result!=1){Error("BT USB dongle not replay\r\nTry again"); return -1;}
 
   result = CMD_MinConnectionInterval();
   if(result!=1) return -1;

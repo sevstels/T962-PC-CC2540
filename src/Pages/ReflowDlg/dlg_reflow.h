@@ -2,7 +2,7 @@
 //File name:   "dlg_reflow.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #include "stdafx.h"
 #include "afxwin.h"
@@ -12,6 +12,7 @@
 #include "dialog-pos.h"
 #include "cstatic-color.h"
 #include "device_struct.h"
+#include "app-setup.h"
 
 #ifndef _DLG_REFLOW_SETUP_CLASS_H_
 #define _DLG_REFLOW_SETUP_CLASS_H_
@@ -56,6 +57,8 @@ class CReflowSetupDlg : public CDialog
   CAppWinReg *pREG;
   Device_Setup2 *pDev;
   CWnd *pCWnd;
+  ApplSettings *pAPP;
+  CApplSetup *pCSETUP;
 
   //----
   HBITMAP hLED_red;
@@ -81,7 +84,8 @@ class CReflowSetupDlg : public CDialog
   CEdit m_edit_pause;
   CEdit m_edit_prehit_time;
   CEdit m_edit_prehit_temper;
-
+  
+  CButton m_log[9];
   CButton m_but_default;
   CStatic m_status[7];
   CStatic m_status_txt[7];
@@ -116,6 +120,15 @@ class CReflowSetupDlg : public CDialog
   afx_msg void OnComboAmbientResolution();
   afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
   
+  afx_msg void OnCheckLog1();
+  afx_msg void OnCheckLog2();
+  afx_msg void OnCheckLog3();
+  afx_msg void OnCheckLog4();
+  afx_msg void OnCheckLog5();
+  afx_msg void OnCheckLog6();
+  afx_msg void OnCheckLog7();
+  afx_msg void OnCheckLog8();
+  afx_msg void OnCheckLog9();
 };
 
 #endif

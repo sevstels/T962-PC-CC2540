@@ -2,7 +2,7 @@
 //File name:   "cc2540.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "cc2540.h"
@@ -11,6 +11,39 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+//Use "BTool" application for command description
+
+//------------------------------------------------------------------------------
+//Function
+/*
+-Type           : 0x01 (Command)
+-OpCode         : 0xFE80 (UTIL_Reset)
+-Data Length    : 0x01 (1) byte(s)
+ ResetType      : 0x00 (0) (Hard Reset)
+Dump(Tx):
+0000:01 80 FE 01 00
+-Type           : 0x04 (Event)
+-EventCode      : 0x00FF (Event)
+-Data Length    : 0x06 (6) bytes(s)
+ Event          : 0x067F (1663) (GAP_HCI_ExtentionCommandStatus)
+ Status         : 0x01 (1) (Failure)
+ OpCode         : 0xFE80 (UTIL_Reset)
+ DataLength     : 0x00 (0)
+Dump(Rx):
+0000:04 FF 06 7F 06 01 80 FE 00 */
+//------------------------------------------------------------------------------
+int CC2540::CMD_DeviceReset(void)
+{
+  char cmd[] = {0x01, 0x80, 0xFE, 0x01, 0x00};
+
+  event_filter = 0x067F;
+
+  SendCMD(cmd, sizeof(cmd), __func__);
+  
+  return Wait_Event(0x067F, 2000);
+}
+
 
 //------------------------------------------------------------------------------
 //Function
@@ -41,7 +74,7 @@ int CC2540::CMD_DeviceInit(void)
 
   SendCMD(cmd, sizeof(cmd), __func__);
   
-  return Wait_Event(0x0600, 500); //GAP_DeviceInitDone
+  return Wait_Event(0x0600, 2000); //GAP_DeviceInitDone
 }
 
 //------------------------------------------------------------------------------

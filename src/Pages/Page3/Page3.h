@@ -48,6 +48,7 @@ class CPage3 : public CPropertyPage
   CToolTip ToolTip;
   Device_Setup2 *pDevice;
   Device_Params *pParams;
+  ApplSettings *pAPP;
 
   void TabOpen(void);
 

@@ -70,6 +70,7 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
 //  pPage5->pBLE = &BLE;
   pPage6->pBLE = &BLE;
 
+  pPage4->pCSETUP = &CSETUP;
   pPage6->pCSETUP = &CSETUP;
 
   pPage1->pDevice = &DEV;
@@ -88,10 +89,10 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
 //  pPage6->pParams = &Params;
 
   //----
-//  pPage1->pAPP = &APP; 
-//  pPage2->pAPP = &APP;
-//  pPage3->pAPP = &APP; 
-//  pPage4->pAPP = &APP;   
+  pPage1->pAPP = &APP; 
+  pPage2->pAPP = &APP;
+  pPage3->pAPP = &APP; 
+  pPage4->pAPP = &APP;   
   pPage5->pAPP = &APP; 
   pPage6->pAPP = &APP;
 
@@ -114,6 +115,7 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
   
   //----
   pPage4->pPage2 = pPage2;
+  pPage4->pPage3 = pPage3;
 
   //clear pointers
   pThread = NULL;
@@ -652,7 +654,7 @@ extern int boot_mode;
   else TRACE2("Read BLE %d Cnt %d\n", length, debug_byte_count);
   */
   
-  TRACE("BLE %d\n", length);
+  ///TRACE("BLE %d\n", length);
 
   //----
   for(int i=0; i<length; i++)
@@ -662,7 +664,7 @@ extern int boot_mode;
   	if(ready==1)
 	{
 	  
-    //  TRACE("BLE %d\n", PROTOCOL.data_length);
+      ///TRACE("BLE %d\n", PROTOCOL.data_length);
 
 	  //Data Block was accepted
 	  DeviceMsgHandler(PROTOCOL.cmd, PROTOCOL.pDataBuf, PROTOCOL.data_length);

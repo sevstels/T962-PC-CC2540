@@ -165,7 +165,6 @@
 #define IDC_STATIC_TOUT2                1421
 #define IDC_BUTTON_EEPROM_ERASE         1421
 #define IDC_STATIC_H                    1422
-#define IDC_STATIC_TOUT3                1422
 #define IDC_STATIC_TCJ                  1422
 #define IDC_STATIC_F                    1423
 #define IDC_STATIC_P1                   1425
@@ -196,6 +195,15 @@
 #define IDC_COMBO_TX_POWER              1458
 #define IDC_COMBO_RX_GAIN               1459
 #define IDC_STATIC_RX                   1460
+#define IDC_CHECK_LOG1                  1461
+#define IDC_CHECK_LOG2                  1462
+#define IDC_CHECK_LOG3                  1463
+#define IDC_CHECK_LOG4                  1464
+#define IDC_CHECK_LOG5                  1465
+#define IDC_CHECK_LOG6                  1466
+#define IDC_CHECK_LOG7                  1467
+#define IDC_CHECK_LOG8                  1468
+#define IDC_CHECK_LOG9                  1469
 #define ID_PAGE5_ADDVERTEX              32775
 #define ID_PAGE5_DELETESEGMENT          32776
 #define ID_PAGE5_DELETEVERTEX           32778
@@ -214,7 +222,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        157
 #define _APS_NEXT_COMMAND_VALUE         32797
-#define _APS_NEXT_CONTROL_VALUE         1461
+#define _APS_NEXT_CONTROL_VALUE         1462
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

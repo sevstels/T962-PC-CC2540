@@ -2,12 +2,11 @@
 //File name:   "log-concole.cpp"
 //Purpose:      Source File
 //Version:      2.00
-//Copyright:    (c) 2021, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include <windows.h>
 #include "log-console.h"
-//#include "Wincon.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
@@ -221,7 +220,7 @@ void CLOGW::SetWindowSize(int width, int heigth)
 //------------------------------------------------------------------------------
 int CLOGW::Write(const char *format, ...)
 {
-  if(opened!=1){Open("Device log");}
+  if(opened!=1){Open("Oven log");}
   if(opened!=1) return -1;
 	
   char buf[1024];

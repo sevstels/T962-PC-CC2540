@@ -2,7 +2,7 @@
 //File name:    "data-parser-page5.cpp"
 //Purpose:      Source File, CPage2 page
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page4.h"
@@ -42,20 +42,14 @@ void CPage4::Parser(char *pBuf)
   static unsigned short ams_data_samples_led[GRAPH_CHANNELS+1];
 
   //----
-  if(data[0]==PCR_ERROR)
+  if(data[0]==OVEN_ERROR)
   {
 	txt = "Device Error!";
 	m_monitor.SetWindowTextA(txt);
 	//----
 
 	switch(data[1])
-	{
-	  //----
-	  case DEV_JTAG_CONNECTED:
-      txt = "Can`t start, JTAG connected\n";
-	  txt+= "Disconnect cable and Power reset"; 
-	  break;
-	  
+	{	  
 	  //----
 	  case PROFILE_HEADER_WRONG:
       txt = "Absent temperature profile file\n";
@@ -251,7 +245,7 @@ void CPage4::ParseReflowStep(char *pBuf, int length)
   //----
   if(PID_log) PID_LogGraph(point, (int)tempr);
 }
-
+#include "interpolation.h"
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -291,6 +285,55 @@ void CPage4::ParseReflowLog(char *pBuf, int length)
   //TRACE1("%s", t);  
   pConsole->Write("%s", buf);
 
+  //Fill T-Graph buffers
+  PointXY p;  
+  p.x = (TD.min*60)+TD.sec;
+  ///TRACE1("p.x: %d \n", p.x);
+  p.y = (int)TD.sensor_heater[0];
+  ReflowLog[1].push_back(p);
+  
+  //----
+  p.y = (int)TD.sensor_heater[1];
+  ReflowLog[2].push_back(p);
+  
+  //----
+  p.y = (int)TD.sensor_pcb[0];  
+  ReflowLog[3].push_back(p);
+  
+  //----
+  p.y = (int)TD.sensor_pcb[1];   
+  ReflowLog[4].push_back(p);
+  
+  //----
+  p.y = (int)TD.sensor_pcb[2];   
+  ReflowLog[5].push_back(p);
+  
+  //----
+  p.y = (int)TD.sensor_pcb[3];   
+  ReflowLog[6].push_back(p);
+
+  //----
+  p.y = (int)TD.temperature_pcb;   
+  ReflowLog[7].push_back(p);
+  
+  //----
+  p.y = (int)TD.heat;   
+  ReflowLog[8].push_back(p);
+
+  //----
+  p.y = (int)TD.fan;   
+  ReflowLog[9].push_back(p);
+
+  //---- SHOW PCB Temperature
+  pPage3->pParams->Heater_Temperature = TD.temperature_pcb;
+  pPage3->Show_Temperature();
+  //----
+  pPage3->pParams->pwm_heater = TD.heat;
+  pPage3->Show_HeaterPower();
+  //----
+  pPage3->pParams->pwm_fan = TD.fan;
+  pPage3->Show_FanSpeed();
+
   //-----
   if(TD.msec==0)
   {
@@ -310,7 +353,7 @@ void CPage4::ParseReflowLog(char *pBuf, int length)
     //----
     ///msg.Format("P: %3.d T: %3.2fC\n", point+1, tempr);
     ///if(EVNT_log)pConsole->Msg(LOG_OK, LOG_TIME,"PCR","%s",msg.GetBuffer());
-    TRACE2("Time: %d Set: %02.1f\n", point, tempr);
+    ///TRACE2("Time: %d Set: %02.1f\n", point, tempr);
     DSPL.Scroll_Handler(5, point);
 	
     //----

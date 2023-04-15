@@ -154,10 +154,37 @@ void CGraphs::SetSize(int x, int y)
 }
 
 //------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
+void CGraphs::FlToInt(std::vector<PointXY> *pBufOut, 
+	                  std::vector<Point2D> *pBufIn)
+{
+  size_t count = pBufIn->size();
+
+  //очистить приемный буфер
+  pBufOut->clear();
+
+  //Vertical resizer
+  for(unsigned int x=0; x<count-1; x++)
+  {
+	Point2D p = pBufIn->at(x);
+	double temp = p.y;
+    
+	//величина для графика в пикселях
+	int y = round(temp);
+	PointXY pxy;
+	
+	pxy.y = y;
+	pxy.x = (int)p.x;
+	pBufOut->push_back(pxy);
+  }
+}
+
+//------------------------------------------------------------------------------
 //Vertical data resize
 //------------------------------------------------------------------------------
 int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut, 
-	                     std::vector<Point2D> *pBufIn)
+	                     std::vector<PointXY> *pBufIn)
 {
   TRACE("Resize Data by Y\n"); 
      
@@ -168,28 +195,34 @@ int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut,
 
   size_t count = pBufIn->size();
   if(count<1) return 0;
- 
-  //очистить буфер итоговой картинки
-  pBufOut->empty();
+   
+  //save data
+  std::vector<PointXY> TempBuf;
+  TempBuf =	*pBufIn;
+
+  //очистить приемный буфер
+  pBufOut->clear();
 
   //Vertical resizer
-  for(unsigned int x=0; x<count-1; x++)
+  for(unsigned int n=0; n<count-1; n++)
   {
-	Point2D p = pBufIn->at(x);
-	double temp = p.y;
+	PointXY p = TempBuf.at(n);
+	float temp = p.y;
     
 	//---- y point
-	temp *= resize_factor_y;
+	temp *= (float) resize_factor_y;
 
 	//величина для графика в пикселях
 	int y = round(temp);
-	PointXY pxy;
+	PointXY p2;
 	
-	pxy.y = y;
-	pxy.x = (int)p.x;
-	pBufOut->push_back(pxy);
+	p2.y = y;
+	int x = p.x;
+	p2.x = x;
+
+	pBufOut->push_back(p2);
 	
-	TRACE2("x %d y %d\n", pxy.x, pxy.y);
+	///TRACE2("x %d y %d\n", pxy.x, pxy.y);
   }
 
   return 1;
@@ -221,20 +254,25 @@ int CGraphs::ResizeDataX(std::vector<PointXY> *pBufOut,
 	pBufOut->push_back(in);
 	pBufOut->push_back(in);
 
-	TRACE2("x %d y %d\n", in.x, in.y);
+	//TRACE2("x %d y %d\n", in.x, in.y);
   }
 
   return 1;
 }
 
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------
 void CGraphs::ResizeImgX(float factor_x)
 {
   img_resize_x = factor_x;
 }
-  
+
+//------------------------------------------------------------------------------
+//
+//------------------------------------------------------------------------------  
 void CGraphs::ResizeImgY(float factor_y)
 {
-
 
 }
 
@@ -312,21 +350,33 @@ int CGraphs::CreateGraph(const char *pFileName)
   Draw_ScaleX(&PIC, 0,0);
   
   //Curve count
-  int c_count = 1;
+  int delay;
+  int c_count = 10;
   for(int i=0; i<c_count; i++)
   {
+	if(i==0) delay = 0;
+	else delay = 12;
+
+	if(graph_line[i].size()>2 && pAPP->log[i]==1)
+	{
+
 	 for(int n=0; n<graph_line[i].size()-1; n++)
 	 {
-		int x0 = (int)graph_line[i].at(n).x;
-		int y0 = (int)graph_line[i].at(n).y;
-	    int x = (int)graph_line[i].at(n+1).x;
+		//----
+		int x0 = graph_line[i].at(n).x-delay;
+		if(x0<0)x0 = 0;
+		int y0 = graph_line[i].at(n).y;
+	    
+		//----
+		int x = graph_line[i].at(n+1).x-delay;
+		if(x<0)x = 0;
 		int y = (int)graph_line[i].at(n+1).y;
 		
 		if(y0!=0)
 		//Draw curve
 	    Draw_Line(&PIC, graph_line_width[i],x0,y0,x,y,graph_line_color[i]);
 	 } 
-	 graph_line[i].clear();
+	}
   }
 
   //Restore old setup
