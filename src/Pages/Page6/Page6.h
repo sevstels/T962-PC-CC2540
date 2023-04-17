@@ -82,6 +82,9 @@ class CPage6 : public CPropertyPage
   void Progress_Step(void);
   void Progress_Error(void);
   void Clear(void);
+  void Test(void);
+  void I2C_Read(unsigned char dev_addr, unsigned short mem_addr, short len);
+  void I2C_Write(unsigned char dev_addr, unsigned short addr, char *pBuf, short len); 
   
   //bootloader
   CEvent ev_BootDataRx;

@@ -292,10 +292,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About T962"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    ICON            IDR_MAINFRAME,IDC_STATIC,6,5,21,20,SS_CENTERIMAGE
+    ICON            IDR_MAINFRAME,IDC_STATIC,6,5,20,20,SS_CENTERIMAGE
     LTEXT           "T962.exe, Reflow Oven Control, ver 2.0",IDC_STATIC,36,4,160,8,SS_NOPREFIX
     DEFPUSHBUTTON   "OK",IDOK,150,44,50,14,WS_GROUP
-    LTEXT           "S3D Copyright (C), Singapore 2022",IDC_STATIC,7,47,115,8
+    LTEXT           "S3D Singapore",IDC_STATIC,7,47,115,8
     LTEXT           "Software Update page ->",1195,8,30,84,8
     CONTROL         "T962 improvement",1196,"MfcLink",WS_TABSTOP,95,29,94,11
     LTEXT           "Build",IDC_STATIC_TXT_BUILD,37,15,101,8

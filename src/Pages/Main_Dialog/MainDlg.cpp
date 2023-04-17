@@ -845,7 +845,7 @@ void CMainDlg::ParseDeviceEvents(char *pBuf, int length)
 void CMainDlg::DeviceMsgHandler(char cmd, char *pBuf, int length)
 {
   unsigned char command = (unsigned char)cmd;
-  std::string txt;
+  std::string txt; CString data;
   int result;
   unsigned char cmd_temp;
 
@@ -943,16 +943,50 @@ void CMainDlg::DeviceMsgHandler(char cmd, char *pBuf, int length)
     case CMD_GET_PROFILE:
 		 pPage4->ParseProfile(pBuf, length); 
     break;
-/*
+
     //----
-    case CMD_FILESYS_INFO:
-		 ReadFileSysInfo(pBuf, length);
-    return;
+    case CMD_NRF_GET_POWER_VOLTAGE:
+		 float voltage;
+		 memcpy(&voltage, pBuf, 4);
+		 data.Format("%1.2f v\r\n", voltage);
+		 txt = data.GetBuffer();
+		 pPage6->PrintInfo(&txt);
+    break;
     
 	//----
-    case CMD_DEVICE_MSG:
-		 ReadDeviceMsg(pBuf, length);
-    return;	*/
+   case CMD_NRF_CHECK_DEVICE:
+	    if(((unsigned char)pBuf[0])==0xA5)
+		{
+		  txt = "nRF OK\r\n";
+		  pPage6->PrintInfo(&txt);
+		}
+    break;
+	
+	//----
+    case CMD_NRF_GET_SERIAL_NUMBER:
+	     txt = "Serial: ";
+	     for(int i=0; i<16; i++)
+	     {
+	       data.Format("%02X",((unsigned char)pBuf[i]));
+		   txt += data;
+	     }
+		 txt += "\r\n";
+	     pPage6->PrintInfo(&txt);
+    break;
+
+	//----
+    case CMD_NRF_READ_I2C:
+	     txt = "I2C: ";
+	     for(int i=0; i<length; i++)
+	     {
+	       data.Format("%02X ",((unsigned char)pBuf[i]));
+		   txt += data;
+	     }
+		 txt += "\r\n";
+	     pPage6->PrintInfo(&txt);
+    break;
+
+	 
   }
 }
 

@@ -108,12 +108,14 @@
 #define CMD_NRF_GET_SERIAL_NUMBER       0xBE
 #define CMD_NRF_JUMP_TO_BOOTLOADER      0xBF
 
+
 #define EVT_REFLOW_DONE           0
 #define EVT_CMD_ACK				  1
 #define EVT_SAVE_EEPROM			  2
 #define EVT_WRITE_PROFILE	      3
 #define EVT_BOOT_MODE			  4
-#define LOG_REFLOW_MASK           0x01
+#define LOG_REFLOW_MASK           1
+
 
 //==============================================================================
 //Device data send for state monitoring 

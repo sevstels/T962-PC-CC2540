@@ -161,6 +161,52 @@ BOOL CPage6::PreTranslateMessage(MSG* pMsg)
 
 //------------------------------------------------------------------------------
 //Function:
+//------------------------------------------------------------------------------
+void CPage6::Test(void)
+{
+  //pBT->Tx(CMD_NRF_GET_POWER_VOLTAGE, NULL, 0); //+
+  //pBT->Tx(CMD_NRF_LED_BLINK, NULL, 0); //+
+  //pBT->Tx(CMD_NRF_SET_SETUP_DEFAULT, NULL, 0); //+
+  //pBT->Tx(CMD_NRF_CHECK_DEVICE, NULL, 0); //+
+  //pBT->Tx(CMD_NRF_GET_SERIAL_NUMBER, NULL, 0); //+
+  //I2C_Read((0xA0>>1), 0, 16);	//+
+  ///char buf[4] = {1,2,3,4};
+  ///I2C_Write((0xA0>>1), 0, buf, 4); //+
+  ///I2C_Read((0xA0>>1), 0, 16);	//+
+  //pBT->Tx(, NULL, 0); //
+}
+
+//------------------------------------------------------------------------------
+//Function:	  Read EEPROM AT24C02
+//------------------------------------------------------------------------------
+void CPage6::I2C_Read(unsigned char dev_addr, unsigned short mem_addr, short len)
+{
+  char data[5];
+  data[0] = dev_addr; //dev addr
+  data[1] = 1;        //length for adress write
+  data[2] = (unsigned char) mem_addr>>8;//length for data read 
+  data[3] = (unsigned char) mem_addr;   //params here ... 
+  data[4] = len-1;
+
+  pBT->Tx(CMD_NRF_READ_I2C, data, 5); //+
+}
+
+//------------------------------------------------------------------------------
+//Function:	 write EEPROM AT24C02
+//------------------------------------------------------------------------------
+void CPage6::I2C_Write(unsigned char dev_addr, 
+	                   unsigned short mem_addr, char *pBuf, short len)
+{
+  char data[5+255];
+  data[0] = dev_addr; //dev addr
+  data[1] = (unsigned char) mem_addr;
+  memcpy(&data[2], pBuf, len);
+
+  pBT->Tx(CMD_NRF_WRITE_I2C, data, 2+len); //+
+}
+
+//------------------------------------------------------------------------------
+//Function:
 //------------------------------------------------------------------------------ 
 void CPage6::OnButtonBtInfo(){Clear(); pBT->Tx(CMD_NRF_GET_BT_INFO, NULL, 0);}
 void CPage6::OnButtonFWInfo(){Clear(); pBT->Tx(CMD_GET_ABOUT, NULL, 0);}
@@ -234,19 +280,14 @@ void CPage6::OnButtonShowEeprom()
 //------------------------------------------------------------------------------
 void CPage6::OnButtonAbout()
 {
+  ///Test();
+ 
   CAboutDlg dlg;
   INT_PTR nResponse = dlg.DoModal();
-  if(nResponse == IDOK)
-  {
-    //TODO: Place code here to handle when the dialog is
-    //dismissed with OK
-  }
-  else if (nResponse == IDCANCEL)
-  {
-    //TODO: Place code here to handle when the dialog is
-    //dismissed with Cancel
-  }
+  if(nResponse == IDOK){}
+  else if (nResponse == IDCANCEL){}
 }
+
 
 //------------------------------------------------------------------------------
 // Function
