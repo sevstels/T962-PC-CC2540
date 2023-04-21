@@ -8,7 +8,6 @@
 #include "afxwin.h"
 #include "tec-resource.h"  //for IDD_Page4
 #include "device_struct.h"
-#include "anls-graph.h"
 #include "display.h"
 #include "graphs.h"
 #include "profile-file.h"
@@ -47,7 +46,7 @@ class CPage4 : public CPropertyPage
   int EVNT_log;
   int block_writed;
 
-  Device_Setup2 *pDevice;
+  Device_Setup *pDevice;
   CReflowSetupDlg *pDlg;
 
   //----
@@ -62,7 +61,6 @@ class CPage4 : public CPropertyPage
   CAppWinReg *pREG;  
   CDSPL	DSPL;
   CTPRF PCRF;
-  CAnGraph AGRPH;
   CEdit m_monitor;
   CToolTip ToolTip;
   CGraphs GRPH;
@@ -102,13 +100,9 @@ class CPage4 : public CPropertyPage
   void Controls_Update(void);
   void ControlsGrop(int on_off);
   int  DeviceProfileWrite(void);
-  int  DeviceProfileRead(void);
-  int  AnalysisRead(void);
-  int  AnalysisGraph(HANDLE pArray);
   int  WriteDevSetup(void);
   void Parser(char *pBuf);
   void ButtonSoldering(int state);
-  void ParseLED(unsigned char leds, CString *pTxt);
   void ParseProfile(char *pBuf, int length);
   void ParseReflowStep(char *pBuf, int length);
   void ParseReflowLog(char *pBuf, int length);
@@ -148,12 +142,12 @@ class CPage4 : public CPropertyPage
   int file_saved;
   int from_begin;
   int write_log;
-  int m_PCR_number;
+
   int m_Reflow_enabled;
   int m_Reflow_pause;
   float PID_1sec_old;
-  std::vector<Point2D> PidLog;
-  std::vector<PointXY> ReflowLog[10];
+  std::vector<PointFLT> PidLog;
+  std::vector<PointINT> ReflowLog[10];
 
   CString file_name;
   CString file_path; 
@@ -180,17 +174,14 @@ class CPage4 : public CPropertyPage
   afx_msg void OnMouseMove(UINT nFlags, CPoint point);
   afx_msg void OnContextMenu(CWnd* /*pWnd*/, CPoint /*point*/);
 				 
-  afx_msg void OnPage5_AddVertex();
-  afx_msg void OnPage5_DeleteVertex();
-  afx_msg void OnPage5_DeleteSegment();
-  afx_msg void OnPage5_AddSegment();
+  afx_msg void OnAddVertex();
+  afx_msg void OnDeleteVertex();
+  afx_msg void OnDeleteSegment();
+  afx_msg void OnAddSegment();
   afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 
   afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
   afx_msg void OnPage5_SetpProfileDefault();
-  //afx_msg void OnPage5_WriteProfileToDevice();
-  //afx_msg void OnPage5_SaveProfileToFile();
-
   virtual BOOL OnInitDialog();
   virtual BOOL PreTranslateMessage(MSG* pMsg);
   virtual BOOL OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT* pResult);

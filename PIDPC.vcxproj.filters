@@ -58,9 +58,6 @@
     <Filter Include="LibCPP\Images\Functions">
       <UniqueIdentifier>{a4ac0e77-cb91-4a6d-a79b-af66aaec5a64}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LibCPP\Bezier Interpolation">
-      <UniqueIdentifier>{34720f9a-c1eb-4e32-a85b-32e04dc76b61}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Help\chm">
       <UniqueIdentifier>{8ac00a5b-8424-438c-8e03-7a975e3a8398}</UniqueIdentifier>
     </Filter>
@@ -166,12 +163,6 @@
     <Filter Include="LibCPP\ProtocolEx">
       <UniqueIdentifier>{60403952-48df-4686-b6e8-c1563a7022d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Analysys">
-      <UniqueIdentifier>{b18a3c61-0fab-4a00-8b00-fda34ab56607}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Analysys\Settings Dialog">
-      <UniqueIdentifier>{49546134-fbe3-41b6-9590-d4ccb7b8a194}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Profile Files">
       <UniqueIdentifier>{f140e704-6246-4c19-9c37-fdf9b31c958b}</UniqueIdentifier>
     </Filter>
@@ -192,6 +183,9 @@
     </Filter>
     <Filter Include="LPC21isp">
       <UniqueIdentifier>{fa20e4c9-9372-4613-8959-eb8a9f178e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LibCPP\Arrays">
+      <UniqueIdentifier>{36d8fcc5-fedc-4177-bd2c-0560d18a0117}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -216,17 +210,11 @@
     <ClCompile Include="src\Help\user_help.cpp">
       <Filter>Help</Filter>
     </ClCompile>
-    <ClCompile Include="src\AnalysisGraph\anls-graph.cpp">
-      <Filter>Analysys</Filter>
-    </ClCompile>
     <ClCompile Include="src\Pages\Page2\Functions\pid-tune.cpp">
       <Filter>Pages\Page 2\Functions</Filter>
     </ClCompile>
     <ClCompile Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.cpp">
       <Filter>Pages\Page 2\Dialog PID-Test</Filter>
-    </ClCompile>
-    <ClCompile Include="src\AnalysisGraph\anls-dlg-settings.cpp">
-      <Filter>Analysys\Settings Dialog</Filter>
     </ClCompile>
     <ClCompile Include="src\AppSetup\app-setup.cpp">
       <Filter>Application setup</Filter>
@@ -249,28 +237,7 @@
     <ClCompile Include="src\Pages\Page3\Functions\show-data3.cpp">
       <Filter>Pages\Page 3\Functions</Filter>
     </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\analysis-graph.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\analysis-log.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\analysis-read.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
     <ClCompile Include="src\Pages\Page4\Functions\context-menu.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\list_ctrl.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\list_hahdlers.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\pcr-log.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\profile-read.cpp">
       <Filter>Pages\Page 4\Functions</Filter>
     </ClCompile>
     <ClCompile Include="src\Pages\Page4\Functions\profile-write.cpp">
@@ -281,9 +248,6 @@
     </ClCompile>
     <ClCompile Include="src\Pages\Page4\Thread\Thread4.cpp">
       <Filter>Pages\Page 4\Thread</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Pages\Page4\Functions\parser-page4.cpp">
-      <Filter>Pages\Page 4\Functions</Filter>
     </ClCompile>
     <ClCompile Include="src\Pages\Page4\Functions\controls4.cpp">
       <Filter>Pages\Page 4\Functions</Filter>
@@ -387,9 +351,6 @@
     <ClCompile Include="src\LibCPP\Arrows\Arrows.cpp">
       <Filter>LibCPP\Arrows</Filter>
     </ClCompile>
-    <ClCompile Include="src\LibCPP\Interpolation\bezier.cpp">
-      <Filter>LibCPP\Bezier Interpolation</Filter>
-    </ClCompile>
     <ClCompile Include="src\Display\Functions\add-remove.cpp">
       <Filter>Display\Functions</Filter>
     </ClCompile>
@@ -468,6 +429,15 @@
     <ClCompile Include="src\Application\T962.cpp">
       <Filter>Application</Filter>
     </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\reflow-log.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\msg-parser4.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pages\Page4\Functions\pid-log.cpp">
+      <Filter>Pages\Page 4\Functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -500,14 +470,8 @@
     <ClInclude Include="src\Help\user_help.h">
       <Filter>Help</Filter>
     </ClInclude>
-    <ClInclude Include="src\AnalysisGraph\anls-graph.h">
-      <Filter>Analysys</Filter>
-    </ClInclude>
     <ClInclude Include="src\Pages\Page2\DlgPID-test\dlg_pid-test.h">
       <Filter>Pages\Page 2\Dialog PID-Test</Filter>
-    </ClInclude>
-    <ClInclude Include="src\AnalysisGraph\anls-dlg-settings.h">
-      <Filter>Analysys\Settings Dialog</Filter>
     </ClInclude>
     <ClInclude Include="src\AppSetup\app-setup.h">
       <Filter>Application setup</Filter>
@@ -523,9 +487,6 @@
     </ClInclude>
     <ClInclude Include="src\Pages\Page3\DlgMonitor\dlg-monitor.h">
       <Filter>Pages\Page 3\Dialog Panel</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Pages\Page4\Functions\analysis.h">
-      <Filter>Pages\Page 4\Functions</Filter>
     </ClInclude>
     <ClInclude Include="src\Pages\Page4\Page4.h">
       <Filter>Pages\Page 4</Filter>
@@ -593,9 +554,6 @@
     <ClInclude Include="src\LibCPP\Arrows\Arrows.h">
       <Filter>LibCPP\Arrows</Filter>
     </ClInclude>
-    <ClInclude Include="src\LibCPP\Interpolation\interpolation.h">
-      <Filter>LibCPP\Bezier Interpolation</Filter>
-    </ClInclude>
     <ClInclude Include="src\Display\display.h">
       <Filter>Display</Filter>
     </ClInclude>
@@ -622,6 +580,9 @@
     </ClInclude>
     <ClInclude Include="src\Application\T962.h">
       <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LibCPP\Arrays\arrays.h">
+      <Filter>LibCPP\Arrays</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

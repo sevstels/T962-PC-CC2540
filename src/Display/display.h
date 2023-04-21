@@ -6,7 +6,7 @@
 //==============================================================================
 #include "afxcmn.h"
 #include "afxwin.h"
-#include "interpolation.h"
+#include "arrays.h"
 
 #define  PCR_STANDARD      1
 
@@ -40,7 +40,7 @@ class CDSPL
   int scroll_index;
   
   //Profile data points array, graph curves
-  std::vector<Point2D> profile;
+  std::vector<PointFLT> profile;
   //Profile cycles arrov array
   CByteArray index_cycles;
 

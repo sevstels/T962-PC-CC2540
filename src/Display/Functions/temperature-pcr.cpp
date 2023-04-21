@@ -73,8 +73,8 @@ float CDSPL::CalcRightX(float x2, float x3, float y2, float y3, float fl_delta)
 //------------------------------------------------------------------------------
 void CDSPL::ChangeTemperature(float fl_delta, int mode)
 { 
-  double x0, x1, x2, x3;
-  double y0, y1, y2, y3;
+  float x0, x1, x2, x3;
+  float y0, y1, y2, y3;
 
   x0 = profile[object_index-1].x; // Point left of selected line
   x1 = profile[object_index].x;  // 1st point of selected line

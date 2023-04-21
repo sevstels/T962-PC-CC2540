@@ -8,7 +8,6 @@
 #include "Page4.h"
 #include "MainDlg.h"
 #include "files-cpp.h"
-#include "anls-dlg-settings.h"
 #include "cmd.h"
 #include "datatx.h"
 
@@ -46,7 +45,6 @@ CPage4::CPage4() : CPropertyPage(CPage4::IDD)
   from_begin = 0;
   load_profile = 0;
   //----
-  m_PCR_number = 1;
   m_Reflow_enabled = 0;
   m_Reflow_pause = 0;
   pProgress = &m_Progress_Write;
@@ -117,9 +115,9 @@ BEGIN_MESSAGE_MAP(CPage4, CPropertyPage)
   ON_BN_CLICKED(IDC_BUTTON_READ_PROFILE, &CPage4::OnButtonProfileRead)
   ON_BN_CLICKED(IDC_BUTTON_WRITE_PROFILE, &CPage4::OnButtonProfileWrite)
 
-  ON_COMMAND(ID_PAGE5_ADDVERTEX, &CPage4::OnPage5_AddVertex)
-  ON_COMMAND(ID_PAGE5_DELETEVERTEX, &CPage4::OnPage5_DeleteVertex)
-  ON_COMMAND(ID_PAGE5_DELETESEGMENT, &CPage4::OnPage5_DeleteSegment)  
+  ON_COMMAND(ID_PAGE5_ADDVERTEX, &CPage4::OnAddVertex)
+  ON_COMMAND(ID_PAGE5_DELETEVERTEX, &CPage4::OnDeleteVertex)
+  ON_COMMAND(ID_PAGE5_DELETESEGMENT, &CPage4::OnDeleteSegment)  
   ON_BN_CLICKED(IDC_BUTTON_SHOW_FILE, &CPage4::OnButtonShowFile)
   ON_BN_CLICKED(IDC_BUTTON_ANALYSIS, &CPage4::OnButtonAnalysis)
   //----
@@ -143,6 +141,7 @@ BOOL CPage4::OnInitDialog()
   //Add extra initialization here
   GRPH.SetHWnd(this->m_hWnd);
   GRPH.pAPP = pAPP;
+  GRPH.pDEV = pDevice;
 
   //----
   DSPL.pMonitor = &m_monitor;
@@ -537,28 +536,29 @@ void CPage4::OnButtonShowGraph()
   //===============================================
   //Ini picture	class
   //===============================================
-  GRPH.graph_line_width[0] = 2;
-  GRPH.graph_line_width[1] = 1;
-  GRPH.graph_line_width[2] = 1;
-  GRPH.graph_line_width[3] = 1;
-  GRPH.graph_line_width[4] = 1;
-  GRPH.graph_line_width[5] = 1;
-  GRPH.graph_line_width[6] = 1;
-  GRPH.graph_line_width[7] = 2;
-  GRPH.graph_line_width[8] = 2;
-  GRPH.graph_line_width[9] = 2;
+  pAPP->log[0] = 1;
+  pAPP->line_width[0] = 2;
+  pAPP->line_width[1] = 1;
+  pAPP->line_width[2] = 1;
+  pAPP->line_width[3] = 1;
+  pAPP->line_width[4] = 1;
+  pAPP->line_width[5] = 1;
+  pAPP->line_width[6] = 1;
+  pAPP->line_width[7] = 2;
+  pAPP->line_width[8] = 2;
+  pAPP->line_width[9] = 2;
 
   //----
-  GRPH.graph_line_color[0] = RGB(80,80,80);
-  GRPH.graph_line_color[1] = RGB(255,0,0);
-  GRPH.graph_line_color[2] = RGB(255,0,0);
-  GRPH.graph_line_color[3] = RGB(0,0,0);
-  GRPH.graph_line_color[4] = RGB(0,0,0);
-  GRPH.graph_line_color[5] = RGB(0,0,0);
-  GRPH.graph_line_color[6] = RGB(0,0,0);
-  GRPH.graph_line_color[7] = RGB(0,220,0);   //TPCB
-  GRPH.graph_line_color[8] = RGB(250,0,255); //PWM HTR
-  GRPH.graph_line_color[9] = RGB(0,0,250);   //PWM FAN
+  pAPP->line_color[0] = RGB(120,120,120);
+  pAPP->line_color[1] = RGB(255,0,0);
+  pAPP->line_color[2] = RGB(205,0,0);
+  pAPP->line_color[3] = RGB(250,180,100);
+  pAPP->line_color[4] = RGB(220,220,80);
+  pAPP->line_color[5] = RGB(100,250,250);
+  pAPP->line_color[6] = RGB(153,153,0);
+  pAPP->line_color[7] = RGB(0,180,0);   //TPCB
+  pAPP->line_color[8] = RGB(250,0,255); //PWM HTR
+  pAPP->line_color[9] = RGB(0,0,255);   //PWM FAN
 
   //----
   GRPH.scale_line_color = RGB(200,200,200);
@@ -721,16 +721,11 @@ void CPage4::OnButtonReflowRun()
 	  pConsole->Clear();
 
 	  //Clear graph buffers
-	  GRPH.graph_line[0].empty();
-	  GRPH.graph_line[1].empty();
-	  GRPH.graph_line[2].empty();
-	  GRPH.graph_line[3].empty();
-	  GRPH.graph_line[4].empty();
-	  GRPH.graph_line[5].empty();
-	  GRPH.graph_line[6].empty();
-	  GRPH.graph_line[7].empty();
-	  GRPH.graph_line[8].empty();
-	  GRPH.graph_line[9].empty();
+	  for(int i=0; i<10; i++)
+	  {
+		GRPH.graph_line[i].empty(); 
+		ReflowLog[i].empty();
+	  } 
 
 	  //---------------------------------------
       //Open new log file

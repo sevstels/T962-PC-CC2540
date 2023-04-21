@@ -63,20 +63,11 @@ typedef struct file_list FILE_LIST;
 #define ERR_FILE_ALLOC_HEX        63  /**< Couldn't allocate enough memory for hex file. */
 #define ERR_MEMORY_RANGE          69  /**< Out of memory range. */
 
-/** Structure used to build list of input files. */
-struct file_list
-{
-  const char *name;       /**< The name of the input file.	*/
-  FILE_LIST *prev;        /**< The previous file name in the list.*/
-  char hex_flag;          /**< True if the input file is hex.	*/
-};
-
 typedef struct
 {
   TARGET micro;                // The type of micro that will be programmed.
   FILE_FORMAT_TYPE FileFormat;
   unsigned char ProgramChip;   // Normally set
-  FILE_LIST *f_list;  // List of files to read in.
   int nQuestionMarks; // how many times to try to synchronise
   int DoNotStart;
   int BootHold;
@@ -113,8 +104,6 @@ void AppDebugPrintf(const char *fmt, ...);
 
 #define exit(val)   AppException(val)
 void AppException(int exception_level);
-
-int AppDoProgram(int argc, char *argv[]);
 
 #define Exclude_kbhit 1
 int AppSyncing(int trials);

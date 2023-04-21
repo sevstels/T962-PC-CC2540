@@ -175,6 +175,14 @@ void CC2540::RxCOM(char *pBuf, int length)
 	    {pTI->pEventsHandler(BT_DEV_INFO,(char*)"Scan Done", 4);}
 	}
 	
+	//Open BLE connection
+	if(cmd==0x0605)
+	{ 
+	  //GAP_DeviceInformation
+	  if(pTI->pEventsHandler!=NULL)
+	    {pTI->pEventsHandler(BT_DEV_CONNECTED,(char*)"Open connection", 15);}
+	}
+
 	//Lost BLE connection
 	if(cmd==0x0606)
 	{ 
@@ -266,10 +274,11 @@ int CC2540::Open(int com_port)
   COM.AddRxHandler(RxCOM);
 
   //If BT dongle already was connected 
-  dev_connected = 1;
+  //dev_connected = 1;
   
-  result = CMD_Disconnect();
-  CMD_DeviceReset();
+  //result = CMD_Disconnect();
+  
+  //CMD_DeviceReset();
 /*  if(result!=1)
   {
     result = CMD_DeviceReset();
@@ -308,6 +317,9 @@ int CC2540::Connect(void)
   dev_address[3] = 0x9C;
   dev_address[4] = 0x04;
   dev_address[5] = 0xC6;*/
+ 
+  //CMD_Disconnect();
+  //Sleep(200);
 
   int result = BD_StringToAddr(&dev_bd_addr_str, (char*)dev_address);
   if(result!=1) {return -1;}
@@ -315,8 +327,10 @@ int CC2540::Connect(void)
   result = CMD_Connect((char*)dev_address);
   if(result!=1) 
   {
+	//Check device presence  
+	//соединение уже видимо было установлено
 	CMD_ConnectCancel();
-	return -1;
+ 	return -1;
   }
   
   Sleep(400); 
@@ -380,7 +394,7 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::DataTx(char *pBuf, int length)
 {
-  if(dev_connected !=1) return -1;
+  ///if(dev_connected !=1) return -1;
   
   char cmd[30];
   cmd[0] = 0x01; //Command
@@ -393,12 +407,12 @@ int CC2540::DataTx(char *pBuf, int length)
   cmd[7] = 0x00; //?
   memcpy(&cmd[8], pBuf, length);
 
-  #ifdef _DEBUG
+/*#ifdef _DEBUG
   std::string msg = "TX -> ";
   msg += __func__;
   msg += "\n";
   DBG_TRACE(msg.c_str());
-  #endif
+  #endif  */
 
   CC2540TX_CS.Lock();
   int send = COM.WrFile(cmd, 8+length);

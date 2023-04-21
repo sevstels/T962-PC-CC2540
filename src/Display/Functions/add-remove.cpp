@@ -40,7 +40,7 @@ void CDSPL::AddVertex(void)
 	//Compare coordinate X
 	if(x0<=x && x<=x1)
 	{
-	  Point2D p; 
+	  PointFLT p; 
 	  find = 1;
 
 	  //new point X
@@ -64,7 +64,7 @@ void CDSPL::AddVertex(void)
 	  //----------------------------------
 	  //---- Add new point to array
 	  //----------------------------------
-	  std::vector<Point2D>::iterator pos;
+	  std::vector<PointFLT>::iterator pos;
 	  pos = profile.begin();
 	  profile.insert(pos+index+1, p);
 
@@ -94,14 +94,14 @@ void CDSPL::DelVertex(void)
   int count = profile.size();
   if(index>count) return;
 
-  std::vector<Point2D>::iterator pos;
+  std::vector<PointFLT>::iterator pos;
   pos = profile.begin()+index+1;
   int x	= profile[index].x;
   int y = profile[index].y;
   //удаляем
   profile.erase(pos);
   //чистим память
-  std::vector<Point2D>(profile).swap(profile);
+  std::vector<PointFLT>(profile).swap(profile);
 
   TRACE2("\nDelete Vertex At: X:%d Y:%d", x,y);
   object_selected = 0;
@@ -127,14 +127,14 @@ void CDSPL::DelSegment(void)
   int count = profile.size();
   if(index>count) return;
 
-  std::vector<Point2D>::iterator pos;
+  std::vector<PointFLT>::iterator pos;
   pos = profile.begin()+index+1;
   int x	= profile[index].x;
   int y = profile[index].y;
   //удаляем
   profile.erase(pos);
   //чистим память
-  std::vector<Point2D>(profile).swap(profile);
+  std::vector<PointFLT>(profile).swap(profile);
 
   TRACE2("\nDelete Segment At: X:%d Y:%d", x,y);
   object_selected = 0;

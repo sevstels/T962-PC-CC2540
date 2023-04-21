@@ -2,7 +2,7 @@
 //File name:   "cc2540.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #ifndef _CC2540_H_
 #define _CC2540_H_

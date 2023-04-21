@@ -24,9 +24,11 @@ typedef struct AppSetup_struct
   int graph_line_width;
  
   //---- dsp graphic
-  COLORREF dsp_chn_color[6];
-  COLORREF dsp_bgnd_color;
-  COLORREF dsp_scale_color;
+  char log[10];
+  char line_width[10];
+  COLORREF line_color[10];
+  COLORREF bgnd_color;
+  COLORREF scale_color;
   
   //----
   char dsp_chn_On[6];
@@ -38,9 +40,6 @@ typedef struct AppSetup_struct
   char dsp_filter_Bezier;
   char dsp_normalize;
   char app_sync;//for sensors debug
-
-  //---- user setup
-  char log[10];
 
   //---- open for user
   char show_img;

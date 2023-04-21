@@ -54,7 +54,7 @@ class CSensorSetupDlg : public CDialog
   CDPOS POS;
   CToolTip ToolTip;
   CAppWinReg *pREG;
-  Device_Setup2 *pDev;
+  Device_Setup *pDev;
   CWnd *pCWnd;
 
   //----

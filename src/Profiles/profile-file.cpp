@@ -58,7 +58,7 @@ CTPRF::~CTPRF()
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CTPRF::Ini(std::vector<Point2D> *pPCRprofile)
+void CTPRF::Ini(std::vector<PointFLT> *pPCRprofile)
 {
   pProfile = pPCRprofile;
 }
@@ -292,7 +292,7 @@ int CTPRF::SampleParserRGBY(CString string, short &leds)
   //отправить на выход 
   if(code!=0)
   {
-    leds = code;
+    leds = (short)code;
     
     leds |= 0x8000;
   }
@@ -469,7 +469,7 @@ int CTPRF::StringToDigit(CString string, float &out_value)
 //------------------------------------------------------------------------------ 
 int CTPRF::AddPoint(CString *pString_x, CString *pString_y)
 {
-  Point2D p;
+  PointFLT p;
   
   if(CheckEmpty(*pString_x)) return 0;
   if(CheckEmpty(*pString_y)) return 0;
@@ -491,7 +491,7 @@ int CTPRF::AddPoint(CString *pString_x, CString *pString_y)
   p.x = x; 
   p.y = y;
     
-  profile_time = p.x;
+  profile_time = (int)p.x;
   cycle_index++;
 
   pNewProfile->push_back(p);
@@ -506,7 +506,7 @@ int CTPRF::AddCycles(int row, int count)
 {
   int result, digit=0, length, cnt=0, row_empty;
   int cycle_points = 0;
-  Point2D p;
+  PointFLT p;
   CString str_x, str_y;
   length = row+count+1;
   
@@ -556,7 +556,7 @@ int CTPRF::AddCycles(int row, int count)
          //Add profile point, calc time 
          p.x = profile_time + x; p.y = y;
          pNewProfile->push_back(p);
-         profile_time = p.x;
+         profile_time = (int)p.x;
          cycle_points++;
        } 
      }
@@ -579,7 +579,7 @@ int CTPRF::AddCycles(int row, int count)
 //------------------------------------------------------------------------------
 int CTPRF::FromCSV(CString FName)
 {
-  std::vector<Point2D> new_profile;
+  std::vector<PointFLT> new_profile;
   new_profile.empty();
   pNewProfile =	&new_profile;
   
@@ -669,8 +669,8 @@ int CTPRF::FromCSV(CString FName)
 //------------------------------------------------------------------------------
 int CTPRF::FromArray(char *pData, int length)
 {   
-  Point2D p;
-  std::vector<Point2D> new_profile;
+  PointFLT p;
+  std::vector<PointFLT> new_profile;
   new_profile.empty();
   pNewProfile =	&new_profile;
     
@@ -687,10 +687,10 @@ int CTPRF::FromArray(char *pData, int length)
   for(int i=0; i<(length>>1); i++)
   {
     //---- Add point
-	p.x = i*10; 
+	p.x = (float)(i*10); 
     p.y = buf[i];
     
-    profile_time = p.x;
+    profile_time = (int)p.x;
     cycle_index++;
 
     pNewProfile->push_back(p);

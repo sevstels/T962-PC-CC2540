@@ -6,7 +6,7 @@
 //==============================================================================
 #include "afxcmn.h"
 #include "afxwin.h"
-#include "interpolation.h"
+#include "arrays.h"
 
 #ifndef _PCR_FILES_H_
 #define _PCR_FILES_H_
@@ -25,13 +25,13 @@ class CTPRF
  ~CTPRF();
 
   ///CTMPRT *pTMPR;
-  std::vector<Point2D> *pProfile;
-  std::vector<Point2D> *pNewProfile;
+  std::vector<PointFLT> *pProfile;
+  std::vector<PointFLT> *pNewProfile;
   CByteArray *pIndex_cycles;
   CString FileName;
 
   //----
-  void Ini(std::vector<Point2D> *pPCRprofile);
+  void Ini(std::vector<PointFLT> *pPCRprofile);
 
   //----
   //to *.csv file

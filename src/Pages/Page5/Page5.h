@@ -39,7 +39,7 @@ class CPage5 : public CPropertyPage
   CDataTX *pBT;
   CAppWinReg *pREG;
   ApplSettings *pAPP;
-  Device_Setup2 *pDevice;
+  Device_Setup *pDevice;
   CSensorSetupDlg *pDlg[4];
 
   //----   

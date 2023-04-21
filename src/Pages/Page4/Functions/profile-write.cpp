@@ -7,10 +7,6 @@
 #include "stdafx.h"
 #include "Page4.h"
 #include "cmd.h"
-//#include "flash_avr.h"
-
- //---- Using Dll
-//#include "candll.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -24,7 +20,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
  
-
 //------------------------------------------------------------------------------
 //Function: calculation data CRC
 //------------------------------------------------------------------------------
@@ -122,7 +117,7 @@ int CPage4::DeviceProfileWrite(void)
 
 
   //crc	 
-  Point2D tpoint;
+  PointFLT tpoint;
   unsigned short data[48];
   memset(data, 0, 96);
 
@@ -191,22 +186,6 @@ int CPage4::DeviceProfileWrite(void)
 	//----
 	if(index>=length)
 	   break;
-
-		 /*
-	for(int i=0; i<20; i++)
-	{
-	  Sleep(50);
-	  if(block_writed==1) break;
-	}
-
-	if(block_writed==0)
-	{
-      m_monitor.SetWindowText(_T("Write Error!"));
-      m_monitor.UpdateWindow(); 
-      m_but_ProfileWrite.EnableWindow(TRUE);
-	  return -1;
-	}	*/
-
   }
 
   m_monitor.SetWindowText(_T("Check.."));

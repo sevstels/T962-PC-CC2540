@@ -30,7 +30,7 @@ void CDSPL::Profile_DefaultIni(void)
   //Main profile buffer clear 
   profile.clear();
   index_cycles.RemoveAll();
-  Point2D p, draw;
+  PointFLT p, draw;
   int i, n, begin, add, index = 0, last_x = 0;
   float last_y;
   TRACE("\nAdd ");

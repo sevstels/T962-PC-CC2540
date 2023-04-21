@@ -121,6 +121,7 @@ class CPage6 : public CPropertyPage
   afx_msg void OnButtonBtInfo();
   afx_msg void OnButtonFWUpdate();
 
+  afx_msg void OnButtonGetSerial();
 };
 
 #endif

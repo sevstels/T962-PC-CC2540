@@ -39,7 +39,7 @@ CGraphs::CGraphs()
   resize_factor_x = 1;
   resize_factor_y = 1;
   img_resize_x = 1;
-
+  pCDC = NULL;
   hWnd = NULL;
   hDC = NULL;
   //----
@@ -50,8 +50,6 @@ CGraphs::CGraphs()
   save_gif = 0;
   save_png = 0;
   save_svg = 0;
-
-  memset(graph_line_width, 0, sizeof(graph_line_width));
 }
 
 //------------------------------------------------------------------------------
@@ -156,8 +154,8 @@ void CGraphs::SetSize(int x, int y)
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-void CGraphs::FlToInt(std::vector<PointXY> *pBufOut, 
-	                  std::vector<Point2D> *pBufIn)
+void CGraphs::FlToInt(std::vector<PointINT> *pBufOut, 
+	                  std::vector<PointFLT> *pBufIn)
 {
   size_t count = pBufIn->size();
 
@@ -167,12 +165,12 @@ void CGraphs::FlToInt(std::vector<PointXY> *pBufOut,
   //Vertical resizer
   for(unsigned int x=0; x<count-1; x++)
   {
-	Point2D p = pBufIn->at(x);
+	PointFLT p = pBufIn->at(x);
 	double temp = p.y;
     
 	//величина для графика в пикселях
 	int y = round(temp);
-	PointXY pxy;
+	PointINT pxy;
 	
 	pxy.y = y;
 	pxy.x = (int)p.x;
@@ -183,8 +181,8 @@ void CGraphs::FlToInt(std::vector<PointXY> *pBufOut,
 //------------------------------------------------------------------------------
 //Vertical data resize
 //------------------------------------------------------------------------------
-int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut, 
-	                     std::vector<PointXY> *pBufIn)
+int CGraphs::ResizeDataY(std::vector<PointINT> *pBufOut, 
+	                     std::vector<PointINT> *pBufIn)
 {
   TRACE("Resize Data by Y\n"); 
      
@@ -197,7 +195,7 @@ int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut,
   if(count<1) return 0;
    
   //save data
-  std::vector<PointXY> TempBuf;
+  std::vector<PointINT> TempBuf;
   TempBuf =	*pBufIn;
 
   //очистить приемный буфер
@@ -206,7 +204,7 @@ int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut,
   //Vertical resizer
   for(unsigned int n=0; n<count-1; n++)
   {
-	PointXY p = TempBuf.at(n);
+	PointINT p = TempBuf.at(n);
 	float temp = p.y;
     
 	//---- y point
@@ -214,7 +212,7 @@ int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut,
 
 	//величина для графика в пикселях
 	int y = round(temp);
-	PointXY p2;
+	PointINT p2;
 	
 	p2.y = y;
 	int x = p.x;
@@ -231,24 +229,22 @@ int CGraphs::ResizeDataY(std::vector<PointXY> *pBufOut,
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
-int CGraphs::ResizeDataX(std::vector<PointXY> *pBufOut, 
-	                     std::vector<PointXY> *pBufIn)
+int CGraphs::ResizeDataX(std::vector<PointINT> *pBufOut, 
+	                     std::vector<PointINT> *pBufIn)
 {
   TRACE("Resize Data by X\n");
 
   size_t count = pBufIn->size();
   if(count<1) return 0;
 
-
-  //Horizontal resizer
-  std::vector<PointXY> Temp;
-  Temp = *pBufIn;
-  PointXY in, out;
+  //Horizontal resizer  
+  PointINT in;
+  pBufOut->empty(); 
   pBufOut->clear();
 
   for(unsigned int x=0; x<count-1; x++)
   {
-	in = Temp.at(x);
+	in = pBufIn->at(x);
 	in.x *= img_resize_x;
 	  
 	pBufOut->push_back(in);
@@ -313,7 +309,7 @@ int CGraphs::CreateGraph(const char *pFileName)
   //Bin_to_Txt(ADC_Buffer, size_x, 2);
   CBitmap mem_BMP;
   CDC PIC;
-
+  pCDC = &PIC;
   PIC.CreateCompatibleDC(pDC);
   mem_BMP.CreateCompatibleBitmap(pDC, width+left_gap+right_gap, 
                                      height+top_gap+bottom_gap);
@@ -323,9 +319,6 @@ int CGraphs::CreateGraph(const char *pFileName)
   PIC.FillSolidRect(0,0, width+left_gap+right_gap, 
                          height+top_gap+bottom_gap, 
 						 RGB(255,255,255));// RGB(255,255,255)
-
-  //PIC.SetBkColor(RGB(255,255,255));
-  //PIC.SetDCBrushColor(RGB(255,255,255))
 
   //логические единицы отображаем, как физические
   //Set 1 pixel X = 1 pixel Y = MM_ISOTROPIC 
@@ -346,7 +339,7 @@ int CGraphs::CreateGraph(const char *pFileName)
   PIC.SetViewportOrg(left_gap, height+top_gap); 
     
   //Draw graph scale
-  Draw_ScaleY(&PIC, 0,0, width, height); // , 12, RGB(60,60,60)
+  Draw_ScaleY(&PIC, 0,0, width, height);
   Draw_ScaleX(&PIC, 0,0);
   
   //Curve count
@@ -374,10 +367,12 @@ int CGraphs::CreateGraph(const char *pFileName)
 		
 		if(y0!=0)
 		//Draw curve
-	    Draw_Line(&PIC, graph_line_width[i],x0,y0,x,y,graph_line_color[i]);
+	    Draw_Line(&PIC, pAPP->line_width[i],x0,y0,x,y, pAPP->line_color[i]);
 	 } 
 	}
   }
+  
+  Draw_Info();
 
   //Restore old setup
   PIC.SetMapMode(oldMapMode);
@@ -771,7 +766,7 @@ void CGraphs::Draw_PointBox(CDC *pCDC, int buf_position)
 }
 
 //------------------------------------------------------------------------------
-//Paint
+//
 //------------------------------------------------------------------------------
 void CGraphs::SetFont(CDC *pCDC, // Гарнитура
                       int Size, // размер в пунктах
@@ -813,4 +808,52 @@ void CGraphs::SetFont(CDC *pCDC, // Гарнитура
                                 DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, 
                                 CLIP_DEFAULT_PRECIS, PROOF_QUALITY,
                                 DEFAULT_PITCH | FF_DONTCARE, Typeface);	 */
+}
+
+//------------------------------------------------------------------------------
+//Handler
+//------------------------------------------------------------------------------
+void CGraphs::Draw_String(int x, int y, CString txt, COLORREF color)
+{
+  //for write text message
+  pCDC->SetTextColor(color);
+
+  //----
+  pCDC->ExtTextOutA(x, y, ETO_CLIPPED, NULL, txt, NULL);
+}
+
+//------------------------------------------------------------------------------
+//Draw
+//------------------------------------------------------------------------------
+void CGraphs::Draw_Info(void)
+{
+  //----
+  int delta = 16;  
+  int x = 32*2, y = 399;
+  
+  //----
+  Draw_String(x, y, "Soldering Profile", pAPP->line_color[0]);
+  
+  if(pAPP->log[1]==1 && (pDEV->use_sensor_heater&1)!=0) 
+	 Draw_String(x, y -= delta, "Thermocouple TC1", pAPP->line_color[1]);
+  
+  if(pAPP->log[2]==1 && (pDEV->use_sensor_heater&2)!=0) 
+	 Draw_String(x, y -= delta, "Thermocouple TC2", pAPP->line_color[2]);
+  
+  if(pAPP->log[3]==1 && (pDEV->use_sensor_pcb&1)!=0) 
+	 Draw_String(x, y -= delta, "Sensor TS1", pAPP->line_color[3]);
+  
+  if(pAPP->log[4]==1 && (pDEV->use_sensor_pcb&2)!=0) 
+	 Draw_String(x, y -= delta, "Sensor TS2", pAPP->line_color[4]);
+  
+  if(pAPP->log[5]==1 && (pDEV->use_sensor_pcb&4)!=0) 
+	 Draw_String(x, y -= delta, "Sensor TS3", pAPP->line_color[5]);
+  
+  if(pAPP->log[6]==1 && (pDEV->use_sensor_pcb&8)!=0)
+	 Draw_String(x, y -= delta, "Sensor TS4", pAPP->line_color[6]);
+  
+  if(pAPP->log[7]==1) Draw_String(x, y -= delta, "PCB Temperature", pAPP->line_color[7]);
+  if(pAPP->log[8]==1) Draw_String(x, y -= delta, "PWM Heater", pAPP->line_color[8]);
+  if(pAPP->log[9]==1) Draw_String(x, y -= delta, "PWM Fan", pAPP->line_color[9]);
+  
 }

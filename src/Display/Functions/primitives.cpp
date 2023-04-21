@@ -167,10 +167,10 @@ void CDSPL::Draw_MaxPoint(CDC *pDC, float *pBuffer, int size)
 
  //---- Search Max Point
 /// CBrent BR;
- double x;
+int x = 0;
  
 /// int max_y = 255-(int)BR.BrentOptimize(pBuffer, x_left, x_right, 0.5, x);
-    int max_y = 0;
+ int max_y = 0;
  int max_x = (int)x;
  
  //check overhead 

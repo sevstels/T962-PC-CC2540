@@ -52,8 +52,6 @@ class CMainDlg : public CDialog
   Device_Setup *pDevice;
   Device_Params Params;
     
-  Device_Setup2 DEV;
-
   //---- Implementation
   CPage1 *pPage1;
   CPage2 *pPage2;

@@ -2,7 +2,7 @@
 //File name:   "Page5.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "Page5.h"
@@ -153,13 +153,15 @@ void CPage5::Sensors_Enable(void)
   char enable[2] = {0,0};
   //----
   if(m_check_htrs[0].GetCheck()) enable[0] |= 0x01;
-  if(m_check_htrs[1].GetCheck()) enable[0] |= 0x02;  
+  if(m_check_htrs[1].GetCheck()) enable[0] |= 0x02; 
+  pDevice->use_sensor_heater = enable[0];
   
   //----
   if(m_check_pcbs[0].GetCheck()) enable[1] |= 0x01;
   if(m_check_pcbs[1].GetCheck()) enable[1] |= 0x02;
   if(m_check_pcbs[2].GetCheck()) enable[1] |= 0x04;
   if(m_check_pcbs[3].GetCheck()) enable[1] |= 0x08;
+  pDevice->use_sensor_pcb = enable[1];
   
   pBT->Tx(CMD_SENSORS_ENABLE, (char*)&enable, 2);
 }

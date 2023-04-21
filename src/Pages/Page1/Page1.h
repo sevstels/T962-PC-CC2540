@@ -48,7 +48,7 @@ class CPage1 : public CPropertyPage
   //----
   CDataTX *pBT;
   CToolTip ToolTip;
-  Device_Setup2 *pDevice;
+  Device_Setup *pDevice;
   Device_Params *pParams;
   CAppWinReg *pREG;
   UINT MM_TimerID;

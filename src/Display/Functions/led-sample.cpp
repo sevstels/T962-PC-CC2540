@@ -112,7 +112,7 @@ void CDSPL::Draw_SampleLED(int index, short leds, float fl_y)
 //------------------------------------------------------------------------------
 void CDSPL::AddSensor(int x, int channel)
 { 
-  Point2D p;
+  PointFLT p;
   int count = profile.size();
 
   //save keypoints 

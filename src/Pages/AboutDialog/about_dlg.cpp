@@ -2,7 +2,7 @@
 //File name:    "about_dlg.cpp"
 //Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2022, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "afxdialogex.h"
@@ -62,4 +62,3 @@ BOOL CAboutDlg::OnInitDialog()
 //------------------------------------------------------------------------------
   BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
   END_MESSAGE_MAP()
-

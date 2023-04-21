@@ -270,7 +270,7 @@ void CPage3::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
  if(hWnd == m_slider_heater.m_hWnd)
  {
 	position = (unsigned short)m_slider_heater.GetPos();
-	limit = Calc_HeaterPowerLimit();
+	limit = (unsigned short)Calc_HeaterPowerLimit();
 	if(position<=limit)
 	{
 	  pBT->Tx(CMD_SET_HEATER, (char*)&position, 2);

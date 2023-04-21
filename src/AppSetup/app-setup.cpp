@@ -59,27 +59,46 @@ void CApplSetup::FirstIni(void)
 //        
 //------------------------------------------------------------------------------
 void CApplSetup::SetDefault(void)
-{
+{	
+  pSetup->log[0] = 1;
+  pSetup->log[1] = 1;
+  pSetup->log[2] = 1;
+  pSetup->log[3] = 1;
+  pSetup->log[4] = 1;
+  pSetup->log[5] = 1;
+  pSetup->log[6] = 1;
+  pSetup->log[7] = 1;
+  pSetup->log[8] = 1;
+  pSetup->log[9] = 1;
+
   //---- graphic
-  pSetup->dsp_chn_color[0] = RGB(0,0,255);
-  pSetup->dsp_chn_color[1] = RGB(255,128,0);
-  pSetup->dsp_chn_color[2] = RGB(255,0,255);
-  pSetup->dsp_chn_color[3] = RGB(255,255,0);
-  pSetup->dsp_chn_color[4] = RGB(0,255,255);
-  pSetup->dsp_chn_color[5] = RGB(255,0,0);
+  pSetup->line_color[0] = RGB(80,80,80);
+  pSetup->line_color[1] = RGB(255,0,0);
+  pSetup->line_color[2] = RGB(128,0,0);
+  pSetup->line_color[3] = RGB(250,180,100);
+  pSetup->line_color[4] = RGB(250,250,100);
+  pSetup->line_color[5] = RGB(100,250,250);
+  pSetup->line_color[6] = RGB(100,100,250);
+  pSetup->line_color[7] = RGB(0,200,0);   //TPCB
+  pSetup->line_color[8] = RGB(250,255,0); //PWM HTR
+  pSetup->line_color[9] = RGB(0,0,255);   //PWM FAN
   
   //----
-  pSetup->dsp_bgnd_color = RGB(255,255,255);
-  pSetup->dsp_scale_color = RGB(0,0,0);
-  
+  pSetup->bgnd_color = RGB(255,255,255);
+  pSetup->scale_color = RGB(0,0,0);
+ 
   //----
-  pSetup->dsp_line_thnks[0] = 3;
-  pSetup->dsp_line_thnks[1] = 3;
-  pSetup->dsp_line_thnks[2] = 3;
-  pSetup->dsp_line_thnks[3] = 3;
-  pSetup->dsp_line_thnks[4] = 3;
-  pSetup->dsp_line_thnks[5] = 3;
-  
+  pSetup->line_width[0] = 2;
+  pSetup->line_width[1] = 1;
+  pSetup->line_width[2] = 1;
+  pSetup->line_width[3] = 1;
+  pSetup->line_width[4] = 1;
+  pSetup->line_width[5] = 1;
+  pSetup->line_width[6] = 1;
+  pSetup->line_width[7] = 2;
+  pSetup->line_width[8] = 2;
+  pSetup->line_width[9] = 2;
+  	
   //----
   //int graph_max_value_x;
   //int graph_max_value_y;

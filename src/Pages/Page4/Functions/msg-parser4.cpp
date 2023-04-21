@@ -1,5 +1,5 @@
 //==============================================================================
-//File name:    "data-parser-page5.cpp"
+//File name:    "msg-parser4.cpp"
 //Purpose:      Source File, CPage2 page
 //Version:      1.00
 //Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
@@ -7,6 +7,7 @@
 #include "stdafx.h"
 #include "Page4.h"
 #include "cmd.h"
+#include "arrays.h"
 
 //---- Mem Leakage Debug
 #define _CRTDBG_MAP_ALLOC
@@ -32,14 +33,10 @@ static int counter;
 //------------------------------------------------------------------------------  
 void CPage4::Parser(char *pBuf)
 {
-  //unsigned char data[8];
-  //memcpy(data, pBuf, 7);
   unsigned char data[32];
   memcpy(data, pBuf, 30);
   CString txt, dig;
   static CString msg;
-  static struct struct_analys pcr_samples_log;
-  static unsigned short ams_data_samples_led[GRAPH_CHANNELS+1];
 
   //----
   if(data[0]==OVEN_ERROR)
@@ -93,41 +90,6 @@ void CPage4::Parser(char *pBuf)
 	return;
   }
   
-  //----
-  if(data[0]==PCR_MEASUREMENT)
-  {
-  	unsigned short intensity;
-	char R,G,B,Y;
-	char leds = data[3];
-  	memcpy(&intensity, &data[1], 2);
-	
-	//----
-	txt.Empty();
-	R = data[3]&0x01;
-	G = (data[3]>>1)&0x01;
-	B = (data[3]>>2)&0x01;
-	Y = (data[3]>>3)&0x01;
-	if(R==1) txt += "R";
-	if(G==1) txt += "G";
-	if(B==1) txt += "B";
-	if(Y==1) txt += "Y";
-	if(R==0 && G==0 && B==0 && Y==0)txt += "OFF";
-	 /*
-	unsigned short point;
-  	memcpy(&point, &data[1], 2);
-	unsigned short adc_code_temperature;
-	memcpy(&adc_code_temperature, &data[3], 2);
-	float tmpr = pTMPR->CalcTemperature(adc_code_temperature);
-   */
-	//----
-	msg.Format("Intensity: %3.d, LED: %s\n", intensity, txt);
-	if(EVNT_log) pConsole->Msg(LOG_OK, LOG_TIME,"PCR","%s",msg.GetBuffer());
-				
-	if(PID_log){PCR_CheckLogFile(); PCR_LogFile(intensity, leds);}
-	TRACE1("PCR Measurement: %d\n", intensity);
-	return;
-  } 
-
   //----
   if(data[0]==PCR_SAMPLE_BLOCK_END)
   {
@@ -245,7 +207,7 @@ void CPage4::ParseReflowStep(char *pBuf, int length)
   //----
   if(PID_log) PID_LogGraph(point, (int)tempr);
 }
-#include "interpolation.h"
+
 //-----------------------------------------------------------------------------
 //
 //-----------------------------------------------------------------------------
@@ -286,7 +248,7 @@ void CPage4::ParseReflowLog(char *pBuf, int length)
   pConsole->Write("%s", buf);
 
   //Fill T-Graph buffers
-  PointXY p;  
+  PointINT p;  
   p.x = (TD.min*60)+TD.sec;
   ///TRACE1("p.x: %d \n", p.x);
   p.y = (int)TD.sensor_heater[0];

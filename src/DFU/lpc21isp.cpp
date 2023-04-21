@@ -1,7 +1,7 @@
 //==============================================================================
 //File name:    "lpc21isp.cpp"
 //Purpose:      Source File
-//Version:      1.00
+//Version:      2.00
 //Copyright:    https://github.com/capiman/lpc21isp
 //https://github.com/lnls-dig/lpc21isp/blob/4fbb2a2a9d06677bad9c3f32f3a7247735cc2154/lpc21isp.c
 //==============================================================================
@@ -12,8 +12,6 @@
 #include "datatx.h"
 #include "cmd.h"
 #include "Page6.h"
-
-//#define COMPILE_FOR_LPC21
 
 extern CPage6 *pCPage6;
 
@@ -554,7 +552,7 @@ int EraseChip(ISP_ENVIRONMENT *IspEnvironment)
   char Answer[128];
 
   DebugPrintf( "Chip Erase: ");
-  int last_sector = LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1;
+  int last_sector = 8; /// LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1;
   sprintf(tmpString, "P %d %d\r\n", 0, last_sector); 
   
   //----------------------------------------------
@@ -565,9 +563,9 @@ int EraseChip(ISP_ENVIRONMENT *IspEnvironment)
   result = BT_Receive(Answer, sizeof(Answer), 5000);
   if(result==1)
   {
-	std::string boot_answ(Answer); 
-	result = boot_answ.find(tmpString);
-	if(result)
+	std::string answ(Answer); 
+	result = answ.find("\r\n0\r\n");
+	if(result<0)
 	{ 
       DebugPrintf("Wrong answer on Erase-Command\r\n");
       return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
@@ -575,8 +573,8 @@ int EraseChip(ISP_ENVIRONMENT *IspEnvironment)
   }  
 
   //----------------------------------------------
-  //Chrck sectors empty
-  sprintf(tmpString, "I %d %d\r\n", 0, 
+  //Check sectors empty
+  sprintf(tmpString, "I %d %d\r\n", 1, 
 		  LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
   
   result = BT_Send(tmpString);
@@ -597,64 +595,226 @@ int EraseChip(ISP_ENVIRONMENT *IspEnvironment)
 
   DebugPrintf("OK\r\n");
 
-  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-     LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-  {
-     DebugPrintf("ATTENTION: Only bank A was erased!!!\r\n");
-  }
-
   return 0;
 }
 
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-int EraseSector(ISP_ENVIRONMENT *IspEnvironment)
+int EraseSector(ISP_ENVIRONMENT *IspEnvironment, int sector)
 {
   char tmpString[128];
   char Answer[128];
+  int prepare_counter = 0;
+  int erase_counter = 0;
+  int empty_counter = 0;
 
-  //no wiping requested: erasing sector 0 first
-  DebugPrintf( "Erasing sector 0 first, to invalidate checksum. \r\n");
+  erase_again:
+  Sleep(20);
+  /*
+  //----------------------------------------------------------	
+  //подготовить сектор к записи
+  //----------------------------------------------------------
+  DebugPrintf("Prepare ");
+  sprintf(tmpString, "P %ld %ld\r\n", sector, sector);
+  resend1:
+  int result = BT_Send(tmpString);
+  if(!result){Sleep(20); goto resend1;}
+  
+  //ждем ответ
+  result = BT_Receive(Answer, sizeof(Answer), 10000);
+  if(result==1)
+  {
+	  std::string txt_answ(Answer); 
+	   //Get IAP Status code
+	  result = txt_answ.find("\r\n0\r\n");	
+	  if(result<0)
+	  {
+	       DebugPrintf(" Error!\r\n");
+		   prepare_counter++;
+		   if(prepare_counter>100) return -1;
+		   goto erase_again;
+	  }
+	  else{DebugPrintf( " OK, ");}
+  }
+  else
+	{
+       DebugPrintf(" CMD Error!\r\n");
+	   prepare_counter++;
+	   if(prepare_counter>10) return -1;
+	   Sleep(20);
+	   goto erase_again;
+	}
+	*/
+	//----------------------------------------------------------	
+	//ISP Blank check sector command
+	//----------------------------------------------------------
+    sprintf(tmpString, "I %ld %ld\r\n", sector, sector);
+	int erase = 0;
+	resend2:
+	int result = BT_Send(tmpString);
+    if(!result){Sleep(20); goto resend2;}
+  
+    //ждем ответ
+    result = BT_Receive(Answer, sizeof(Answer), 5000);
+    if(result==1)
+    { 
+	  //Get IAP Status code
+	  std::string txt_answ(Answer); 
+	  result = txt_answ.find("\r\n8\r\n");
+	  if(sector==0) result = 0;
+	  if(result>0)
+	  {
+	     DebugPrintf("No Empty,");
+		 erase = 1;
+	  }
+	  else
+	  {
+		DebugPrintf("Empty");
+		return 0;
+	  }
+    } 
+	else
+	{
+       DebugPrintf("CMD Error!\r\n");
+	   empty_counter++;
+	   if(empty_counter>10) return -1;
+	   Sleep(20);
+	   goto erase_again;
+	}
 
-        if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-            LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-        {
-            // TODO: Quick and dirty hack to address bank 0
-            sprintf(tmpString, "P %d %d 0\r\n", 0, 0);
-        }
-        else
-        {
-            sprintf(tmpString, "P %d %d\r\n", 0, 0);
-        }
+  if(erase==1)
+  {
+    //----------------------------------------------------------
+    //стереть сектор 
+	//----------------------------------------------------------
+    DebugPrintf(" Erase");
+	//Erase sector(s) E <start sector number> <end sector number>       
+	sprintf(tmpString, "E %ld %ld\r\n", sector, sector);
+	resend3:
+	result = BT_Send(tmpString);
+    if(!result){Sleep(20); goto resend3;}
+  	
+	Sleep(20);
 
-        if(!SendAndVerify(tmpString, Answer, sizeof Answer))
-        {
-            DebugPrintf( "Wrong answer on Prepare-Command\n");
-            return (WRONG_ANSWER_PREP + GetAndReportErrorNumber(Answer));
-        }
-
-        if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-            LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-        {
-            // TODO: Quick and dirty hack to address bank 0
-            sprintf(tmpString, "E %d %d 0\r\n", 0, 0);
-        }
-        else
-        {
-            sprintf(tmpString, "E %d %d\r\n", 0, 0);
-        }
-
-        if (!SendAndVerify(tmpString, Answer, sizeof Answer))
-        {
-            DebugPrintf( "Wrong answer on Erase-Command\r\n");
-            return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
-        }
-        DebugPrintf( "OK\r\n");
+    //ждем ответ
+    result = BT_Receive(Answer, sizeof(Answer), 15000);
+    if(result==1)
+    {
+	  std::string txt_answ(Answer);
+	  result = txt_answ.find("\r\n0\r\n");	
+	  if(result>0)
+	  { 
+	     //Get IAP Status code
+		 DebugPrintf(" OK\r\n");
+		 erase_counter = 0;
+	  }
+	  else
+	  {
+		if(sector==0) return 0;
+		DebugPrintf("\r\n"); // Error!
+		erase_counter++;
+		if(erase_counter>10) return -1;
+		Sleep(20);
+		goto erase_again;  
+	  }
+     }
+	else
+	{
+       DebugPrintf(" CMD Error!\r\n");
+	   erase_counter++;
+	   if(erase_counter>10) return -1;
+	   Sleep(20);
+	   goto erase_again;
+	}
+  }
 
   return 0;
 }
+ 
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+int RAM_TO_Flash(int start, int ram_base, int length, int sector)
+{
+  char tmpString[32];
+  char Answer[32];
+  again:
+  //----------------------------------------------------------	
+  //подготовить сектор к записи
+  //----------------------------------------------------------
+  DebugPrintf("Prepare ");
+  sprintf(tmpString, "P %ld %ld\r\n", sector, sector);
+  resend1:
+  int result = BT_Send(tmpString);
+  if(!result){Sleep(20); goto resend1;}
+  
+  //ждем ответ
+  result = BT_Receive(Answer, sizeof(Answer), 10000);
+  if(result==1)
+  {
+	  std::string txt_answ(Answer); 
+	   //Get IAP Status code
+	  result = txt_answ.find("\r\n0\r\n");	
+	  if(result<0)
+	  {
+	       DebugPrintf(" Error!\r\n");
+		   //prepare_counter++;
+		   //if(prepare_counter>100) return -1;
+		   //goto erase_again;
+	  }
+	  else{DebugPrintf( " OK, ");}
+  }
+  else
+	{
+       DebugPrintf(" CMD Error!\r\n");
+	   //prepare_counter++;
+	   //if(prepare_counter>10) return -1;
+	   Sleep(20);
+	   //goto erase_again;
+	}
 
+
+
+  //IspEnvironment->BinaryOffset + SectorStart + SectorOffset               
+  //ReturnValueLpcRamBase(IspEnvironment)
+  //CopyLength	
+  //C <Flash address> <RAM address> <number of bytes>
+  sprintf(tmpString, "C %ld %ld %ld\r\n", start, ram_base, length);
+
+  //посылаем
+  result = BT_Send(tmpString);
+  if(!result)
+  { 
+	 return (NO_ANSWER_QM);
+  }
+	 
+  //ждем ответ
+  result = BT_Receive(Answer, sizeof(Answer), 5000);
+  if(result==1)
+  {
+	std::string boot_answ(Answer); 
+	result = boot_answ.find(tmpString);
+		
+    if(result<0)
+	{
+      DebugPrintf( "Wrong answer on Copy-Command\r\n");
+      //return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
+	  goto again;
+	}
+  }
+  else
+  {
+    DebugPrintf( "No cmd\r\n");
+    return 1000;
+  }
+
+  return 0;
+} 
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
 int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line, int , int, int );
 
   // Puffer for data to resend after "RESEND\r\n" Target responce
@@ -715,13 +875,12 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   unsigned long Id1Masked;
   unsigned long CopyLength;
   int c, k=0, i;
-  unsigned long ivt_CRC;          // CRC over interrupt vector table
- // unsigned long block_CRC;
-  time_t tStartUpload=0, tDoneUpload=0;
+  //CRC over interrupt vector table
+  unsigned long ivt_CRC;          
+  //unsigned long block_CRC;
   char * cmd_string;
   int repeat = 0;
   int result;
-  
   
   //очистить буфер экрана 
   pCPage6->txt_info.Empty();
@@ -756,9 +915,10 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	// DebugPrintf("Jump to Bootloader mode by Reset\r\n");
   }	*/	 
 
-  result = pBLE->Tx(CMD_NRF_OVEN_JUMP_TO_BOOTLOADER, NULL, 0);
+  result = pBLE->Tx(CMD_NRF_OVEN_ISP_MODE, NULL, 0);
   if(!result){ return (NO_ANSWER_QM);} 
 
+  //result = pBLE->Tx(CMD_NRF_OVEN_JUMP_TO_BOOTLOADER, NULL, 0);
 
   //===========================================================
   //ждем перехода в загрузку 
@@ -806,6 +966,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   }
 
   DebugPrintf( " OK\r\n");
+
 
   //===========================================================
   DebugPrintf("Synchronized: ");
@@ -1147,19 +1308,25 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	//   int ret = EraseSector(IspEnvironment);
 	//   if(ret !=0) return ret;
     } */
+  int ret;
+  ret = EraseChip(IspEnvironment);
+  Sleep(100);
+
+  for(i=0;i<9; i++){ DebugPrintf("\r\nSector %ld: ", i); ret = EraseSector(IspEnvironment, i);}
+  
+ // return 0;
+
 
   int repeet_counter = 0;
-  //Sector = 11;
-
+  //EraseSector(IspEnvironment, 0);
+  
   //---------------------------------------------
   //Write loop
   //---------------------------------------------
   while (1)
   {
     again:
-	if(repeet_counter>2) return 1;
-	  
-	int cmd_ok = 0;
+	//if(repeet_counter>2) return 1;
     DebugPrintf("\r\nSector %ld: ", Sector);
 	
     //----
@@ -1169,96 +1336,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
       return (PROGRAM_TOO_LARGE);
     }		
 	
-	//----------------------------------------------------------	
-	//подготовить сектор к записи
-	//----------------------------------------------------------
-    sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
-	int prepare = 0;
-	result = BT_Send(tmpString);
-    if(!result){return (NO_ANSWER_QM);}
-  
-    //ждем ответ
-    result = BT_Receive(Answer, sizeof(Answer), 5000);
-    if(result==1)
-    {
-	  std::string txt_answ(Answer); 
-	  result = txt_answ.find(tmpString);	
-	  if(result>=0)
-	  { 
-	     //Get IAP Status code
-		 result = txt_answ.find("\r\n0\r\n");
-		 if(result<0)
-		 {
-	       DebugPrintf(" Prepare Error!\r\n");
-		   repeet_counter++;
-		   goto again;
-		 }
-		 else{DebugPrintf( " Prepare OK"); prepare = 1; repeet_counter=0;}
-	  }
-    }
-	else
-	{
-       DebugPrintf(" CMD Error!\r\n");
-	   repeet_counter++;
-	   goto again;
-	}
-	
-	//----------------------------------------------------------	
-	//ISP Blank check sector command
-	//----------------------------------------------------------
-    sprintf(tmpString, "I %ld %ld\r\n", Sector, Sector);
-	int sc_erase = 0;
-	result = BT_Send(tmpString);
-    if(!result){return (NO_ANSWER_QM);}
-  
-    //ждем ответ
-    result = BT_Receive(Answer, sizeof(Answer), 5000);
-    if(result==1)
-    {
-	  std::string txt_answ(Answer); 
-	  result = txt_answ.find(tmpString);	
-	  if(result>=0)
-	  { 
-	     //Get IAP Status code
-		 result = txt_answ.find("\r\n0\r\n");
-		 if(result<0)
-		 {
-	       DebugPrintf(" No Empty,");
-		   sc_erase = 1;
-		 }
-		 else{sc_erase = 0;}
-	  }
-    } 
-
-	if(sc_erase==1)
-	{
-    //----------------------------------------------------------
-    //стереть сектор 
-	//----------------------------------------------------------
-    DebugPrintf(" Erase");
-	//Erase sector(s) E <start sector number> <end sector number>       
-	sprintf(tmpString, "E %ld %ld\r\n", Sector, Sector);
-	result = BT_Send(tmpString);
-    if(!result){return (NO_ANSWER_QM);}
-  
-    //ждем ответ
-    result = BT_Receive(Answer, sizeof(Answer), 5000);
-    if(result==1)
-    {
-	  std::string txt_answ(Answer);
-	  result = txt_answ.find("\r\n0\r\n");	
-	  if(result>=0)
-	  { 
-	     //Get IAP Status code
-		 DebugPrintf(" OK");
-	  }
-	  else
-	  {
-		DebugPrintf(" Error!\r\n");
-		goto again;  
-	  }
-     }
-	} 
+	result = EraseSector(IspEnvironment, Sector);
+	if(result!=0)  return (2000);
 	        
 	SectorLength = LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
     if(SectorLength > IspEnvironment->BinaryLength - SectorStart)
@@ -1432,16 +1511,13 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     CopyLength = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
                 }
 
-				//Copy RAM to Flash
-                sprintf(tmpString, "C %ld %ld %ld\r\n", IspEnvironment->BinaryOffset + SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
+				//Copy RAM to Flash				
+				int cstart = IspEnvironment->BinaryOffset + SectorStart + SectorOffset;
+				int cbase = ReturnValueLpcRamBase(IspEnvironment); 
+				result = RAM_TO_Flash(cstart, cbase, CopyLength, Sector);
+				if(result !=0) return 1;
 
-                if (!SendAndVerify(tmpString, Answer, sizeof Answer))
-                {
-                    DebugPrintf( "Wrong answer on Copy-Command\r\n");
-                    return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
-                }
-
-                if (IspEnvironment->Verify)
+                if(IspEnvironment->Verify)
                 {
 
                     //Avoid compare first 64 bytes.
@@ -1474,17 +1550,18 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 		{
           break;
         }
-        else {
-            SectorStart += LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
-            Sector++;
+        else 
+		{
+          SectorStart += LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
+          Sector++;
         }
     }
 
-  tDoneUpload = time(NULL);
+  //int prog_time_min = (tDone.wHour-tStart.wHour)*60 + tStart.wMinute-tDone.wMinute;
   if(IspEnvironment->Verify)
-     DebugPrintf("\r\nDownload Finished\r\nVerified correct... Taking %d Min", (tDoneUpload - tStartUpload)/60);
+     DebugPrintf("\r\nDownload Finished\r\nVerified correct");
   else
-     DebugPrintf("\r\nDownload Finished... taking %d Min", (tDoneUpload - tStartUpload)/60);
+     DebugPrintf("\r\nDownload Finished");
 
   /*
   if(IspEnvironment->DoNotStart == 0)

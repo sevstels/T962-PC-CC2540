@@ -108,6 +108,7 @@ BEGIN_MESSAGE_MAP(CPage6, CPropertyPage)
   ON_BN_CLICKED(IDC_BUTTON_BT_INFO, &CPage6::OnButtonBtInfo)
   ON_BN_CLICKED(IDC_BUTTON_UPDATE, &CPage6::OnButtonFWUpdate)
 
+  ON_BN_CLICKED(IDC_BUTTON_GET_SERIAL, &CPage6::OnButtonGetSerial)
 END_MESSAGE_MAP()
 
 //------------------------------------------------------------------------------
@@ -168,7 +169,6 @@ void CPage6::Test(void)
   //pBT->Tx(CMD_NRF_LED_BLINK, NULL, 0); //+
   //pBT->Tx(CMD_NRF_SET_SETUP_DEFAULT, NULL, 0); //+
   //pBT->Tx(CMD_NRF_CHECK_DEVICE, NULL, 0); //+
-  //pBT->Tx(CMD_NRF_GET_SERIAL_NUMBER, NULL, 0); //+
   //I2C_Read((0xA0>>1), 0, 16);	//+
   ///char buf[4] = {1,2,3,4};
   ///I2C_Write((0xA0>>1), 0, buf, 4); //+
@@ -236,7 +236,7 @@ void CPage6::OnButtonShowEeprom()
 
   //--------------------------------------------
   ///pConsole->Write("%s", "\nADDR:\t");
-  txt_info += ("\r\nADDR:  ");
+  txt_info += ("ADDR:  ");
   
   //Print Address Header
   for(int i=0; i<16; i++)
@@ -316,6 +316,16 @@ void CPage6::OnButtonFWUpdate()
 {
   if(program_run==0) 
   {
+
+  //===========================================================
+  //Переключить процессор печи в режим программирования
+  //===========================================================
+  CString txt;
+  txt = "Press and Hold Oven button F1\r\n";
+  //txt += "Then press button 'Oven Reset'\r\n";
+  //txt += "Then press button 'FW Update'\r\n";
+  AfxMessageBox(_T(txt));
+
     //---------------------------------------
     // Check if the oven is connected ?
     //---------------------------------------
@@ -327,18 +337,27 @@ void CPage6::OnButtonFWUpdate()
     }
 
     //Do not change Tab if chip programming
-    pTab->EnableWindow(FALSE);
+    ///pTab->EnableWindow(FALSE);
 	program_run = 1;
 	m_but_fw_update.SetWindowTextA("Update Stop");
   	ThreadLaunch();
   }
   else
   {
-	pTab->EnableWindow(TRUE);
+	//pTab->EnableWindow(TRUE);
 	m_but_fw_update.SetWindowTextA("FW Update");
 	ev_ExitRequest.SetEvent();
 	program_run = 0;
   }
+}
+
+//-----------------------------------------------------------------------------
+//
+//-----------------------------------------------------------------------------
+void CPage6::OnButtonGetSerial()
+{
+  Clear();
+  pBT->Tx(CMD_NRF_GET_SERIAL_NUMBER, NULL, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -360,3 +379,4 @@ void CPage6::ParseBootMsg(char *pBuf, int length)
   //----
   ev_BootDataRx.SetEvent();
 }
+

@@ -37,7 +37,7 @@ class CPage2 : public CPropertyPage
     
   CDataTX *pBT;
   CLOGW	*pConsole;
-  Device_Setup2 *pDevice;
+  Device_Setup *pDevice;
 
   CC2540 *pBLE;
   CAppWinReg *pREG;

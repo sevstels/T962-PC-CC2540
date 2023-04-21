@@ -141,6 +141,8 @@
 #define IDC_CHECK_TS_TOP_RIGHT          1400
 #define IDC_BUTTON_ERASE_CUSTOM_PR      1400
 #define IDC_COMBO_HTR_CALC              1401
+#define IDC_BUTTON_SHOW_EEPROM2         1401
+#define IDC_BUTTON_GET_SERIAL           1401
 #define IDC_STATIC_EXTRA_SENSORS        1402
 #define IDC_CHECK_TS1                   1403
 #define IDC_CHECK_TS2                   1404

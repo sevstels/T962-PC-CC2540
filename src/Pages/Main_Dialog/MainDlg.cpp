@@ -73,12 +73,12 @@ CMainDlg::CMainDlg(CWnd* pParent /*=NULL*/): CDialog(CMainDlg::IDD, pParent)
   pPage4->pCSETUP = &CSETUP;
   pPage6->pCSETUP = &CSETUP;
 
-  pPage1->pDevice = &DEV;
-  pPage2->pDevice = &DEV;
-  pPage3->pDevice = &DEV;
-  pPage4->pDevice = &DEV;
-  pPage5->pDevice = &DEV;
-//  pPage6->pDevice = &DEV;
+  pPage1->pDevice = &Device;
+  pPage2->pDevice = &Device;
+  pPage3->pDevice = &Device;
+  pPage4->pDevice = &Device;
+  pPage5->pDevice = &Device;
+  pPage6->pDevice = &Device;
 
   //----
   pPage1->pParams = &Params;  
@@ -302,9 +302,10 @@ BOOL CMainDlg::OnInitDialog()
   //----
   BLE.CMD_SetTxPower((char)tx_power);
   BLE.CMD_SetRxGain((char)rx_gain);
+  
   //----
   result = BLE.Connect();
-  if(result==1) GetDeviceSetup();
+  GetDeviceSetup();
 
   //return TRUE  unless you set the focus to a control
   return TRUE;  
@@ -696,7 +697,7 @@ extern int boot_mode;
 //-----------------------------------------------------------------------------
 int CMainDlg::ReadDeviceSetup(char *pBuf, int length)
 {
-  int stuct_length = sizeof(Device_Setup2);
+  int stuct_length = sizeof(Device_Setup);
   if(stuct_length!=length)
   {
   	CString msg = "Device settings do not match\r\n"; 
@@ -709,7 +710,7 @@ int CMainDlg::ReadDeviceSetup(char *pBuf, int length)
   }
 	
   //Device_Setup buffer
-  memcpy(&DEV, pBuf, stuct_length);
+  memcpy(&Device, pBuf, stuct_length);
   return 1;
 }
 

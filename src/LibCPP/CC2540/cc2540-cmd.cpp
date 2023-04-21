@@ -35,11 +35,11 @@ Dump(Rx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_DeviceReset(void)
 {
-  char cmd[] = {0x01, 0x80, 0xFE, 0x01, 0x00};
+  unsigned char cmd[] = {0x01, 0x80, 0xFE, 0x01, 0x00};
 
   event_filter = 0x067F;
 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   
   return Wait_Event(0x067F, 2000);
 }
@@ -63,6 +63,7 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_DeviceInit(void)
 {
+  unsigned 
   char cmd[] = {0x01, 0x00, 0xFE, 0x26, 0x08, 0x19, 0x00, 0x00, 
 		        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -72,7 +73,7 @@ int CC2540::CMD_DeviceInit(void)
 
   event_filter = 0x0600;
 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   
   return Wait_Event(0x0600, 2000); //GAP_DeviceInitDone
 }
@@ -91,9 +92,9 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_MinConnectionInterval(void)
 {
-  char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x15};
+  unsigned char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x15};
   event_filter = 0x067F;
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   int ret = Wait_Event(0x067F, 200); 
   return ret; 
 }
@@ -112,9 +113,9 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_MaxConnectionInterval(void)
 {
-  char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x16};
+  unsigned char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x16};
   event_filter = 0x067F;
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   int ret = Wait_Event(0x067F, 200); 
   return ret; 
 }
@@ -132,9 +133,9 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_SlaveLatency(void)
 {
-  char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x1A};
+  unsigned char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x1A};
   event_filter = 0x067F;
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   int ret = Wait_Event(0x067F, 200); 
   return ret; 
 }
@@ -153,9 +154,9 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_SupervisionTimeout(void)
 {
-  char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x19};
+  unsigned char cmd[] = {0x01, 0x31, 0xFE, 0x01, 0x19};
   event_filter = 0x067F;
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   int ret = Wait_Event(0x067F, 200); 
   return ret; 
 }
@@ -175,10 +176,10 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_Scan(void)
 {
-  char cmd[] = {0x01, 0x04, 0xFE, 0x03, 0x03, 0x01, 0x00};
+  unsigned char cmd[] = {0x01, 0x04, 0xFE, 0x03, 0x03, 0x01, 0x00};
   
   dev_detected = 0;
-  int ret = SendCMD(cmd, sizeof(cmd), __func__);
+  int ret = SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   return ret;
 }
@@ -195,9 +196,9 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_ScanCancel(void)
 {
-  char cmd[] = {0x01, 0x05, 0xFE, 0x00};
+  unsigned char cmd[] = {0x01, 0x05, 0xFE, 0x00};
   event_filter = 0x0601;
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   int ret = Wait_Event(0x0601, 200); 
   return ret;
 }
@@ -249,9 +250,9 @@ Dump(Tx):
 //------------------------------------------------------------------------------ 
 int CC2540::CMD_ConnectCancel(void)
 {
-  char cmd[] = {0x01, 0x0A, 0xFE, 0x03, 0xFE, 0xFF, 0x13};
+  unsigned char cmd[] = {0x01, 0x0A, 0xFE, 0x03, 0xFE, 0xFF, 0x13};
   event_filter = 0x0605;
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   int ret = Wait_Event(0x0605, 2000); 
   return ret;
@@ -271,8 +272,8 @@ Dump(Tx):
 //Attribute value read, handle: 0x03, value (0x): 54-2D-39-36-32 	
 int CC2540::CMD_ReadAttr(void)
 {
-  char cmd[] = {0x01, 0x8A, 0xFD, 0x04, 0x00, 0x00, 0x03, 0x00};
-  return SendCMD(cmd, sizeof(cmd), __func__);
+  unsigned char cmd[] = {0x01, 0x8A, 0xFD, 0x04, 0x00, 0x00, 0x03, 0x00};
+  return SendCMD((char*)cmd, sizeof(cmd), __func__);
 }
 
 //------------------------------------------------------------------------------
@@ -295,9 +296,9 @@ Dump(Tx):
 0000:01 92 FD 06 00 00 0C 00 01 00 */
 int CC2540::CMD_NotifyEnable(void)
 {
-  char cmd[] = {0x01, 0x92, 0xFD, 0x06, 0x00, 0x00, 0x0C, 0x00, 0x01, 0x00};
+  unsigned char cmd[] = {0x01, 0x92, 0xFD, 0x06, 0x00, 0x00, 0x0C, 0x00, 0x01, 0x00};
   event_filter = 0x0513; 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   int ret = Wait_Event(0x0513, 4000); 
   return ret;
@@ -319,7 +320,7 @@ Dump(Tx):
 int CC2540::CMD_Connect(char *pAddr)
 {
   DBG_TRACE("==== Connect to target ====\n");
-
+  unsigned 
   char cmd[] = {0x01, 0x09, 0xFE, 0x09, 0x00, 0x00, 0x01,
 				0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 	            //0xBD, 0x9A, 0x27, 0x9C, 0x04, 0xC6};
@@ -327,10 +328,10 @@ int CC2540::CMD_Connect(char *pAddr)
   if(pAddr==NULL) memcpy(&cmd[7], dev_address, 6);
   else memcpy(&cmd[7], pAddr, 6);
    
-  BD_AddrToString(&cmd[7], &dev_bd_addr_str); 
+  BD_AddrToString((char*)&cmd[7], &dev_bd_addr_str); 
 
   event_filter = 0x0605; 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   int result = Wait_Event(0x0605, 4000); 
   if(result!=1) return -1;
@@ -359,15 +360,13 @@ Dump(Tx):
 0000:01 0A FE 03 00 00 13   */
 int CC2540::CMD_Disconnect(void)
 {   
-  if(dev_connected == 0) return 1;
-
   // ThreadRx.Delete();
   DBG_TRACE("==== Disconnect from target ====\n");
 
   //Disconnect
-  char cmd[] = {0x01, 0x0A, 0xFE, 0x03, 0x00, 0x00, 0x13};
+  unsigned char cmd[] = {0x01, 0x0A, 0xFE, 0x03, 0x00, 0x00, 0x13};
    
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
   
   
   //if(result!=1) return -1;
@@ -395,11 +394,11 @@ Dump(Tx):
 //------------------------------------------------------------------------------
 int CC2540::CMD_SetTxPower(char level)
 {
-  char cmd[] = {0x01, 0x01, 0xFC, 0x01, 0x02};
+  unsigned char cmd[] = {0x01, 0x01, 0xFC, 0x01, 0x02};
   cmd[4] = level;
 
   event_filter = 0x0401; 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   int ret = Wait_Event(0x0401, 200); 
   return ret;
@@ -416,11 +415,11 @@ Dump(Tx):
 //------------------------------------------------------------------------------ 
 int CC2540::CMD_SetRxGain(char level)
 {
-  char cmd[] = {0x01, 0x00, 0xFC, 0x01, 0x00};
+  unsigned char cmd[] = {0x01, 0x00, 0xFC, 0x01, 0x00};
   cmd[4] = level;
 
   event_filter = 0x0400; 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   int ret = Wait_Event(0x0400, 200); 
   return ret;
@@ -437,10 +436,10 @@ Dump(Tx):
 //------------------------------------------------------------------------------ 
 int CC2540::CMD_ReadRSSI(void)
 {
-  char cmd[] = {0x01, 0x05, 0x14, 0x02, 0xFE, 0xFF};
+  unsigned char cmd[] = {0x01, 0x05, 0x14, 0x02, 0xFE, 0xFF};
 
   event_filter = 0x1009; 
-  SendCMD(cmd, sizeof(cmd), __func__);
+  SendCMD((char*)cmd, sizeof(cmd), __func__);
 
   int ret = Wait_Event(0x1009, 200); 
   return ret;

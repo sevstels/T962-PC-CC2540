@@ -39,7 +39,7 @@ void CPage4::PID_LogGraph(int point, int adc_code)
   int tec_code = pDevice->ADC_value[CHN_TEC_TEMPER];
   float temperature = pTMPR->CalcTemperature((unsigned short)tec_code);
 
-  Point2D pt;
+  PointFLT pt;
   pt.x = point;
   pt.y = temperature;
   PidLog.push_back(pt);
@@ -55,7 +55,7 @@ void CPage4::PID_LogFileCreate(void)
 {
   CString txt;
   txt  = "#      Checking dynamic temperature error\n";
-  txt += "#      Time    PCR set value    TEC measure\n\n"; 
+  txt += "#      Time    PCR set value    measure\n\n"; 
   unsigned long data_length = txt.GetLength();
   bool ret = Save_File("pid-log.txt",(char*)txt.GetBuffer(),0, data_length);
   PID_1sec_old = 25;
@@ -99,11 +99,10 @@ void CPage4::PCR_LogFileCreate(void)
   txt  = "#      Checking intensiry\n";
   txt += "#      Time    Temperature    Intensity\n\n"; 
   unsigned long data_length = txt.GetLength();
-  Save_File("pcr-log.txt",(char*)txt.GetBuffer(),0, data_length);
-  Save_File("pcr-log.csv",(char*)txt.GetBuffer(),0, 0);
-
-  //PID_1sec_old = 25;
+  Save_File("p-log.txt",(char*)txt.GetBuffer(),0, data_length);
+  Save_File("p-log.csv",(char*)txt.GetBuffer(),0, 0);
 }
+
 //-----------------------------------------------------------------------------
 //Data convertor
 //-----------------------------------------------------------------------------

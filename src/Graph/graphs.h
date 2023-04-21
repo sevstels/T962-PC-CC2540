@@ -8,7 +8,7 @@
 #define _GRAPHS_H_
 
 #include <string>
-#include "interpolation.h"
+#include "arrays.h"
 #include "app-setup.h"
 #include "device_struct.h"
 
@@ -36,12 +36,12 @@ class CGraphs
   void SetScaleY(int from, int to, int step);
   void ResizeImgX(float factor_x);
   void ResizeImgY(float factor_y);
-  void FlToInt(std::vector<PointXY> *pBufOut, 
-	           std::vector<Point2D> *pBufIn);
+  void FlToInt(std::vector<PointINT> *pBufOut, 
+	           std::vector<PointFLT> *pBufIn);
   //---
-  int  ResizeDataY(std::vector<PointXY> *pBufOut, std::vector<PointXY> *pBufIn);
-  int  ResizeDataX(std::vector<PointXY> *pBufOut, std::vector<PointXY> *pBufIn);
-  int  ParserDots(std::vector<Point2D> *pData);
+  int  ResizeDataY(std::vector<PointINT> *pBufOut, std::vector<PointINT> *pBufIn);
+  int  ResizeDataX(std::vector<PointINT> *pBufOut, std::vector<PointINT> *pBufIn);
+  int  ParserDots(std::vector<PointFLT> *pData);
   void SetFont(CDC *pCDC, int Size, BOOL Bold, BOOL Italic);
   void Calc_LinePoints(short *pBuf, int x1, int y1, int x2, int y2);
   int  round(double value);
@@ -63,10 +63,13 @@ class CGraphs
   void Draw_Curve(CDC *pDC, short *pBuf, char line_width, 
 		          int x0, int y0, int x_from, int x_to, COLORREF color);
 
+  void Draw_String(int x, int y, CString txt, COLORREF color);
 
   //------------------------------------
   //DSP
   //------------------------------------
+  void Draw_Info(void);
+
   void Draw_MsgBox(CDC *pCDC, int x0, int y0, int dx, int dy, CString txt, int yes_no);
   void Draw_Point(CDC *pCDC, int buf_position);
   void Draw_Circle(CDC *pCDC, int x, int y, int d, COLORREF color);
@@ -75,6 +78,7 @@ class CGraphs
 					  CString txt, int height, COLORREF color);
   //------------------------------------
   //vars
+  CDC *pCDC;
   HANDLE hWnd;
   HANDLE hDC;
   std::string last_file;
@@ -110,9 +114,7 @@ class CGraphs
   int graph_max_value_x;
   int graph_max_value_y;
 
-  char graph_line_width[10];
-  std::vector<PointXY> graph_line[10];
-  COLORREF graph_line_color[10];
+  std::vector<PointINT> graph_line[10];
   COLORREF graph_bgnd_color;
 
   //----

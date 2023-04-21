@@ -46,7 +46,7 @@ class CPage3 : public CPropertyPage
   //----
   CAppWinReg *pREG;
   CToolTip ToolTip;
-  Device_Setup2 *pDevice;
+  Device_Setup *pDevice;
   Device_Params *pParams;
   ApplSettings *pAPP;
 
