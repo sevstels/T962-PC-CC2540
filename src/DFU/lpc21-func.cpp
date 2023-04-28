@@ -33,28 +33,7 @@ int Chip_Erase(ISP_ENVIRONMENT *IspEnvironment)
       return 1000; //(WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
 	}
   }  
-  /*
-  //----------------------------------------------
-  //Check sectors empty
-  sprintf(tmpString, "I %d %d\r\n", 1, 
-		  LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-  
-  result = BT_Send(tmpString);
-  if(!result){ return (NO_ANSWER_QM);}
-  
-  //ждем ответ
-  result = BT_Receive(Answer, sizeof(Answer), 10000);
-  if(result==1)
-  {
-	std::string boot_answ(Answer); 
-	result = boot_answ.find("0");
-	if(result<0)
-	{ 
-      DebugPrintf("Wrong Mem Erase\r\n");
-      return (WRONG_ANSWER_ERAS);
-	}
-  }  
-  */
+
   DebugPrintf("OK\r\n");
 
   return 0;
@@ -300,7 +279,6 @@ int Write_ToRAM(int ram_addr, int length)
   sprintf(tmpString, "W %ld %ld\r\n", ram_addr, length);
 
   int counter = 0;
-
 
   //посылаем
   cmd_wrresend:

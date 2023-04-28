@@ -345,7 +345,7 @@ unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment)
     return LPC_RAMSTART_LPC8XX;
   }
   DebugPrintf( "Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
-  //exit(1);
+
   return 1;
 }
 
@@ -383,7 +383,7 @@ unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
     return LPC_RAMBASE_LPC8XX;
   }
   DebugPrintf( "Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
-  //exit(1);
+
   return 1;
 }
 
@@ -643,10 +643,8 @@ static unsigned char GetAndReportErrorNumber(const char *Answer)
 
 #include <stdio.h>
 
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-  // Puffer for data to resend after "RESEND\r\n" Target responce
+  //-----------------------------------------------------------------
+  //vars Puffer for data to resend after "RESEND\r\n" Target responce
   char sendbuf0[128];
   char sendbuf1[128];
   char sendbuf2[128];
@@ -673,9 +671,7 @@ static unsigned char GetAndReportErrorNumber(const char *Answer)
                          sendbuf10, sendbuf11, sendbuf12, sendbuf13, sendbuf14,
                          sendbuf15, sendbuf16, sendbuf17, sendbuf18, sendbuf19};
 
-char uuencode_table[64];
-//extern  int Line;
-//extern  unsigned long block_CRC;
+  char uuencode_table[64];
 
 //------------------------------------------------------------------------------
 //Function:
@@ -698,8 +694,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   unsigned long CopyLength;
   int c, i;
   //CRC over interrupt vector table
-  unsigned long ivt_CRC;          
-  //char * cmd_string;
+  unsigned long ivt_CRC;
   int repeat = 0;
   int result;
   
@@ -772,7 +767,6 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	 }
 
 	 DebugPrintf(".");
-	 //Sleep(20);
   }
 
   if(found==0)
@@ -1049,39 +1043,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         }
     }
 
-#if 0
-    DebugPrintf( "Unique ID: \r\n");
-
-    cmd_string = "N\r\n";
-
-    SendComPort(IspEnvironment, cmd_string);
-
-    ReceiveBT(IspEnvironment, Answer, sizeof(Answer)-1, &realsize, 5,5000);
-
-    FormatCommand(cmd_string, temp);
-    FormatCommand(Answer, Answer);
-    if (strncmp(Answer, temp, strlen(temp)) != 0)
-    {
-        DebugPrintf( "no answer on Read Unique ID\n");
-        return (NO_ANSWER_RBV);
-    }
-
-    if (strncmp(Answer + strlen(cmd_string), "0\n", 2) == 0)
-    {
-        strippedAnswer = Answer + strlen(temp) + 2;
-        DebugPrintf( strippedAnswer);
-    }
-    else
-    {
-        DebugPrintf( "unknown\n");
-    }
-#endif // 0
-
     /* In case of a download to RAM, use full RAM for downloading
     * set the flash parameters to full RAM also.
-    * This makes sure that all code is downloaded as one big sector
-    */
-
+    * This makes sure that all code is downloaded as one big sector */
     if ( (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment))
        &&(IspEnvironment->BinaryOffset + IspEnvironment->BinaryLength <= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
     {
@@ -1090,16 +1054,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         LPCtypes[IspEnvironment->DetectedDevice].SectorTable  = SectorTable_RAM;
         SectorTable_RAM[0] = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
     }
-    if(IspEnvironment->DetectOnly)
-        return (0);
 
-    if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
-    {
-      // XON/XOFF must be switched off for LPC8XX
-      // otherwise problem during binary transmission of data to LPC8XX
-      DebugPrintf("Switch off XON/XOFF !!!\r\n");
-      ///ControlXonXoffSerialPort(IspEnvironment, 0);
-    }
+    if(IspEnvironment->DetectOnly) return (0);
 
     // Start with sector 1 and go upward... Sector 0 containing the interrupt vectors
     // will be loaded last, since it contains a checksum and device will re-enter
@@ -1136,11 +1092,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   Sleep(100);
   /*
   for(i=0;i<9; i++){ DebugPrintf("\r\nSector %ld: ", i); ret = EraseSector(IspEnvironment, i);}
-  
- // return 0;	 */
-
-
-  int repeet_counter = 0;
+  // return 0;	 */
   //EraseSector(IspEnvironment, 0);
   
   //Sector = 8;
