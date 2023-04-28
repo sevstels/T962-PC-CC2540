@@ -256,6 +256,7 @@
     <ClCompile Include="src\AppSetup\app-setup.cpp" />
     <ClCompile Include="src\BT-Dlg\bt-dlg.cpp" />
     <ClCompile Include="src\DataTx\datatx.cpp" />
+    <ClCompile Include="src\DFU\lpc21-func.cpp" />
     <ClCompile Include="src\DFU\lpc21isp.cpp" />
     <ClCompile Include="src\Display\display.cpp" />
     <ClCompile Include="src\Display\Functions\add-remove.cpp" />

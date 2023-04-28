@@ -10,10 +10,7 @@
 #include "lpc21isp.h"
 #include "lpcprog.h"
 #include "datatx.h"
-#include "cmd.h"
-#include "Page6.h"
 
-extern CPage6 *pCPage6;
 
 CDataTX *pBLE = NULL;
 void SetTXpointer(void *p_BT)
@@ -102,7 +99,7 @@ static const unsigned int SectorTable_8xx[] =
 
 static int unsigned SectorTable_RAM[]  = { 65000 };
 
-static LPC_DEVICE_TYPE LPCtypes[] =
+LPC_DEVICE_TYPE LPCtypes[] =
 {
    { 0, 0, 0, 0, 0, 0, 0, 0, 0, CHIP_VARIANT_NONE },  /* unknown */
 
@@ -313,84 +310,187 @@ static LPC_DEVICE_TYPE LPCtypes[] =
    { 0xA001C830, 0x00000000, 1, "4357",                         1024, 512, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }  /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
 };
 
-/***************************** NXP Download *********************************/
-/**  Download the file from the internal memory image to the NXP microcontroller.
-*   This function is visible from outside if COMPILE_FOR_LPC21
-*/
 
-/***************************** FormatCommand ********************************/
-/**  2013-06-28 Torsten Lang, Uwe Schneider GmbH
-According to the various NXP user manuals the ISP bootloader commands should
-be terminated with <CR><LF>, the echo and/or answer should have the same line
-termination. So far for the theory...
-In fact, the bootloader also accepts <LF> as line termination, but it may or
-may not echo the linebreak character. Some bootloaders convert the character
-into <CR><LF>, some leave the <LF> and append another one (<LF><LF> in the
-answer). Furthermore, during uuencoded data transfer the bootloader may or
-may not append an additional <LF> character at the end of the answer
-(leading to a <CR><LF><LF> sequence).
-A reliable way to handle these deviations from the UM is to strictly send the
-commands according to the description in the UM and to re-format commands
-and answers after a transfer.
-FormatCommand works in a way that it drops any leading linefeeds which only
-can be surplus <LF> characters from a previous answer. It then converts any
-sequence of <CR> and <LF> into a single <LF> character.
-FormatCommand can work in place, meaning that In==Out is allowed!
-\param [in]  In  Pointer to input buffer.
-\param [out] Out Pointer to output buffer.
-*/
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-static void FormatCommand(const char *In, char *Out)
+unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment)
 {
-  size_t i, j;
-  for (i = 0, j = 0; In[j] != '\0'; i++, j++)
+  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
   {
-    if ((In[j] == '\r') || (In[j] == '\n'))
-    {
-      if (i > 0) // Ignore leading line breaks (they must be leftovers from a previous answer)
-      {
-        Out[i] = '\n';
-      }
-      else
-      {
-        i--;
-      }
-      while ((In[j+1] == '\r') || (In[j+1] == '\n'))
-      {
-        j++;
-      }
-    }
-    else
-    {
-      Out[i] = In[j];
-    }
+    return LPC_RAMSTART_LPC43XX;
   }
-  Out[i] = '\0';
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+  {
+    return LPC_RAMSTART_LPC2XXX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
+  {
+    return LPC_RAMSTART_LPC18XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
+  {
+    return LPC_RAMSTART_LPC17XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX)
+  {
+    return LPC_RAMSTART_LPC13XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX)
+  {
+    return LPC_RAMSTART_LPC11XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
+  {
+    return LPC_RAMSTART_LPC8XX;
+  }
+  DebugPrintf( "Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
+  //exit(1);
+  return 1;
 }
 
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-static int SendAndVerify(const char *Command, char *AnswerBuffer, int AnswerLength)
+unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
 {
-  int cmdlen, result;
-  char *FormattedCommand;
+  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
+  {
+    return LPC_RAMBASE_LPC43XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
+  {
+    return LPC_RAMBASE_LPC2XXX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
+  {
+    return LPC_RAMBASE_LPC18XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
+  {
+    return LPC_RAMBASE_LPC17XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX)
+  {
+    return LPC_RAMBASE_LPC13XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX)
+  {
+    return LPC_RAMBASE_LPC11XX;
+  }
+  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
+  {
+    return LPC_RAMBASE_LPC8XX;
+  }
+  DebugPrintf( "Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
+  //exit(1);
+  return 1;
+}
 
-  result = BT_Send(Command);
-  result = BT_Receive(AnswerBuffer, AnswerLength, 5000);
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void ReceiveBT(const char *Ans, unsigned long MaxSize,
+               unsigned long *RealSize, unsigned long WantedNr0x0A,
+               unsigned timeOutMilliseconds)
+{
+    unsigned char *Answer;
+    unsigned char *endPtr;
+    static char residual_data[128] = {'\0'};
+	int length;
 
-  cmdlen = strlen(Command);
-  FormattedCommand = (char *)alloca(cmdlen+1);
-  FormatCommand(Command, FormattedCommand);
-  FormatCommand(AnswerBuffer, AnswerBuffer);
-  cmdlen = strlen(FormattedCommand);
+    Answer  = (unsigned char*) Ans;
+
+    *RealSize = 0;
+    endPtr = NULL;
+
+	int result = BT_Receive(residual_data, sizeof(residual_data), timeOutMilliseconds);
+	length = strlen(residual_data);
+	memcpy((void*)Ans, residual_data, length);
+	*RealSize = length;
+}
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void PrepareKeyboardTtySettings(void){}
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void ResetKeyboardTtySettings(void){}
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void AppException(int exception_level){}
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+void DebugPrintf(const char *fmt, ...)
+{
+  int lines;
+  char pTemp[2000];
+  memset(pTemp, 0, sizeof(pTemp));
+  va_list ap;
+      
+  va_start(ap, fmt);
+  //vprintf(fmt, ap);
+  vsprintf(pTemp, fmt, ap);      
+  va_end(ap);
+
+  std::string msg(pTemp);
   
-  int ret = strncmp(AnswerBuffer, FormattedCommand, cmdlen-1);
+  pCPage6->txt_info += msg.c_str();
+  
+  pCPage6->m_edit_info.SetWindowTextA(pCPage6->txt_info);
+  lines = pCPage6->m_edit_info.GetLineCount();
+  pCPage6->m_edit_info.LineScroll(lines);
+  //pCPage6->m_edit_info.UpdateWindow();
+  ///TRACE(pTemp);
+}
 
-  if(ret==0) return 1;
-  else return -1;
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+int BT_Send(const char *pString)
+{
+  int length = strlen(pString);
+  pCPage6->ev_BootDataRx.ResetEvent();
+  
+  int result = pBLE->Tx(CMD_NRF_OVEN_PROG_DATA, (char*)pString, length);
+
+  //100 ms delay after each block (makes lpc21isp to work with bad UARTs)
+  Sleep(20); 
+
+  return result;
+}
+
+//------------------------------------------------------------------------------
+//Function:
+//------------------------------------------------------------------------------
+int BT_Receive(void *pBuf, int size, unsigned timeout)
+{  
+  memset(pBuf, 0, size);
+  
+  DWORD ret = WaitForSingleObject(pCPage6->ev_BootDataRx.m_hObject, timeout);
+  //TRACE1("%d\n", ret);
+
+  int copy_length;
+  if(ret==0)
+  {
+	int length = pCPage6->bootloader_msg.length();
+	if(length<=size) copy_length = length;
+	else { copy_length = size;}
+
+	memcpy(pBuf, pCPage6->bootloader_msg.c_str(), copy_length);
+	return 1;
+  }
+
+  /*
+  if(ok==1) TRACE1("%s\n", buf2);
+  */
+
+  return -1;
 }
 
 //------------------------------------------------------------------------------
@@ -546,277 +646,6 @@ static unsigned char GetAndReportErrorNumber(const char *Answer)
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
-int EraseChip(ISP_ENVIRONMENT *IspEnvironment)
-{
-  char tmpString[128];
-  char Answer[128];
-
-  DebugPrintf( "Chip Erase: ");
-  int last_sector = 8; /// LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1;
-  sprintf(tmpString, "P %d %d\r\n", 0, last_sector); 
-  
-  //----------------------------------------------
-  int result = BT_Send(tmpString);
-  if(!result){ return (NO_ANSWER_QM);}
-  
-  //ждем ответ
-  result = BT_Receive(Answer, sizeof(Answer), 5000);
-  if(result==1)
-  {
-	std::string answ(Answer); 
-	result = answ.find("\r\n0\r\n");
-	if(result<0)
-	{ 
-      DebugPrintf("Wrong answer on Erase-Command\r\n");
-      return (WRONG_ANSWER_ERAS + GetAndReportErrorNumber(Answer));
-	}
-  }  
-
-  //----------------------------------------------
-  //Check sectors empty
-  sprintf(tmpString, "I %d %d\r\n", 1, 
-		  LPCtypes[IspEnvironment->DetectedDevice].FlashSectors-1);
-  
-  result = BT_Send(tmpString);
-  if(!result){ return (NO_ANSWER_QM);}
-  
-  //ждем ответ
-  result = BT_Receive(Answer, sizeof(Answer), 10000);
-  if(result==1)
-  {
-	std::string boot_answ(Answer); 
-	result = boot_answ.find("0");
-	if(result<0)
-	{ 
-      DebugPrintf("Wrong Mem Erase\r\n");
-      return (WRONG_ANSWER_ERAS);
-	}
-  }  
-
-  DebugPrintf("OK\r\n");
-
-  return 0;
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-int EraseSector(ISP_ENVIRONMENT *IspEnvironment, int sector)
-{
-  char tmpString[128];
-  char Answer[128];
-  int prepare_counter = 0;
-  int erase_counter = 0;
-  int empty_counter = 0;
-
-  erase_again:
-  Sleep(20);
-  /*
-  //----------------------------------------------------------	
-  //подготовить сектор к записи
-  //----------------------------------------------------------
-  DebugPrintf("Prepare ");
-  sprintf(tmpString, "P %ld %ld\r\n", sector, sector);
-  resend1:
-  int result = BT_Send(tmpString);
-  if(!result){Sleep(20); goto resend1;}
-  
-  //ждем ответ
-  result = BT_Receive(Answer, sizeof(Answer), 10000);
-  if(result==1)
-  {
-	  std::string txt_answ(Answer); 
-	   //Get IAP Status code
-	  result = txt_answ.find("\r\n0\r\n");	
-	  if(result<0)
-	  {
-	       DebugPrintf(" Error!\r\n");
-		   prepare_counter++;
-		   if(prepare_counter>100) return -1;
-		   goto erase_again;
-	  }
-	  else{DebugPrintf( " OK, ");}
-  }
-  else
-	{
-       DebugPrintf(" CMD Error!\r\n");
-	   prepare_counter++;
-	   if(prepare_counter>10) return -1;
-	   Sleep(20);
-	   goto erase_again;
-	}
-	*/
-	//----------------------------------------------------------	
-	//ISP Blank check sector command
-	//----------------------------------------------------------
-    sprintf(tmpString, "I %ld %ld\r\n", sector, sector);
-	int erase = 0;
-	resend2:
-	int result = BT_Send(tmpString);
-    if(!result){Sleep(20); goto resend2;}
-  
-    //ждем ответ
-    result = BT_Receive(Answer, sizeof(Answer), 5000);
-    if(result==1)
-    { 
-	  //Get IAP Status code
-	  std::string txt_answ(Answer); 
-	  result = txt_answ.find("\r\n8\r\n");
-	  if(sector==0) result = 0;
-	  if(result>0)
-	  {
-	     DebugPrintf("No Empty,");
-		 erase = 1;
-	  }
-	  else
-	  {
-		DebugPrintf("Empty");
-		return 0;
-	  }
-    } 
-	else
-	{
-       DebugPrintf("CMD Error!\r\n");
-	   empty_counter++;
-	   if(empty_counter>10) return -1;
-	   Sleep(20);
-	   goto erase_again;
-	}
-
-  if(erase==1)
-  {
-    //----------------------------------------------------------
-    //стереть сектор 
-	//----------------------------------------------------------
-    DebugPrintf(" Erase");
-	//Erase sector(s) E <start sector number> <end sector number>       
-	sprintf(tmpString, "E %ld %ld\r\n", sector, sector);
-	resend3:
-	result = BT_Send(tmpString);
-    if(!result){Sleep(20); goto resend3;}
-  	
-	Sleep(20);
-
-    //ждем ответ
-    result = BT_Receive(Answer, sizeof(Answer), 15000);
-    if(result==1)
-    {
-	  std::string txt_answ(Answer);
-	  result = txt_answ.find("\r\n0\r\n");	
-	  if(result>0)
-	  { 
-	     //Get IAP Status code
-		 DebugPrintf(" OK\r\n");
-		 erase_counter = 0;
-	  }
-	  else
-	  {
-		if(sector==0) return 0;
-		DebugPrintf("\r\n"); // Error!
-		erase_counter++;
-		if(erase_counter>10) return -1;
-		Sleep(20);
-		goto erase_again;  
-	  }
-     }
-	else
-	{
-       DebugPrintf(" CMD Error!\r\n");
-	   erase_counter++;
-	   if(erase_counter>10) return -1;
-	   Sleep(20);
-	   goto erase_again;
-	}
-  }
-
-  return 0;
-}
- 
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-int RAM_TO_Flash(int start, int ram_base, int length, int sector)
-{
-  char tmpString[32];
-  char Answer[32];
-  again:
-  //----------------------------------------------------------	
-  //подготовить сектор к записи
-  //----------------------------------------------------------
-  DebugPrintf("Prepare ");
-  sprintf(tmpString, "P %ld %ld\r\n", sector, sector);
-  resend1:
-  int result = BT_Send(tmpString);
-  if(!result){Sleep(20); goto resend1;}
-  
-  //ждем ответ
-  result = BT_Receive(Answer, sizeof(Answer), 10000);
-  if(result==1)
-  {
-	  std::string txt_answ(Answer); 
-	   //Get IAP Status code
-	  result = txt_answ.find("\r\n0\r\n");	
-	  if(result<0)
-	  {
-	       DebugPrintf(" Error!\r\n");
-		   //prepare_counter++;
-		   //if(prepare_counter>100) return -1;
-		   //goto erase_again;
-	  }
-	  else{DebugPrintf( " OK, ");}
-  }
-  else
-	{
-       DebugPrintf(" CMD Error!\r\n");
-	   //prepare_counter++;
-	   //if(prepare_counter>10) return -1;
-	   Sleep(20);
-	   //goto erase_again;
-	}
-
-
-
-  //IspEnvironment->BinaryOffset + SectorStart + SectorOffset               
-  //ReturnValueLpcRamBase(IspEnvironment)
-  //CopyLength	
-  //C <Flash address> <RAM address> <number of bytes>
-  sprintf(tmpString, "C %ld %ld %ld\r\n", start, ram_base, length);
-
-  //посылаем
-  result = BT_Send(tmpString);
-  if(!result)
-  { 
-	 return (NO_ANSWER_QM);
-  }
-	 
-  //ждем ответ
-  result = BT_Receive(Answer, sizeof(Answer), 5000);
-  if(result==1)
-  {
-	std::string boot_answ(Answer); 
-	result = boot_answ.find(tmpString);
-		
-    if(result<0)
-	{
-      DebugPrintf( "Wrong answer on Copy-Command\r\n");
-      //return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
-	  goto again;
-	}
-  }
-  else
-  {
-    DebugPrintf( "No cmd\r\n");
-    return 1000;
-  }
-
-  return 0;
-} 
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line, int , int, int );
-
   // Puffer for data to resend after "RESEND\r\n" Target responce
   char sendbuf0[128];
   char sendbuf1[128];
@@ -844,11 +673,9 @@ int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line, int , int, int );
                          sendbuf10, sendbuf11, sendbuf12, sendbuf13, sendbuf14,
                          sendbuf15, sendbuf16, sendbuf17, sendbuf18, sendbuf19};
 
-  char uuencode_table[64];
-  int Line;
-  unsigned long tmpStringPos;
-  unsigned long block_CRC;
-  int k=0;
+char uuencode_table[64];
+//extern  int Line;
+//extern  unsigned long block_CRC;
 
 //------------------------------------------------------------------------------
 //Function:
@@ -857,28 +684,22 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 {
   unsigned long realsize;
   char Answer[128];
-  char ExpectedAnswer[128];
-  char temp[128];
   /*const*/ char *strippedAnswer, *endPtr;
   int found;
   unsigned long Sector;
   unsigned long SectorLength;
   unsigned long SectorStart, SectorOffset, SectorChunk;
   char tmpString[128];
-  //char uuencode_table[64];
-  //int Line;
-  //unsigned long tmpStringPos;
   unsigned long BlockOffset;
   unsigned long Block;
   unsigned long Pos;
   unsigned long Id[2];
   unsigned long Id1Masked;
   unsigned long CopyLength;
-  int c, k=0, i;
+  int c, i;
   //CRC over interrupt vector table
   unsigned long ivt_CRC;          
-  //unsigned long block_CRC;
-  char * cmd_string;
+  //char * cmd_string;
   int repeat = 0;
   int result;
   
@@ -916,9 +737,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   }	*/	 
 
   result = pBLE->Tx(CMD_NRF_OVEN_ISP_MODE, NULL, 0);
-  if(!result){ return (NO_ANSWER_QM);} 
-
-  //result = pBLE->Tx(CMD_NRF_OVEN_JUMP_TO_BOOTLOADER, NULL, 0);
+ /* if(!result){ return (NO_ANSWER_QM);} 
+  */
+ // result = pBLE->Tx(CMD_NRF_OVEN_JUMP_TO_BOOTLOADER, NULL, 0);
 
   //===========================================================
   //ждем перехода в загрузку 
@@ -937,7 +758,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	 }
 	 
 	 //ждем ответ
-	 result = BT_Receive(Answer, sizeof(Answer), 100);
+	 result = BT_Receive(Answer, sizeof(Answer), 200);
 	 if(result==1)
 	 {
 	    std::string boot_answ(Answer); 
@@ -951,6 +772,7 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	 }
 
 	 DebugPrintf(".");
+	 //Sleep(20);
   }
 
   if(found==0)
@@ -1010,8 +832,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   result = BT_Receive(Answer, sizeof(Answer), 1000);
   if(result==1)
   {
-	std::string boot_answ(Answer); 
-	result = boot_answ.find("014740\r\nOK");	
+	std::string answ(Answer); 
+	result = answ.find("014740\r\nOK");	
 	if(result>=0)
 	{ 
 	   found = 1;
@@ -1043,48 +865,46 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
   //===========================================================
   DebugPrintf( "BootCode version: ");
-  cmd_string = "K\r\n";
-  BT_Send("K\r\n");
 
+  BT_Send("K\r\n");
   result = BT_Receive(Answer, sizeof(Answer), 1000);
   if(result != 1)
   {
     DebugPrintf( "Error, No answer\r\n");
-	//Reset device!
-	pBLE->Tx(CMD_NRF_OVEN_RESET, NULL, 0);
     return (NO_ANSWER_RBV);
-  }
-
-  FormatCommand(cmd_string, temp);
-  FormatCommand(Answer, Answer);
-  if(strncmp(Answer + strlen(temp), "0\n", 2) == 0)
-  {
-    strippedAnswer = Answer + strlen(temp) + 2;
-        
-	int maj, min, build;
-    if(sscanf(strippedAnswer, "%d %d %d", &build, &min, &maj) == 2) 
-	{
-      maj = min;
-      min = build;
-      build = 0;
-    }
-    DebugPrintf( "%d.%d.%d\r\n", maj, min, build);
   }
   else
   {
-    DebugPrintf("Unknown\r\n");
+    std::string answ(Answer); 
+	result = answ.find("\r\n0\r\n");	
+	if(result>0)
+	{ 
+	  answ.erase(0, result+5);
+
+	  int maj, min, build;
+	  if(sscanf(answ.c_str(), "%d %d %d", &build, &min, &maj) == 2) 
+	  {
+        maj = min;
+        min = build;
+        build = 0;
+		DebugPrintf( "%d.%d.%d\r\n", maj, min, build);
+      }
+      else
+      {
+        DebugPrintf("Unknown\r\n");
+      }
+	}
   }
-   
+
   //===========================================================
   DebugPrintf("Part ID: ");
   
-  cmd_string = "J\r\n";
-  BT_Send(cmd_string);
-  
+  BT_Send("J\r\n");
   result = BT_Receive(Answer, sizeof(Answer), 1000);
   memcpy(Answer, &Answer[6], 6);
   memset(&Answer[6], 0, 12);
-  FormatCommand(Answer, Answer);
+  
+  //----
   std::string id(Answer);
   endPtr = "\r\n";
 
@@ -1108,7 +928,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 		    result = BT_Receive(Answer, sizeof(Answer), 1000);
         }
 
-        FormatCommand(endPtr, endPtr);
+		//отладить это
+        ///FormatCommand(endPtr, endPtr);
         if ((*endPtr == '\0') || (*endPtr == '\n'))
         {
             DebugPrintf( "incomplete answer on Read Part Id (second configuration word missing)\r\n");
@@ -1308,25 +1129,27 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 	//   int ret = EraseSector(IspEnvironment);
 	//   if(ret !=0) return ret;
     } */
-  int ret;
-  ret = EraseChip(IspEnvironment);
-  Sleep(100);
 
+	
+  int ret;
+  ret = Chip_Erase(IspEnvironment);
+  Sleep(100);
+  /*
   for(i=0;i<9; i++){ DebugPrintf("\r\nSector %ld: ", i); ret = EraseSector(IspEnvironment, i);}
   
- // return 0;
+ // return 0;	 */
 
 
   int repeet_counter = 0;
   //EraseSector(IspEnvironment, 0);
   
+  //Sector = 8;
+
   //---------------------------------------------
   //Write loop
   //---------------------------------------------
   while (1)
   {
-    again:
-	//if(repeet_counter>2) return 1;
     DebugPrintf("\r\nSector %ld: ", Sector);
 	
     //----
@@ -1336,8 +1159,14 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
       return (PROGRAM_TOO_LARGE);
     }		
 	
-	result = EraseSector(IspEnvironment, Sector);
-	if(result!=0)  return (2000);
+	//Проверить сектор на чистоту
+	result = Sector_CheckEmpty(Sector);
+	if(result!=1)
+	{ 
+	  //сектор грязный
+	  result = Sector_Erase(Sector);
+	  if(result!=1)  return 1000;
+	}
 	        
 	SectorLength = LPCtypes[IspEnvironment->DetectedDevice].SectorTable[Sector];
     if(SectorLength > IspEnvironment->BinaryLength - SectorStart)
@@ -1399,9 +1228,9 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
             }
 
 			//Write to RAM W <start address> <number of bytes>
-            sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
-
-            if(!SendAndVerify(tmpString, Answer, sizeof Answer))
+            //sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
+			result = Write_ToRAM(ReturnValueLpcRamBase(IspEnvironment), CopyLength);
+            if(result!=1)
             {
                 DebugPrintf( "Wrong answer on Write-Command\n");
                 return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
@@ -1414,78 +1243,54 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
                LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
             {
-                block_CRC = 0;
-                Line = 0;
+                int block_CRC = 0;
+                int Line = 0;
 
                 // Transfer blocks of 45 * 4 bytes to RAM
                 for (Pos = SectorStart + SectorOffset; 
 					(Pos < SectorStart + SectorOffset + CopyLength) && 
 					(Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
                 {
-					  int ret = SendToRAM(IspEnvironment, Line, Pos, 1, 1);
-					  if(ret!=0)
+					  int ret = Copy_ToRAM(IspEnvironment, Pos, Line, block_CRC);
+					  if(ret!=1)
 					  {
-						if(ret==-2) {return ret;}
-						goto again; 
+						return 1000;
 					  }
 				}
+
                 if (Line != 0)
                 {
-                    for (repeat = 0; repeat < 3; repeat++)
+                    for (repeat = 0; repeat < 5; repeat++)
                     {
                         sprintf(tmpString, "%ld\r\n", block_CRC);
-														
-						//clear buffer
-						result = BT_Receive(Answer, sizeof(Answer), 100);
-
                         BT_Send(tmpString);
-						result = BT_Receive(Answer, sizeof(Answer), 100);
 
-                        sprintf(tmpString, "%ld\nOK\r\n", block_CRC);
-                        FormatCommand(tmpString, tmpString);
-                        FormatCommand(Answer, Answer);
-                        if (strcmp(Answer, tmpString) != 0)
-                        {
-                            for (i = 0; i < Line; i++)
-                            {
-                                BT_Send(sendbuf[i]);
-                                BT_Receive(Answer, sizeof(Answer), 100);
-                            }
-                        }
-                        else
-                            break;
-                    }
+						result = BT_Receive(Answer, sizeof(Answer), 5000);
+                        sprintf(tmpString, "%ld\r\nOK\r\n", block_CRC);
+						std::string answ(Answer);
+	                    result = answ.find(tmpString);	
+	                    if(result>=0)
+	                    { 
+	                       //Get IAP Status code
+		                   DebugPrintf(" CRC OK\r\n");
+						   break;
+	                    }
 
-                    if (repeat >= 3)
-                    {
-                        DebugPrintf( "Error on writing block_CRC (3)\r\n");
-						goto again; 
-                        return (ERROR_WRITE_CRC2);
+                       if(repeat >= 3)
+                       {
+                         DebugPrintf( " CRC Error\r\n");
+                         return (ERROR_WRITE_CRC2);
+                       }
                     }
                 }
-            }
-
+			}
             if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))
                ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
             {
-                // Prepare command must be repeated before every write
-                if (LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX ||
-                    LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-                {
-                    // TODO: Quick and dirty hack to address bank 0
-                    sprintf(tmpString, "P %ld %ld 0\r\n", Sector, Sector);
-                }
-                else
-                {	
-					//Prepare sector(s) for write operation P <start sector number> <end sector number>
-                    sprintf(tmpString, "P %ld %ld\r\n", Sector, Sector);
-                }
+                // Prepare command must be repeated before every write				 
+				result = Sector_Prepare(Sector);
+				if(result!=1) return (WRONG_ANSWER_PREP2);
 
-                if (!SendAndVerify(tmpString, Answer, sizeof Answer))
-                {
-                    DebugPrintf( "Wrong answer on Prepare-Command (2) (Sector %ld)\n", Sector);
-                    return (WRONG_ANSWER_PREP2 + GetAndReportErrorNumber(Answer));
-                }
 
                 // Round CopyLength up to one of the following values: 512, 1024,
                 // 4096, 8192; but do not exceed the maximum copy size (usually
@@ -1514,8 +1319,8 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 				//Copy RAM to Flash				
 				int cstart = IspEnvironment->BinaryOffset + SectorStart + SectorOffset;
 				int cbase = ReturnValueLpcRamBase(IspEnvironment); 
-				result = RAM_TO_Flash(cstart, cbase, CopyLength, Sector);
-				if(result !=0) return 1;
+				result = Copy_ToFlash(cstart, cbase, CopyLength, Sector);
+				if(result !=1) return 1;
 
                 if(IspEnvironment->Verify)
                 {
@@ -1531,12 +1336,14 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
                     {
                         sprintf(tmpString, "M %ld %ld %ld\r\n", SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
                     }
-
-                    if (!SendAndVerify(tmpString, Answer, sizeof Answer))
-                    {
-                        DebugPrintf( "Wrong answer on Compare-Command\r\n");
-                        return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
-                    }
+					
+					result = Sector_Verify(tmpString);
+                    //if (!SendAndVerify(tmpString, Answer, sizeof Answer))
+                    if(result!=1) 
+					{
+                      DebugPrintf( "Wrong answer on Compare-Command\r\n");
+                      return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
+                    }  
                 }
             }
         }
@@ -1576,336 +1383,11 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
   return 0;
 }
 
-//-----------------------------------------------------------------------------
-// Transfer blocks of 45 * 4 bytes to RAM
-//-----------------------------------------------------------------------------
-int SendToRAM(ISP_ENVIRONMENT *IspEnvironment, int Line2, int Pos, int, int )
-{
-  int c, repeat, Block, BlockOffset, result, k=0;
-  int temp_crc;
-  char Answer[128]; 
-  char tmpString[128];
-  
-  // Each block 45 bytes
-  for(Block = 0; Block < 4; Block++)  
-  {
-
-  //Uuencode one 45 byte block
-  tmpStringPos = 0;
-
-  sendbuf[Line][tmpStringPos++] = (char)(' ' + 45);    // Encode Length of block
-
-  for(BlockOffset = 0; BlockOffset < 45; BlockOffset++)
-  {
-    if((IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))	||
-       (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+
-	   (LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
-    { 
-	  //Flash: use full memory
-      c = IspEnvironment->BinaryContent[Pos + Block * 45 + BlockOffset];
-    }
-    else
-    { 
-      //RAM: Skip first 0x200 bytes, these are used by the download program in LPC21xx
-      c = IspEnvironment->BinaryContent[Pos + Block * 45 + BlockOffset + 0x200];
-    }
-	
-	block_CRC += c;
-    k = (k << 8) + (c & 255);
-	
-	// Collecting always 3 Bytes, then do processing in 4 Bytes
-    if((BlockOffset % 3) == 2)   
-    {
-      sendbuf[Line][tmpStringPos++] = uuencode_table[(k >> 18) & 63];
-      sendbuf[Line][tmpStringPos++] = uuencode_table[(k >> 12) & 63];
-      sendbuf[Line][tmpStringPos++] = uuencode_table[(k >>  6) & 63];
-      sendbuf[Line][tmpStringPos++] = uuencode_table[ k        & 63];
-    }
-  }
-
-  //DebugPrintf("\r\n");
-  sendbuf[Line][tmpStringPos++] = '\r';
-  sendbuf[Line][tmpStringPos++] = '\n';
-  sendbuf[Line][tmpStringPos++] = 0;
-						
-  char *SendSt = sendbuf[Line];
-  int length = strlen(sendbuf[Line]);
-  
-  int repeet = 0;
-  for(;;)
-  {
-    result = BT_Send(sendbuf[Line]);
-    // receive only for debug proposes
-    result = BT_Receive(Answer, sizeof(Answer), 2000);						
-    int ret = strncmp(SendSt, Answer, length); 
-	if(ret == 0)
-	{
-		break;
-	}
-	 
-	repeet++;
-
-	if(repeet>3)
-	{
-      DebugPrintf("Error on send data\r\n"); //13
-      return (ERROR_WRITE_DATA);
-	}
-  }
-
-  //show progress
-  pCPage6->Progress_Step();
-  if(pCPage6->program_run!=1)
-  {
-  	//user stop programming
-  	return -2;
-  }
-  
-  Line++;
-  //-----
-  if(Line==1)DebugPrintf("\r\n"); 
-  DebugPrintf("%02d ", Line);
-
-  if(Line == 20)
-  {
-    for(repeat = 0; repeat < 3; repeat++)
-    {
-       // DebugPrintf( "block_CRC = %ld\n", block_CRC);
-       sprintf(tmpString, "%ld\r\n", block_CRC);
-
-	   BT_Send(tmpString);
-	   result = BT_Receive(Answer, sizeof(Answer), 2000);
-	   if(result==1)
-	   {
-		 std::string boot_answ(Answer); 
-	     result = boot_answ.find("OK");
-	     if(result<0)
-		 {	
-			DebugPrintf( "Error on send block CRC\r\n");
-			return (ERROR_WRITE_CRC);
-		 }
-	   }
-
-	  break;
-    }
-                     
-	if(repeat >= 3)
-    {
-	   Line = 0;
-	   block_CRC = 0;
-       DebugPrintf( "Error on writing block CRC\r\n");
-       return (ERROR_WRITE_CRC);
-    }
-
-    Line = 0;
-    block_CRC = 0;
-   }
-  }
-
- return 0;
-}
-
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment)
-{
-  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
-  {
-    return LPC_RAMSTART_LPC43XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
-  {
-    return LPC_RAMSTART_LPC2XXX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-  {
-    return LPC_RAMSTART_LPC18XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
-  {
-    return LPC_RAMSTART_LPC17XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX)
-  {
-    return LPC_RAMSTART_LPC13XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX)
-  {
-    return LPC_RAMSTART_LPC11XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
-  {
-    return LPC_RAMSTART_LPC8XX;
-  }
-  DebugPrintf( "Error in ReturnValueLpcRamStart (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
-  //exit(1);
-  return 1;
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
-{
-  if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
-  {
-    return LPC_RAMBASE_LPC43XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX)
-  {
-    return LPC_RAMBASE_LPC2XXX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX)
-  {
-    return LPC_RAMBASE_LPC18XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX)
-  {
-    return LPC_RAMBASE_LPC17XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX)
-  {
-    return LPC_RAMBASE_LPC13XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX)
-  {
-    return LPC_RAMBASE_LPC11XX;
-  }
-  else if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC8XX)
-  {
-    return LPC_RAMBASE_LPC8XX;
-  }
-  DebugPrintf( "Error in ReturnValueLpcRamBase (%d)\n", LPCtypes[IspEnvironment->DetectedDevice].ChipVariant);
-  //exit(1);
-  return 1;
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-/***************************** ReceiveBT ***************************/
-/**  Receives a buffer from the open com port. Returns when the buffer is
-filled, the numer of requested linefeeds has been received or the timeout
-period has passed. The bootloaders may send 0x0d,0x0a,0x0a or 0x0d,0x0a as
-linefeed pattern
-2013-06-28 Torsten Lang
-Note: We *could* filter out surplus 0x0a characters like in <CR><LF><LF>
-but as we don't know how the individual bootloader behaves we don't want
-to wait for possible surplus <LF> (which would slow down the transfer).
-Thus, we just terminate after the expected number of <CR><LF> sequences
-and leave it to the command handler in lpcprog.c to filter out surplus
-<LF> characters which then occur as leading character in answers or
-echoed commands.
-\param [in] ISPEnvironment.
-\param [out] Answer buffer to hold the bytes read from the serial port.
-\param [in] MaxSize the size of buffer pointed to by Answer.
-\param [out] RealSize pointer to a long that returns the amout of the
-buffer that is actually used.
-\param [in] WantedNr0x0A the maximum number of linefeeds to accept before
-returning.
-\param [in] timeOutMilliseconds the maximum amount of time to wait before
-reading with an incomplete buffer.
-*/
-void ReceiveBT(const char *Ans, unsigned long MaxSize,
-               unsigned long *RealSize, unsigned long WantedNr0x0A,
-               unsigned timeOutMilliseconds)
-{
-    unsigned char *Answer;
-    unsigned char *endPtr;
-    static char residual_data[128] = {'\0'};
-	int length;
-
-    Answer  = (unsigned char*) Ans;
-
-    *RealSize = 0;
-    endPtr = NULL;
-
-	int result = BT_Receive(residual_data, sizeof(residual_data), timeOutMilliseconds);
-	length = strlen(residual_data);
-	memcpy((void*)Ans, residual_data, length);
-	*RealSize = length;
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void PrepareKeyboardTtySettings(void){}
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void ResetKeyboardTtySettings(void){}
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void AppException(int exception_level){}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void DebugPrintf(const char *fmt, ...)
-{
-  int lines;
-  char pTemp[2000];
-  memset(pTemp, 0, sizeof(pTemp));
-  va_list ap;
-      
-  va_start(ap, fmt);
-  //vprintf(fmt, ap);
-  vsprintf(pTemp, fmt, ap);      
-  va_end(ap);
-
-  std::string msg(pTemp);
-  
-  pCPage6->txt_info += msg.c_str();
-  
-  pCPage6->m_edit_info.SetWindowTextA(pCPage6->txt_info);
-  lines = pCPage6->m_edit_info.GetLineCount();
-  pCPage6->m_edit_info.LineScroll(lines);
-  //pCPage6->m_edit_info.UpdateWindow();
-  ///TRACE(pTemp);
-}
-
-//------------------------------------------------------------------------------
-//Function:	string to send
-//------------------------------------------------------------------------------
-int BT_Send(const char *pString)
-{
-  int length = strlen(pString);
-  pCPage6->ev_BootDataRx.ResetEvent();
-  
-  int result = pBLE->Tx(CMD_NRF_OVEN_PROG_DATA, (char*)pString, length);
-
-  //100 ms delay after each block (makes lpc21isp to work with bad UARTs)
-  //Sleep(20); 
-
-  return result;
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-int BT_Receive(void *pBuf, int size, unsigned timeout)
-{  
-  memset(pBuf, 0, size);
-  
-  DWORD ret = WaitForSingleObject(pCPage6->ev_BootDataRx.m_hObject, timeout);
-  //TRACE1("%d\n", ret);
-
-  int copy_length;
-  if(ret==0)
-  {
-	int length = pCPage6->bootloader_msg.length();
-	if(length<=size) copy_length = length;
-	else { copy_length = size;}
-
-	memcpy(pBuf, pCPage6->bootloader_msg.c_str(), copy_length);
-	return 1;
-  }
-
-  /*
-  if(ok==1) TRACE1("%s\n", buf2);
-  */
-
-  return -1;
-}
+/*
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  OK
+Write  OK, Verify  Error!
+Wrong answer on Compare-Command
+ErrorString: OK	  */

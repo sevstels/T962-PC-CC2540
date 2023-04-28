@@ -438,6 +438,9 @@
     <ClCompile Include="src\Pages\Page4\Functions\pid-log.cpp">
       <Filter>Pages\Page 4\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="src\DFU\lpc21-func.cpp">
+      <Filter>LPC21isp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

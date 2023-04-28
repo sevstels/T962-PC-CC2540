@@ -4,6 +4,8 @@
 //Version:      1.00
 //Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
+#include "cmd.h"
+#include "Page6.h"
 #define COMPILE_FOR_WINDOWS
 #define COMPILED_FOR "Windows"
 
@@ -11,25 +13,8 @@
 #define LPC_SUPPORT
 #define INTEGRATED_IN_WIN_APP
 
-#ifndef COMPILE_FOR_LPC21
-#define AD_SUPPORT
-#define TERMINAL_SUPPORT
-#endif
-
-#if defined COMPILE_FOR_WINDOWS
-#include <windows.h>
-#include <io.h>
-#endif // defined COMPILE_FOR_WINDOWS
-
-#if defined COMPILE_FOR_WINDOWS
-#include <conio.h>
-//#define OutputDebugString(x) TRACE(x) 
-//#define TRACE(x) printf("%s",x)
-#endif // defined COMPILE_FOR_WINDOWS
-
 #include <ctype.h>      // isdigit()
 #include <stdio.h>      // stdout
-#include <stdarg.h>
 #include <time.h>
 #include <fcntl.h>
 
@@ -91,10 +76,6 @@ typedef struct
 
 } ISP_ENVIRONMENT;
 
-#if defined COMPILE_FOR_LPC21
-#define DebugPrintf(in, ...)
-#else
-
 extern int debug_level;
 
 #if defined INTEGRATED_IN_WIN_APP
@@ -114,6 +95,10 @@ void DebugPrintf(const char *fmt, ...);
 //#define DebugPrintf(level, ...) if (level <= debug_level) { TRACE( __VA_ARGS__ ); }
 #endif
 
+extern CPage6 *pCPage6; 
+extern char * sendbuf[20];
+extern char uuencode_table[64];
+
 /*
 debug levels
 0 - very quiet          - Nothing gets printed at this level
@@ -131,8 +116,17 @@ void ResetTarget(ISP_ENVIRONMENT *IspEnvironment, TARGET_MODE mode);
 void DumpString(int level, const void *s, size_t size, const char *prefix_string);
 int  NxpDownload(ISP_ENVIRONMENT *IspEnvironment);
 
+int  Chip_Erase(ISP_ENVIRONMENT *IspEnvironment);
+int  Sector_Erase(int sector);
+int  Sector_CheckEmpty(int sector);
+int  Sector_Prepare(int sector);
+int  Sector_Verify(char *pCMD);
+int  Write_ToRAM(int ram_addr, int length);
+int  Copy_ToRAM(ISP_ENVIRONMENT *IspEnvironment, long pos, int &line, int &crc);
+int  Copy_ToFlash(int flash_addr, int ram_addr, int length, int sector);
+
 void SetTXpointer(void *pBT);
 int  BT_Send(const char *pString);
 int  BT_Receive(void *block, int size, unsigned timeout);
 
-#endif
+//#endif

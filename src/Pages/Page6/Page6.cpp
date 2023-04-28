@@ -324,7 +324,7 @@ void CPage6::OnButtonFWUpdate()
   txt = "Press and Hold Oven button F1\r\n";
   //txt += "Then press button 'Oven Reset'\r\n";
   //txt += "Then press button 'FW Update'\r\n";
-  AfxMessageBox(_T(txt));
+  //AfxMessageBox(_T(txt));
 
     //---------------------------------------
     // Check if the oven is connected ?
