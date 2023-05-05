@@ -90,16 +90,6 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 #define FAILED_RUN          0x1700   /* return value is 0x1700 + NXP ISP returned value (0 to 255) */
 #define WRONG_ANSWER_BTBNK  0x1800   /* return value is 0x1800 + NXP ISP returned value (0 to 255) */
 
-#if defined COMPILE_FOR_LPC21
-#ifndef WIN32
-#define LPC_BSL_PIN         13
-#define LPC_RESET_PIN       47
-#define LPC_RESET(in)       NAsetGPIOpin(LPC_RESET_PIN, (in))
-#define LPC_BSL(in)         NAsetGPIOpin(LPC_BSL_PIN,   (in))
-#endif // WIN32
-#endif // COMPILE_FOR_LPC21
-
-
 /* LPC_FLASHMASK
 *
 * LPC_FLASHMASK - bitmask to define the maximum size of the Filesize to download.
@@ -111,7 +101,7 @@ Portions Copyright (c) by Aeolus Development 2004 http://www.aeolusdevelopment.c
 #define LPC_FLASHMASK  0xFFC00000 /* 22 bits = 4 MB */
 
 typedef enum
-  {
+{
   CHIP_VARIANT_NONE,
   CHIP_VARIANT_LPC43XX,
   CHIP_VARIANT_LPC2XXX,
@@ -120,25 +110,19 @@ typedef enum
   CHIP_VARIANT_LPC13XX,
   CHIP_VARIANT_LPC11XX,
   CHIP_VARIANT_LPC8XX
-  } CHIP_VARIANT;
+} CHIP_VARIANT;
 
-typedef struct
+typedef struct 
 {
     const unsigned long  id;
     const unsigned long  id2;
     const unsigned int   EvalId2;
     const char *Product;
-    const unsigned int   FlashSize;     /* in kiB, for informational purposes only */
+    const unsigned int   FlashSize;     /* in kiB, for informational purposes only */ 
     const unsigned int   RAMSize;       /* in kiB, for informational purposes only */
           unsigned int   FlashSectors;  /* total number of sectors */
           unsigned int   MaxCopySize;   /* maximum size that can be copied to Flash in a single command */
     const unsigned int  *SectorTable;   /* pointer to a sector table with constant the sector sizes */
     const CHIP_VARIANT   ChipVariant;
-} LPC_DEVICE_TYPE;
 
-int NxpDownload(ISP_ENVIRONMENT *IspEnvironment);
-
-unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment);
-
-unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment);
-
+} LPC_DEVICE_TYPE; 

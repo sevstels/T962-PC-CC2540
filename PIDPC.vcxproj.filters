@@ -441,6 +441,9 @@
     <ClCompile Include="src\DFU\lpc21-func.cpp">
       <Filter>LPC21isp</Filter>
     </ClCompile>
+    <ClCompile Include="src\DFU\test.cpp">
+      <Filter>LPC21isp</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

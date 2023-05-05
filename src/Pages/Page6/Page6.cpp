@@ -184,7 +184,7 @@ void CPage6::I2C_Read(unsigned char dev_addr, unsigned short mem_addr, short len
   char data[5];
   data[0] = dev_addr; //dev addr
   data[1] = 1;        //length for adress write
-  data[2] = (unsigned char) mem_addr>>8;//length for data read 
+  data[2] = (unsigned char)(mem_addr>>8);//length for data read 
   data[3] = (unsigned char) mem_addr;   //params here ... 
   data[4] = len-1;
 
@@ -310,15 +310,22 @@ void CPage6::Clear(void)
 }
 
 //------------------------------------------------------------------------------
-// Function
+// Function	DFU
 //------------------------------------------------------------------------------
 void CPage6::OnButtonFWUpdate()
 {
+  CString str = "The programming mode is not finished right now.\r\n";
+  str += "An error occurs from time to time when flashing the sector.\r\n"; 
+  str += "If you have the desire, you can debug it yourself.\r\n";
+  str += "Now use the COM adapter to update the firmware.";
+  m_edit_info.SetWindowText(_T(str));
+
+  /* uncomment this for work
   if(program_run==0) 
   {
 
   //===========================================================
-  //Переключить процессор печи в режим программирования
+  //Switch the furnace processor into programming mode
   //===========================================================
   CString txt;
   txt = "Press and Hold Oven button F1\r\n";
@@ -348,7 +355,7 @@ void CPage6::OnButtonFWUpdate()
 	m_but_fw_update.SetWindowTextA("FW Update");
 	ev_ExitRequest.SetEvent();
 	program_run = 0;
-  }
+  }	 */
 }
 
 //-----------------------------------------------------------------------------

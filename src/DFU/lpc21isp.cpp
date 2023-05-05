@@ -2,7 +2,9 @@
 //File name:    "lpc21isp.cpp"
 //Purpose:      Source File
 //Version:      2.00
-//Copyright:    https://github.com/capiman/lpc21isp
+//https://github.com/capiman/lpc21isp
+//https://github.com/Senseg/lpc21isp
+//Based on code from:
 //https://github.com/lnls-dig/lpc21isp/blob/4fbb2a2a9d06677bad9c3f32f3a7247735cc2154/lpc21isp.c
 //==============================================================================
 #include "stdafx.h"
@@ -58,45 +60,6 @@ static const unsigned int SectorTable_213x[] =
      4096,  4096,  4096,  4096
 };
 
-// Used for LPC11xx devices
-static const unsigned int SectorTable_11xx[] =
-{
-     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
-     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
-     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
-     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096
-};
-
-// Used for LPC17xx devices
-static const unsigned int SectorTable_17xx[] =
-{
-     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
-     4096,  4096,  4096,  4096,  4096,  4096,  4096,  4096,
-    32768, 32768, 32768, 32768, 32768, 32768, 32768, 32768,
-    32768, 32768, 32768, 32768, 32768, 32768
-};
-
-// Used for LPC18xx devices
-static const unsigned int SectorTable_18xx[] =
-{
-     8192,  8192,  8192,  8192,  8192,  8192,  8192,  8192,
-    65536, 65536, 65536, 65536, 65536, 65536, 65536
-};
-
-// Used for LPC43xx devices
-static const unsigned int SectorTable_43xx[] =
-{
-     8192,  8192,  8192,  8192,  8192,  8192,  8192,  8192,
-    65536, 65536, 65536, 65536, 65536, 65536, 65536
-};
-
-// Used for LPC8xx devices
-static const unsigned int SectorTable_8xx[] =
-{
-     1024,  1024,  1024,  1024,  1024,  1024,  1024,  1024,
-     1024,  1024,  1024,  1024,  1024,  1024,  1024,  1024
-};
-
 static int unsigned SectorTable_RAM[]  = { 65000 };
 
 LPC_DEVICE_TYPE LPCtypes[] =
@@ -104,144 +67,6 @@ LPC_DEVICE_TYPE LPCtypes[] =
    { 0, 0, 0, 0, 0, 0, 0, 0, 0, CHIP_VARIANT_NONE },  /* unknown */
 
    // id,        id2,  use id2, name of product,          flash size, ram size, total number of sector, max copy size, sector table, chip variant
-
-   { 0x00008100, 0x00000000, 0, "810M021FN8",                      4,   1,  4,  256, SectorTable_8xx,  CHIP_VARIANT_LPC8XX  },
-   { 0x00008110, 0x00000000, 0, "811M001FDH16",                    8,   2,  8, 1024, SectorTable_8xx,  CHIP_VARIANT_LPC8XX  },
-   { 0x00008120, 0x00000000, 0, "812M101FDH16",                   16,   4, 16, 1024, SectorTable_8xx,  CHIP_VARIANT_LPC8XX  },
-   { 0x00008121, 0x00000000, 0, "812M101FD20",                    16,   4, 16, 1024, SectorTable_8xx,  CHIP_VARIANT_LPC8XX  },
-   { 0x00008122, 0x00000000, 0, "812M101FDH20",                   16,   4, 16, 1024, SectorTable_8xx,  CHIP_VARIANT_LPC8XX  },
-
-   { 0x2500102B, 0x00000000, 0, "1102",                           32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-
-   { 0x0A07102B, 0x00000000, 0, "1110.../002",                     4,   1,  1, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1A07102B, 0x00000000, 0, "1110.../002",                     4,   1,  1, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0A16D02B, 0x00000000, 0, "1111.../002",                     8,   2,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1A16D02B, 0x00000000, 0, "1111.../002",                     8,   2,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x041E502B, 0x00000000, 0, "1111.../101",                     8,   2,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2516D02B, 0x00000000, 0, "1111.../102",                     8,   2,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00010013, 0x00000000, 0, "1111.../103",                     8,   2,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0416502B, 0x00000000, 0, "1111.../201",                     8,   4,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2516902B, 0x00000000, 0, "1111.../202",                     8,   4,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00010012, 0x00000000, 0, "1111.../203",                     8,   4,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x042D502B, 0x00000000, 0, "1112.../101",                    16,   2,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2524D02B, 0x00000000, 0, "1112.../102",                    16,   2,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0A24902B, 0x00000000, 0, "1112.../102",                    16,   4,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1A24902B, 0x00000000, 0, "1112.../102",                    16,   4,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00020023, 0x00000000, 0, "1112.../103",                    16,   2,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0425502B, 0x00000000, 0, "1112.../201",                    16,   4,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2524902B, 0x00000000, 0, "1112.../202",                    16,   4,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00020022, 0x00000000, 0, "1112.../203",                    16,   4,  4, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0434502B, 0x00000000, 0, "1113.../201",                    24,   4,  6, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2532902B, 0x00000000, 0, "1113.../202",                    24,   4,  6, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00030032, 0x00000000, 0, "1113.../203",                    24,   4,  6, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0434102B, 0x00000000, 0, "1113.../301",                    24,   8,  6, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2532102B, 0x00000000, 0, "1113.../302",                    24,   8,  6, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00030030, 0x00000000, 0, "1113.../303",                    24,   8,  6, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0A40902B, 0x00000000, 0, "1114.../102",                    32,   4,  8, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1A40902B, 0x00000000, 0, "1114.../102",                    32,   4,  8, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0444502B, 0x00000000, 0, "1114.../201",                    32,   4,  8, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2540902B, 0x00000000, 0, "1114.../202",                    32,   4,  8, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00040042, 0x00000000, 0, "1114.../203",                    32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x0444102B, 0x00000000, 0, "1114.../301",                    32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x2540102B, 0x00000000, 0, "1114.../302",                    32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00040040, 0x00000000, 0, "1114.../303",                    32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00040060, 0x00000000, 0, "1114.../323",                    32,   8, 12, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00040070, 0x00000000, 0, "1114.../333",                    32,   8, 14, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x00050080, 0x00000000, 0, "1115.../303",                    64,   8, 16, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-
-   { 0x1421102B, 0x00000000, 0, "11C12.../301",                   16,   8,  4, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1440102B, 0x00000000, 0, "11C14.../301",                   32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1431102B, 0x00000000, 0, "11C22.../301",                   16,   8,  4, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-   { 0x1430102B, 0x00000000, 0, "11C24.../301",                   32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX },
-
-   { 0x293E902B, 0x00000000, 0, "11E11FHN33/101",                  8,   4,  2, 1024, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-   { 0x2954502B, 0x00000000, 0, "11E12FBD48/201",                 16,   6,  4, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-   { 0x296A102B, 0x00000000, 0, "11E13FBD48/301",                 24,   8,  6, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-   { 0x2980102B, 0x00000000, 0, "11E14(FHN33,FBD48,FBD64)/401",   32,  10,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-   { 0x00009C41, 0x00000000, 0, "11E36(FBD64,FHN33)/501",         96,  12, 24, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-   { 0x00007C45, 0x00000000, 0, "11E37HFBD64/401",               128,  10, 32, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-   { 0x00007C41, 0x00000000, 0, "11E37(FBD48,FBD64)/501",        128,  12, 32, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10518 Rev. 3 -- 25 Nov 2013 */
-
-   { 0x095C802B, 0x00000000, 0, "11U12(FHN33,FBD48)/201",         16,   6,  4, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x295C802B, 0x00000000, 0, "11U12(FHN33,FBD48)/201",         16,   6,  4, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x097A802B, 0x00000000, 0, "11U13FBD48/201",                 24,   6,  6, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x297A802B, 0x00000000, 0, "11U13FBD48/201",                 24,   6,  6, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x0998802B, 0x00000000, 0, "11U14FHN33/201",                 32,   6,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x2998802B, 0x00000000, 0, "11U14(FHN,FHI)33/201",           32,   6,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x0998802B, 0x00000000, 0, "11U14(FBD,FET)48/201",           32,   6,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x2998802B, 0x00000000, 0, "11U14(FBD,FET)48/201",           32,   6,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x2972402B, 0x00000000, 0, "11U23FBD48/301",                 24,   8,  6, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x2988402B, 0x00000000, 0, "11U24(FHI33,FBD48,FET48)/301",   32,   8,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x2980002B, 0x00000000, 0, "11U24(FHN33,FBD48,FBD64)/401",   32,  10,  8, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x0003D440, 0x00000000, 0, "11U34(FHN33,FBD48)/311",         40,   8, 10, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x0001CC40, 0x00000000, 0, "11U34(FHN33,FBD48)/421",         48,  10, 12, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x0001BC40, 0x00000000, 0, "11U35(FHN33,FBD48,FBD64)/401",   64,  10, 16, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x0000BC40, 0x00000000, 0, "11U35(FHI33,FET48)/501",         64,  12, 16, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x00019C40, 0x00000000, 0, "11U36(FBD48,FBD64)/401",         96,  10, 24, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x00017C40, 0x00000000, 0, "11U37FBD48/401",                128,  10, 32, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x00007C44, 0x00000000, 0, "11U37HFBD64/401",               128,  10, 32, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-   { 0x00007C40, 0x00000000, 0, "11U37FBD64/501",                128,  12, 32, 4096, SectorTable_11xx, CHIP_VARIANT_LPC11XX }, /* From UM10462 Rev. 5 -- 20 Nov 2013 */
-
-   { 0x3640C02B, 0x00000000, 0, "1224.../101",                    32,   8,  4, 2048, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-   { 0x3642C02B, 0x00000000, 0, "1224.../121",                    48,  12, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-   { 0x3650002B, 0x00000000, 0, "1225.../301",                    64,  16, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-   { 0x3652002B, 0x00000000, 0, "1225.../321",                    80,  20, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-   { 0x3660002B, 0x00000000, 0, "1226",                           96,  24, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-   { 0x3670002B, 0x00000000, 0, "1227",                          128,  32, 32, 4096, SectorTable_17xx, CHIP_VARIANT_LPC11XX },
-
-   { 0x2C42502B, 0x00000000, 0, "1311",                            8,   4,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x1816902B, 0x00000000, 0, "1311/01",                         8,   4,  2, 1024, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x2C40102B, 0x00000000, 0, "1313",                           32,   8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x1830102B, 0x00000000, 0, "1313/01",                        32,   8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x3A010523, 0x00000000, 0, "1315",                           32,   8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x1A018524, 0x00000000, 0, "1316",                           48,   8, 12, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x1A020525, 0x00000000, 0, "1317",                           64,   8, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x3D01402B, 0x00000000, 0, "1342",                           16,   4,  4, 1024, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x3D00002B, 0x00000000, 0, "1343",                           32,   8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x28010541, 0x00000000, 0, "1345",                           32,   8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x08018542, 0x00000000, 0, "1346",                           48,   8, 12, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-   { 0x08020543, 0x00000000, 0, "1347",                           64,   8, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC13XX },
-
-   { 0x25001118, 0x00000000, 0, "1751",                           32,   8,  8, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x25001121, 0x00000000, 0, "1752",                           64,  16, 16, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x25011722, 0x00000000, 0, "1754",                          128,  32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x25011723, 0x00000000, 0, "1756",                          256,  32, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x25013F37, 0x00000000, 0, "1758",                          512,  64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x25113737, 0x00000000, 0, "1759",                          512,  64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26012033, 0x00000000, 0, "1763",                          256,  64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26011922, 0x00000000, 0, "1764",                          128,  32, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26013733, 0x00000000, 0, "1765",                          256,  64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26013F33, 0x00000000, 0, "1766",                          256,  64, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26012837, 0x00000000, 0, "1767",                          512,  64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26013F37, 0x00000000, 0, "1768",                          512,  64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x26113F37, 0x00000000, 0, "1769",                          512,  64, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-
-   { 0x27011132, 0x00000000, 0, "1774",                          128,  40, 18, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x27191F43, 0x00000000, 0, "1776",                          256,  80, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x27193747, 0x00000000, 0, "1777",                          512,  96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x27193F47, 0x00000000, 0, "1778",                          512,  96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x281D1743, 0x00000000, 0, "1785",                          256,  80, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x281D1F43, 0x00000000, 0, "1786",                          256,  80, 22, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x281D3747, 0x00000000, 0, "1787",                          512,  96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-   { 0x281D3F47, 0x00000000, 0, "1788",                          512,  96, 30, 4096, SectorTable_17xx, CHIP_VARIANT_LPC17XX },
-
-   // LPC18xx
-   { 0xF00B1B3F, 0x00000000, 1, "1810",                            0,  32,  0, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX }, // Flashless
-   { 0xF001D830, 0x00000000, 1, "1812",                          512,  32, 15, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1813",                          512,  32, 11, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1815",                          768,  32, 13, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1817",                         1024,  32, 15, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF00A9B3C, 0x00000000, 1, "1820",                            0,  32,  0, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX }, // Flashless
-   { 0xF001D830, 0x00000000, 1, "1822",                          512,  32, 15, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1823",                          512,  32, 11, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1825",                          768,  32, 13, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1827",                         1024,  32, 15, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF0009A30, 0x00000000, 1, "1830",                            0,  32,  0, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX }, // Flashless
-   { 0xF001DA30, 0x00000044, 1, "1833",                          512,  32, 11, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001DA30, 0x00000000, 1, "1837",                         1024,  32, 15, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF0009830, 0x00000000, 1, "1850",                            0,  32,  0, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX }, // Flashless
-   { 0xF001D830, 0x00000044, 1, "1853",                          512,  32, 11, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
-   { 0xF001D830, 0x00000000, 1, "1857",                         1024,  32, 15, 8192, SectorTable_18xx, CHIP_VARIANT_LPC18XX },
 
    { 0x0004FF11, 0x00000000, 0, "2103",                           32,   8,  8, 4096, SectorTable_2103, CHIP_VARIANT_LPC2XXX },
    { 0xFFF0FF12, 0x00000000, 0, "2104",                          128,  16, 15, 8192, SectorTable_210x, CHIP_VARIANT_LPC2XXX },
@@ -290,24 +115,7 @@ LPC_DEVICE_TYPE LPCtypes[] =
    { 0x1600FF30, 0x00000000, 0, "2460",                            0,  98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
    { 0x1600FF35, 0x00000000, 0, "2468",                          512,  98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
    { 0x1701FF30, 0x00000000, 0, "2470",                            0,  98,  0, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-   { 0x1701FF35, 0x00000000, 0, "2478",                          512,  98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX },
-
-   { 0xA00A8B3F, 0x00000000, 1, "4310",                            0, 168,  0, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
-   { 0xA00BCB3F, 0x00000080, 1, "4312",                          512, 104, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA00BCB3F, 0x00000044, 1, "4313",                          512, 104, 11, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA001CB3F, 0x00000022, 1, "4315",                          768, 136, 13, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA001CB3F, 0x00000000, 1, "4317",                         1024, 136, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA0008B3C, 0x00000000, 1, "4320",                            0, 200,  0, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
-   { 0xA00BCB3C, 0x00000080, 1, "4322",                          512, 104, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA00BCB3C, 0x00000044, 1, "4323",                          512, 104, 11, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA001CB3C, 0x00000022, 1, "4325",                          768, 136, 13, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA001CB3C, 0x00000000, 1, "4327",                         1024, 136, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA0000A30, 0x00000000, 1, "4330",                            0, 264,  0, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
-   { 0xA001CA30, 0x00000044, 1, "4333",                          512, 512, 11, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA001CA30, 0x00000000, 1, "4337",                         1024, 512, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* info not yet available */
-   { 0xA0000830, 0x00000000, 1, "4350",                            0, 264,  0, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
-   { 0xA001C830, 0x00000044, 1, "4353",                          512, 512, 11, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }, /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
-   { 0xA001C830, 0x00000000, 1, "4357",                         1024, 512, 15, 4096, SectorTable_43xx, CHIP_VARIANT_LPC43XX }  /* From UM10503 Rev. 1.4 -- 3 Sep 2012 */
+   { 0x1701FF35, 0x00000000, 0, "2478",                          512,  98, 28, 4096, SectorTable_213x, CHIP_VARIANT_LPC2XXX }
 };
 
 
@@ -386,13 +194,12 @@ unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment)
 
   return 1;
 }
-
+/*
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
 void ReceiveBT(const char *Ans, unsigned long MaxSize,
-               unsigned long *RealSize, unsigned long WantedNr0x0A,
-               unsigned timeOutMilliseconds)
+               unsigned long *RealSize, unsigned timeOutMilliseconds)
 {
     unsigned char *Answer;
     unsigned char *endPtr;
@@ -408,20 +215,7 @@ void ReceiveBT(const char *Ans, unsigned long MaxSize,
 	length = strlen(residual_data);
 	memcpy((void*)Ans, residual_data, length);
 	*RealSize = length;
-}
-
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void PrepareKeyboardTtySettings(void){}
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void ResetKeyboardTtySettings(void){}
-//------------------------------------------------------------------------------
-//Function:
-//------------------------------------------------------------------------------
-void AppException(int exception_level){}
+} */
 
 //------------------------------------------------------------------------------
 //Function:
@@ -672,32 +466,34 @@ static unsigned char GetAndReportErrorNumber(const char *Answer)
                          sendbuf15, sendbuf16, sendbuf17, sendbuf18, sendbuf19};
 
   char uuencode_table[64];
-
+  int kk;
+  unsigned long block_CRC = 0;
 //------------------------------------------------------------------------------
 //Function:
 //------------------------------------------------------------------------------
 int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 {
-  unsigned long realsize;
+//  unsigned long realsize;
   char Answer[128];
-  /*const*/ char *strippedAnswer, *endPtr;
+  char *endPtr;
   int found;
   unsigned long Sector;
   unsigned long SectorLength;
   unsigned long SectorStart, SectorOffset, SectorChunk;
   char tmpString[128];
-  unsigned long BlockOffset;
-  unsigned long Block;
+  //unsigned long BlockOffset;
+  //unsigned long Block;
   unsigned long Pos;
   unsigned long Id[2];
   unsigned long Id1Masked;
   unsigned long CopyLength;
-  int c, i;
+  int i;
   //CRC over interrupt vector table
   unsigned long ivt_CRC;
   int repeat = 0;
   int result;
-  
+  kk = 0;
+
   //очистить буфер экрана 
   pCPage6->txt_info.Empty();
   pCPage6->Progress_Ini(IspEnvironment->BinaryLength);
@@ -917,7 +713,6 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
         if ((endPtr[0] == '\0') || (endPtr[strlen(endPtr)-1] != '\n'))
         {
             /* No or incomplete word 2 */
-            ///ReceiveBT(endPtr, sizeof(Answer)-(endPtr-Answer)-1, &realsize, 1, 100);
 			//debug this!!!
 		    result = BT_Receive(Answer, sizeof(Answer), 1000);
         }
@@ -1088,19 +883,19 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 
 	
   int ret;
-  ret = Chip_Erase(IspEnvironment);
+ // ret = Chip_Erase(IspEnvironment);
   Sleep(100);
   /*
   for(i=0;i<9; i++){ DebugPrintf("\r\nSector %ld: ", i); ret = EraseSector(IspEnvironment, i);}
   // return 0;	 */
   //EraseSector(IspEnvironment, 0);
   
-  //Sector = 8;
+ // Sector = 8;
 
   //---------------------------------------------
   //Write loop
   //---------------------------------------------
-  while (1)
+  while(1)
   {
     DebugPrintf("\r\nSector %ld: ", Sector);
 	
@@ -1126,181 +921,158 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
       SectorLength = IspEnvironment->BinaryLength - SectorStart;
     }
  
-	for (SectorOffset = 0; SectorOffset < SectorLength; SectorOffset += SectorChunk)
+	for(SectorOffset = 0; SectorOffset < SectorLength; SectorOffset += SectorChunk)
+    {
+      // Check if we are to write only 0xFFs - it would be just a waste of time..
+      if(SectorOffset == 0)
+	  {
+        for(SectorOffset = 0; SectorOffset < SectorLength; ++SectorOffset)
         {
-            // Check if we are to write only 0xFFs - it would be just a waste of time..
-            if (SectorOffset == 0) {
-                for (SectorOffset = 0; SectorOffset < SectorLength; ++SectorOffset)
-                {
-                    if (IspEnvironment->BinaryContent[SectorStart + SectorOffset] != 0xFF)
-                        break;
-                }
-                if (SectorOffset == SectorLength) // all data contents were 0xFFs
-                {
-                    DebugPrintf( "Whole sector contents is 0xFFs, skipping programming.");
-                    //fflush(stdout);
-                    break;
-                }
-                SectorOffset = 0; // re-set otherwise
-            }
-
-            if (SectorOffset > 0)
-            {
-                // Add a visible marker between segments in a sector
-                DebugPrintf( "|");  /* means: partial segment copied */
-            }
-
-            // If the Flash ROM sector size is bigger than the number of bytes
-            // we can copy from RAM to Flash, we must "chop up" the sector and
-            // copy these individually.
-            // This is especially needed in the case where a Flash sector is
-            // bigger than the amount of SRAM.
-            SectorChunk = SectorLength - SectorOffset;
-            if (SectorChunk > (unsigned)LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize)
-            {
-                SectorChunk = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
-            }
-
-            // Write multiple of 45 * 4 Byte blocks to RAM, but copy maximum of on sector to Flash
-            // In worst case we transfer up to 180 byte too much to RAM
-            // but then we can always use full 45 byte blocks and length is multiple of 4
-            CopyLength = SectorChunk;
-
-            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
-            {
-                if ((CopyLength % (45 * 4)) != 0)
-                {
-                    CopyLength += ((45 * 4) - (CopyLength % (45 * 4)));
-                }
-            }
-
-			//Write to RAM W <start address> <number of bytes>
-            //sprintf(tmpString, "W %ld %ld\r\n", ReturnValueLpcRamBase(IspEnvironment), CopyLength);
-			result = Write_ToRAM(ReturnValueLpcRamBase(IspEnvironment), CopyLength);
-            if(result!=1)
-            {
-                DebugPrintf( "Wrong answer on Write-Command\n");
-                return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
-            }
-
-            if(LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC2XXX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC17XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC13XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC11XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC18XX ||
-               LPCtypes[IspEnvironment->DetectedDevice].ChipVariant == CHIP_VARIANT_LPC43XX)
-            {
-                int block_CRC = 0;
-                int Line = 0;
-
-                // Transfer blocks of 45 * 4 bytes to RAM
-                for (Pos = SectorStart + SectorOffset; 
-					(Pos < SectorStart + SectorOffset + CopyLength) && 
-					(Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
-                {
-					  int ret = Copy_ToRAM(IspEnvironment, Pos, Line, block_CRC);
-					  if(ret!=1)
-					  {
-						return 1000;
-					  }
-				}
-
-                if (Line != 0)
-                {
-                    for (repeat = 0; repeat < 5; repeat++)
-                    {
-                        sprintf(tmpString, "%ld\r\n", block_CRC);
-                        BT_Send(tmpString);
-
-						result = BT_Receive(Answer, sizeof(Answer), 5000);
-                        sprintf(tmpString, "%ld\r\nOK\r\n", block_CRC);
-						std::string answ(Answer);
-	                    result = answ.find(tmpString);	
-	                    if(result>=0)
-	                    { 
-	                       //Get IAP Status code
-		                   DebugPrintf(" CRC OK\r\n");
-						   break;
-	                    }
-
-                       if(repeat >= 3)
-                       {
-                         DebugPrintf( " CRC Error\r\n");
-                         return (ERROR_WRITE_CRC2);
-                       }
-                    }
-                }
-			}
-            if ( (IspEnvironment->BinaryOffset <  ReturnValueLpcRamStart(IspEnvironment))
-               ||(IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+(LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
-            {
-                // Prepare command must be repeated before every write				 
-				result = Sector_Prepare(Sector);
-				if(result!=1) return (WRONG_ANSWER_PREP2);
-
-
-                // Round CopyLength up to one of the following values: 512, 1024,
-                // 4096, 8192; but do not exceed the maximum copy size (usually
-                // 8192, but chip-dependent)
-                if (CopyLength < 512)
-                {
-                    CopyLength = 512;
-                }
-                else if (SectorLength < 1024)
-                {
-                    CopyLength = 1024;
-                }
-                else if (SectorLength < 4096)
-                {
-                    CopyLength = 4096;
-                }
-                else
-                {
-                    CopyLength = 8192;
-                }
-                if (CopyLength > (unsigned)LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize)
-                {
-                    CopyLength = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
-                }
-
-				//Copy RAM to Flash				
-				int cstart = IspEnvironment->BinaryOffset + SectorStart + SectorOffset;
-				int cbase = ReturnValueLpcRamBase(IspEnvironment); 
-				result = Copy_ToFlash(cstart, cbase, CopyLength, Sector);
-				if(result !=1) return 1;
-
-                if(IspEnvironment->Verify)
-                {
-
-                    //Avoid compare first 64 bytes.
-                    //Because first 64 bytes are re-mapped to flash boot sector,
-                    //and the compare result may not be correct.
-                    if (SectorStart + SectorOffset<64)
-                    {
-                        sprintf(tmpString, "M %d %ld %ld\r\n", 64, ReturnValueLpcRamBase(IspEnvironment) + (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
-                    }
-                    else
-                    {
-                        sprintf(tmpString, "M %ld %ld %ld\r\n", SectorStart + SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
-                    }
-					
-					result = Sector_Verify(tmpString);
-                    //if (!SendAndVerify(tmpString, Answer, sizeof Answer))
-                    if(result!=1) 
-					{
-                      DebugPrintf( "Wrong answer on Compare-Command\r\n");
-                      return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
-                    }  
-                }
-            }
+          if(IspEnvironment->BinaryContent[SectorStart + SectorOffset] != 0xFF)
+          break;
         }
 
-        if ((SectorStart + SectorLength) >= IspEnvironment->BinaryLength && Sector!=0)
+        // all data contents were 0xFFs        
+		if(SectorOffset == SectorLength) 
+        {
+          DebugPrintf( "Whole sector contents is 0xFFs, skipping programming.");
+          break;
+        }
+
+        // re-set otherwise        
+		SectorOffset = 0; 
+      }
+	  
+	  //Add a visible marker between segments in a sector
+      if(SectorOffset > 0)
+      {
+        //means: partial segment copied 
+        DebugPrintf( "|");  
+      }
+
+      //If the Flash ROM sector size is bigger than the number of bytes
+      // we can copy from RAM to Flash, we must "chop up" the sector and
+      // copy these individually.
+      // This is especially needed in the case where a Flash sector is
+      // bigger than the amount of SRAM.
+      SectorChunk = SectorLength - SectorOffset;
+      if(SectorChunk > (unsigned)LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize)
+      {
+        SectorChunk = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
+      }
+
+      //Write multiple of 45 * 4 Byte blocks to RAM, but copy maximum of on sector to Flash
+      //In worst case we transfer up to 180 byte too much to RAM
+      //but then we can always use full 45 byte blocks and length is multiple of 4
+      CopyLength = SectorChunk;
+      if((CopyLength % (45 * 4)) != 0)
+      {
+        CopyLength += ((45 * 4) - (CopyLength % (45 * 4)));
+      }
+
+	  //Write to RAM W <start address> <number of bytes>
+	  unsigned long ram_addr = ReturnValueLpcRamBase(IspEnvironment);
+	  result = Write_ToRAM(ram_addr, CopyLength);
+      if(result!=1)
+      {
+        DebugPrintf( "Wrong answer on Write-Command\n");
+        return (WRONG_ANSWER_WRIT + GetAndReportErrorNumber(Answer));
+      }
+
+      Resend:
+      int Line = 0;
+	  unsigned long block_crc=0;
+
+      //Transfer blocks of 45 * 4 bytes to RAM
+      for(Pos = SectorStart + SectorOffset; 
+		 (Pos < SectorStart + SectorOffset + CopyLength) && 
+		 (Pos < IspEnvironment->BinaryLength); Pos += (45 * 4))
+      {
+		int ret = Copy_ToRAM(IspEnvironment, Pos, Line, block_crc);
+		if(ret!=1){ return 1000;}
+	  }
+		
+	  if(Line != 0)
+      {
+	    result = Check_CRC(block_crc);
+        if(result<0)
+	    {	
+		  DebugPrintf( "Error on send block CRC\r\n");
+		  return 1000;
+	     }
+	  }
+  
+
+
+      if((IspEnvironment->BinaryOffset < ReturnValueLpcRamStart(IspEnvironment)) || 
+         (IspEnvironment->BinaryOffset >= ReturnValueLpcRamStart(IspEnvironment)+
+		 (LPCtypes[IspEnvironment->DetectedDevice].RAMSize*1024)))
+      {
+        //Prepare command must be repeated before every write				 
+		result = Sector_Prepare(Sector);
+		if(result==0) goto Resend; 
+	    if(result==-1) return (WRONG_ANSWER_PREP2);
+		
+
+        // Round CopyLength up to one of the following values: 512, 1024,
+        // 4096, 8192; but do not exceed the maximum copy size (usually 8192, but chip-dependent)
+        if(CopyLength < 512)
+        {
+          CopyLength = 512;
+        }
+        else if(SectorLength < 1024)
+        {
+          CopyLength = 1024;
+        }
+        else if (SectorLength < 4096)
+        {
+          CopyLength = 4096;
+        }
+        else
+        {
+          CopyLength = 8192;
+        }
+
+        //----
+		if(CopyLength > (unsigned)LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize)
+        {
+          CopyLength = LPCtypes[IspEnvironment->DetectedDevice].MaxCopySize;
+        }
+
+	    //Copy RAM to Flash				
+		int cstart = IspEnvironment->BinaryOffset + SectorStart + SectorOffset;
+		int cbase = ReturnValueLpcRamBase(IspEnvironment); 
+		result = Copy_ToFlash(cstart, cbase, CopyLength);
+		if(result !=1) return 1;
+
+        if(IspEnvironment->Verify)
+        {
+
+          //Avoid compare first 64 bytes.
+          //Because first 64 bytes are re-mapped to flash boot sector,
+          //and the compare result may not be correct.
+          if (SectorStart + SectorOffset<64)
+          {
+            sprintf(tmpString, "M %d %ld %ld\r\n", 64, ReturnValueLpcRamBase(IspEnvironment) + 
+				   (64 - SectorStart - SectorOffset), CopyLength-(64 - SectorStart - SectorOffset));
+          }
+          else
+          {		
+            sprintf(tmpString, "M %ld %ld %ld\r\n", SectorStart + 
+				    SectorOffset, ReturnValueLpcRamBase(IspEnvironment), CopyLength);
+          }
+					
+		  result = Sector_Verify(tmpString);
+          if(result!=1) 
+		  {
+            DebugPrintf( "Wrong answer on Compare-Command\r\n");
+            //return (WRONG_ANSWER_COPY + GetAndReportErrorNumber(Answer));
+          }  
+         }
+        }
+       }
+
+       if ((SectorStart + SectorLength) >= IspEnvironment->BinaryLength && Sector!=0)
         {
             Sector = 0;
             SectorStart = 0;
@@ -1336,10 +1108,61 @@ int NxpDownload(ISP_ENVIRONMENT *IspEnvironment)
 }
 
 /*
+Sector 8: Empty
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   1
 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
-01 02 03 04 05 06 07 08 09 10 11 12  OK
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   2
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   3
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   4
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   5
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   6
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   7
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
+Write  OK, Verify  OK
+|
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20   8
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 
+01 02 03 04 05 06 07 08 09 10 11 12  CRC OK
 Write  OK, Verify  Error!
 Wrong answer on Compare-Command
-ErrorString: OK	  */
+ErrorString: OK
+*/

@@ -42,22 +42,22 @@ static DWORD DFU_PROGRAMM(LPVOID lParam)
   ASSERT(pDlg->IsKindOf(RUNTIME_CLASS(CPage6)));
  
   //Synchronisation objects
-  CEvent &ev_Quit = pDlg->ev_Quit;
-  CEvent &ev_Data = pDlg->ev_DataAccepted;
-  CEvent &ev_Exit = pDlg->ev_ExitRequest;
-  CEvent &ev_FB   = pDlg->ev_WaitEnd;
+  //CEvent &ev_Quit = pDlg->ev_Quit;
+  //CEvent &ev_Data = pDlg->ev_DataAccepted;
+  //CEvent &ev_Exit = pDlg->ev_ExitRequest;
+  //CEvent &ev_FB   = pDlg->ev_WaitEnd;
 
   //Synchronisation events
-  HANDLE evHandles[] = {ev_Quit, 
-	                    ev_Data, 
-	   				    ev_Exit};
+  //HANDLE evHandles[] = {ev_Quit, 
+  //	                    ev_Data, 
+  //	   				    ev_Exit};
  
-  DWORD event_numbers = 3;
+  //DWORD event_numbers = 3;
   //pDlg->exit_request = 1;
 
-  unsigned char Buf[16];
-  int more_bytes;
-  int exit_request = 0;
+  //unsigned char Buf[16];
+  //int more_bytes;
+  //int exit_request = 0;
 
   TRACE("DFU Thread Run\n");
 
@@ -112,7 +112,7 @@ static DWORD DFU_PROGRAMM(LPVOID lParam)
   ISP_ENVIRONMENT isp;
   memset(&isp, 0, sizeof(ISP_ENVIRONMENT));
           
-  isp.BinaryContent = (BINARY*)pBuf;
+  isp.BinaryContent = (unsigned char*)pBuf;
   isp.BinaryLength = length;
   isp.ProgramChip = 1;
   isp.WipeDevice = 1;

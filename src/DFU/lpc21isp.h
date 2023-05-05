@@ -4,19 +4,19 @@
 //Version:      1.00
 //Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
+#ifndef _LPC21_ISP_H_
+#define _LPC21_ISP_H_
+
 #include "cmd.h"
 #include "Page6.h"
-#define COMPILE_FOR_WINDOWS
-#define COMPILED_FOR "Windows"
+#include <ctype.h>    
+#include <stdio.h>  
+#include <time.h>
+#include <fcntl.h>
 
 // The Required features can be enabled / disabled here
 #define LPC_SUPPORT
 #define INTEGRATED_IN_WIN_APP
-
-#include <ctype.h>      // isdigit()
-#include <stdio.h>      // stdout
-#include <time.h>
-#include <fcntl.h>
 
 typedef enum
 {
@@ -35,8 +35,6 @@ typedef enum
   FORMAT_BINARY,
   FORMAT_HEX
 } FILE_FORMAT_TYPE;
-
-typedef unsigned char BINARY; // Data type used for microcontroller
 
 /** Used to create list of files to read in. */
 typedef struct file_list FILE_LIST;
@@ -60,19 +58,16 @@ typedef struct
   unsigned char DetectOnly;
   unsigned char WipeDevice;
   unsigned char Verify;
-  int DetectedDevice;       /* index in LPCtypes[] array */
-
-  char StringOscillator[6]; /**< Holds representation of oscillator
-                             * speed from the command line.*/
-
-  BINARY *FileContent;
-  BINARY *BinaryContent;    /**< Binary image of the*/
-                            /* microcontroller's memory.*/
+  //index in LPCtypes[] array
+  int DetectedDevice;     
+  
+  //Binary image of the microcontroller's memory.
+  unsigned char *BinaryContent;   
+                           
   unsigned long BinaryLength;
   unsigned long BinaryOffset;
   unsigned long StartAddress;
   unsigned long BinaryMemSize;
-  unsigned char NoSync;
 
 } ISP_ENVIRONMENT;
 
@@ -121,12 +116,16 @@ int  Sector_Erase(int sector);
 int  Sector_CheckEmpty(int sector);
 int  Sector_Prepare(int sector);
 int  Sector_Verify(char *pCMD);
-int  Write_ToRAM(int ram_addr, int length);
-int  Copy_ToRAM(ISP_ENVIRONMENT *IspEnvironment, long pos, int &line, int &crc);
-int  Copy_ToFlash(int flash_addr, int ram_addr, int length, int sector);
+int  Write_ToRAM(unsigned long ram_addr, int length);
+int  Copy_ToRAM(ISP_ENVIRONMENT *IspEnvironment, unsigned long pos, int &line, unsigned long &bl_crc);
+int  Copy_ToFlash(unsigned long flash_addr, unsigned long ram_addr, int length);
+int  Check_CRC(unsigned long crc);
 
 void SetTXpointer(void *pBT);
 int  BT_Send(const char *pString);
 int  BT_Receive(void *block, int size, unsigned timeout);
 
-//#endif
+unsigned long ReturnValueLpcRamStart(ISP_ENVIRONMENT *IspEnvironment);
+unsigned long ReturnValueLpcRamBase(ISP_ENVIRONMENT *IspEnvironment);
+
+#endif

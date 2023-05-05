@@ -258,6 +258,10 @@
     <ClCompile Include="src\DataTx\datatx.cpp" />
     <ClCompile Include="src\DFU\lpc21-func.cpp" />
     <ClCompile Include="src\DFU\lpc21isp.cpp" />
+    <ClCompile Include="src\DFU\test.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\Display\display.cpp" />
     <ClCompile Include="src\Display\Functions\add-remove.cpp" />
     <ClCompile Include="src\Display\Functions\backgnd.cpp" />
