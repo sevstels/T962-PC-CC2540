@@ -313,31 +313,6 @@ float CDSPL::Convert_ToScaleY(int y)
   
   return (float)value;
 }
- /*
-//------------------------------------------------------------------------------
-//Set Y-Limit for curves
-//------------------------------------------------------------------------------
-void CDSPL::Overflow_Correction(int &x, float &y, int length)
-{
-  //---- Y Bottom  scale_offset_y
-  if(y<scale_range_y0)
-  {
-    //заливаем значение функции
-	for(int i=x+scroll_position; i<length; i++)
-	{
-	    if(ProfileBuf[i]>= scale_range_y0)
-		{
-		  x = i;
-		  y = ProfileBuf[i];
-		  return;
-		}
-	}
-  }
-
-  //---- Y Top
-  if(y>(scale_height_y+scale_offset_y)) 
-	 y = (float)(scale_height_y+scale_offset_y);
-} */
 
 //------------------------------------------------------------------------------
 //Set 

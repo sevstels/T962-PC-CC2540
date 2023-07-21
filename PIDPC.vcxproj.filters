@@ -181,11 +181,11 @@
     <Filter Include="Pages\Bluetooth Dialog">
       <UniqueIdentifier>{85ee0cad-0803-47fd-afdb-6c5ba39599b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LPC21isp">
-      <UniqueIdentifier>{fa20e4c9-9372-4613-8959-eb8a9f178e8d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LibCPP\Arrays">
       <UniqueIdentifier>{36d8fcc5-fedc-4177-bd2c-0560d18a0117}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pages\LPC21isp">
+      <UniqueIdentifier>{fa20e4c9-9372-4613-8959-eb8a9f178e8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -277,7 +277,7 @@
       <Filter>Pages\Main Dialog\Functions</Filter>
     </ClCompile>
     <ClCompile Include="src\DFU\lpc21isp.cpp">
-      <Filter>LPC21isp</Filter>
+      <Filter>Pages\LPC21isp</Filter>
     </ClCompile>
     <ClCompile Include="src\Pages\Page6\Thread\thread-dfu.cpp">
       <Filter>Pages\Page 6\Thread</Filter>
@@ -436,10 +436,10 @@
       <Filter>Pages\Page 4\Functions</Filter>
     </ClCompile>
     <ClCompile Include="src\DFU\lpc21-func.cpp">
-      <Filter>LPC21isp</Filter>
+      <Filter>Pages\LPC21isp</Filter>
     </ClCompile>
     <ClCompile Include="src\DFU\test.cpp">
-      <Filter>LPC21isp</Filter>
+      <Filter>Pages\LPC21isp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -510,7 +510,7 @@
       <Filter>Pages\Reflow Dlg</Filter>
     </ClInclude>
     <ClInclude Include="src\DFU\lpc21isp.h">
-      <Filter>LPC21isp</Filter>
+      <Filter>Pages\LPC21isp</Filter>
     </ClInclude>
     <ClInclude Include="src\BT-Dlg\bt-dlg.h">
       <Filter>Pages\Bluetooth Dialog</Filter>

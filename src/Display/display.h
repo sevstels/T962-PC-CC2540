@@ -2,7 +2,7 @@
 //File name:   "display.h"
 //Purpose:      Header File
 //Version:      1.00
-//Copyright:    (c) 2019, Akimov Vladimir  E-mail: decoder@rambler.ru		
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru		
 //==============================================================================
 #include "afxcmn.h"
 #include "afxwin.h"
