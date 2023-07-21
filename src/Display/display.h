@@ -1,5 +1,5 @@
 //==============================================================================
-//File name:   "pcr-d.h"
+//File name:   "display.h"
 //Purpose:      Header File
 //Version:      1.00
 //Copyright:    (c) 2019, Akimov Vladimir  E-mail: decoder@rambler.ru		
@@ -8,19 +8,16 @@
 #include "afxwin.h"
 #include "arrays.h"
 
-#define  PCR_STANDARD      1
-
 #define  SELECT_HORIZLINE  1
 #define  SELECT_RAMP       2
 #define  SELECT_DRAGPOINT  3
 #define  SELECT_SENSOR     4
 #define  SB_RESET		   200
 
-
 #define  SCALE_X_CELLS_NUM 8
 
-#ifndef _PCR_DISPLAY_H_
-#define _PCR_DISPLAY_H_
+#ifndef _T_DISPLAY_H_
+#define _T_DISPLAY_H_
 
 //------------------------------------------------------------------------------
 // CLASS
@@ -87,7 +84,6 @@ class CDSPL
   void Draw_Scales(void);
   void Draw_FocusRect(void);
   void Draw_DragPoints(int index);
-  void Draw_SampleLED(int x, short leds, float fl_y);
   void Draw_SensorSQR(int x0, COLORREF color);
   void Draw_Ramp(int index);  
   void Draw_Duration(int index);
@@ -105,8 +101,6 @@ class CDSPL
   float Convert_ToScaleY(int y);
   void  Convert_ToDisplay_XY(int &y, int &x, float fl_y);
   int   Convert_ToDisplay_Y(float fl_y);
-  void  Overflow_Correction(int &x, float &y, int length);
-  int   CheckOutsideScale(int &x0, int &y0, int &x1, int &y1);
   int   round(double value);
 
   //----

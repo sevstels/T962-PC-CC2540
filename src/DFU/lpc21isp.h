@@ -48,10 +48,11 @@ typedef struct file_list FILE_LIST;
 
 typedef struct
 {
-  TARGET micro;                // The type of micro that will be programmed.
+  //The type of micro that will be programmed.
+  TARGET micro;                
   FILE_FORMAT_TYPE FileFormat;
-  unsigned char ProgramChip;   // Normally set
-  int nQuestionMarks; // how many times to try to synchronise
+  //Normally set
+  unsigned char ProgramChip;   
   int DoNotStart;
   int BootHold;
   unsigned char WriteDelay;

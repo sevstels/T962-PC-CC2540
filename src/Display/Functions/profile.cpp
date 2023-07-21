@@ -2,7 +2,7 @@
 //File name:    "profile.cpp"
 //Purpose:      Source File, CPage2 property page
 //Version:      1.00
-//Copyright:    (c) 2019, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "cmd.h"
@@ -270,9 +270,6 @@ void CDSPL::Draw_Profile(void)
 	   TRACE2("   fl_y1: %.1f y1: %d", fl_y1, y1);
 	   */
 
-///	   Overflow_Correction(x[0], fl_y[0], countbuf);
-///	   Overflow_Correction(x[1], fl_y[1], countbuf);
-
 	   //Преобразовать в координаты на дисплее
 	   Convert_ToDisplay_XY(y[0], x[0], fl_y[0]);
  	   Convert_ToDisplay_XY(y[1], x[1], fl_y[1]);
@@ -282,23 +279,17 @@ void CDSPL::Draw_Profile(void)
 	   
 	   //TRACE2("\nDraw x1: %d  X2: %d", x1, 0);
 	   //TRACE2("\nDraw y1: %d  float: %.1f\n", y[1], fl_y[1]);
-
-	   //Check line outside display scale
-	   int outside = CheckOutsideScale(x[0], y[0], x[1], y[1]);
-	   if(outside)
-	   {
-	     //---- Draw profile curves --------------
-	     //Рисуем график на экране
-	     Draw_Line(&IMG, 3, x[0], y[0], x[1], y[1], color);
-	   }
-
+   
+	   //---- Draw profile curves --------------
+	   //Рисуем график на экране
+	   Draw_Line(&IMG, 3, x[0], y[0], x[1], y[1], color);
 	   Draw_DragPoints(dot_index[1]);
 
 	   //Additional Line
 	   //Draw_Line(&IMG, 1, x1, y1+5, x2, y2+4, RGB(255,0,0));
 	   
 	   //---- Draw Txt msg
-	///   Draw_Temperature(index);
+	///Draw_Temperature(index);
 	/* Draw_Duration();
 	   Draw_FocusRect();  */
 	   //Draw_MaxPoint(&IMG, ProfileBuf, countbuf);
@@ -321,7 +312,6 @@ void CDSPL::Draw_Profile(void)
 		   //сначала нарисовать на графике!
 		   //Draw_DragPoints(indx);
 		   //float fp = Calc_LinePoint(x[0], fl_y1, x[1], fl_y2);
-		   Draw_SampleLED(indx, leds, fl_y[0]);
 		   
 		   //физическое значение координаты X 
 		   //сохраняем обратно в буфер как float
@@ -343,8 +333,6 @@ void CDSPL::Draw_Profile(void)
 	  break;
 	}
  }
- 
- //Draw_CycleArrow(&IMG);
 }
 
 //------------------------------------------------------------------------------
@@ -352,7 +340,7 @@ void CDSPL::Draw_Profile(void)
 //------------------------------------------------------------------------------
 void CDSPL::Load_Profile(int number)
 {
- if(number==PCR_STANDARD) Profile_DefaultIni();
+// if(number==PCR_STANDARD) Profile_DefaultIni();
   //TRACE2("\nX:%d Y:%d", x, y);
 }
 

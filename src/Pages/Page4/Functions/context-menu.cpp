@@ -92,9 +92,9 @@ void CPage4::OnDeleteSegment(){DSPL.DelSegment();}
 //------------------------------------------------------------------------------
 void CPage4::OnPage5_SetpProfileDefault()
 { 
-  //Standard pcr
-  DSPL.Load_Profile(PCR_STANDARD); 
+  //Standard 
+ /* DSPL.Load_Profile(PCR_STANDARD); 
   DSPL.Scroll_Setup();
   DSPL.ev_Redraw.SetEvent();
-  m_but_ProfileWrite.EnableWindow(TRUE);
+  m_but_ProfileWrite.EnableWindow(TRUE); */
 }

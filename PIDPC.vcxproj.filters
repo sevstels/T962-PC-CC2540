@@ -360,9 +360,6 @@
     <ClCompile Include="src\Display\Functions\duration.cpp">
       <Filter>Display\Functions</Filter>
     </ClCompile>
-    <ClCompile Include="src\Display\Functions\led-sample.cpp">
-      <Filter>Display\Functions</Filter>
-    </ClCompile>
     <ClCompile Include="src\Display\Functions\menu.cpp">
       <Filter>Display\Functions</Filter>
     </ClCompile>

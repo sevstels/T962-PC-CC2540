@@ -266,7 +266,6 @@
     <ClCompile Include="src\Display\Functions\add-remove.cpp" />
     <ClCompile Include="src\Display\Functions\backgnd.cpp" />
     <ClCompile Include="src\Display\Functions\duration.cpp" />
-    <ClCompile Include="src\Display\Functions\led-sample.cpp" />
     <ClCompile Include="src\Display\Functions\menu.cpp" />
     <ClCompile Include="src\Display\Functions\mouse_events.cpp" />
     <ClCompile Include="src\Display\Functions\msgbox.cpp" />

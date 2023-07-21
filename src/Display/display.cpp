@@ -1,8 +1,8 @@
 //==============================================================================
-//File name:    "dsp.cpp"
-//Purpose:      Source File, CPage2 property page
+//File name:    "display.cpp"
+//Purpose:      Source File
 //Version:      1.00
-//Copyright:    (c) 2019, Akimov Vladimir  E-mail: decoder@rambler.ru	
+//Copyright:    (c) 2023, Akimov Vladimir  E-mail: decoder@rambler.ru	
 //==============================================================================
 #include "stdafx.h"
 #include "display.h"
@@ -243,6 +243,10 @@ void CDSPL::DisplayShow(void)
   //расположить начало координат в левом нижнем углу окна
   IMG.SetViewportOrg(0, height);
   IMG.FillSolidRect(0, 0, width, height, RGB(255,255,255));
+  //отрезать всё лишнее за пределами шкалы
+  IMG.IntersectClipRect(offset_x, offset_y, 
+	                    offset_x + scale_width_x, 
+						offset_y + scale_height_y);
 }
 
 //------------------------------------------------------------------------------
@@ -309,7 +313,7 @@ float CDSPL::Convert_ToScaleY(int y)
   
   return (float)value;
 }
-
+ /*
 //------------------------------------------------------------------------------
 //Set Y-Limit for curves
 //------------------------------------------------------------------------------
@@ -333,93 +337,12 @@ void CDSPL::Overflow_Correction(int &x, float &y, int length)
   //---- Y Top
   if(y>(scale_height_y+scale_offset_y)) 
 	 y = (float)(scale_height_y+scale_offset_y);
-}
+} */
 
 //------------------------------------------------------------------------------
 //Set 
 //------------------------------------------------------------------------------
 int InterpolatorY(int delta_x, int delta_y)
 {
-
-
   return 1;
 }
-
-//------------------------------------------------------------------------------
-//Set 
-//------------------------------------------------------------------------------ 
-int CDSPL::CheckOutsideScale(int &x0, int &y0, int &x1, int &y1)
-{
-  //TRACE2("Draw x0: %d  x1: %d", x0, x1);
-  //TRACE2("  y0: %d  y1: %d\n", y0, y1);  
-
-  if(y0<scale_offset_y) y0 = scale_offset_y;
-  if(y1<scale_offset_y) y1 = scale_offset_y;
-
-  if(x0<scale_offset_x)
-  {
-	 x0 = scale_offset_x;
-     y0 = y1;
-	   /*
-	 if(x1==x0)
-	 {
-	 
-	 
-	 
-	 }
-	 else
-	 {
-	   float step_y = (float)(y1-y0)/(float)(x1-x0);
-
-	  // y0 = (int)(y1-(step_y*scroll_position));//(x1-x0)));
-	   
-	   //int delta = x1 - scroll_position; 
-	   TRACE2("x0: %d  x1: %d  ", x0, x1);
-	   TRACE2("y0: %d  step: %f\n", y0, step_y);
-	   //TRACE2("x1: %d  delt: %d\n", x1, delta);
-	 }
-	 
-	 //float step_y = (float)(y1-y0)/(float)(x1-x0);
-	 //y0 = (y1-y0)/4 ;
-	  */
-  }
-  
-  if(x1<scale_offset_x)
-  {
-	 x1 = scale_offset_x;
-  }
-
-  //правая сторона графика
-  if(x1>(scale_width_x+scale_offset_x))
-  {
-	x1 = scale_width_x+scale_offset_x;
-	y1 = y0;
-  }
-
-  //если точки вышли за пределы графика
-  if(x0>=(scale_width_x+scale_offset_x))
-  {
-  	 return 0;
-  }
-
-  return 1;
-}
-
-  /*
-  //---- graph
-  int graph_offset_x, graph_offset_y;
-  int graph_width, graph_height;
-  int graph_x0, graph_y0;
-  double graph_factor_x, graph_factor_y;
-
-  //---- display 
-  int display_offset_x, display_offset_y;
-  int display_width, display_height;
-
-  //---- scale
-  int scale_offset_x, scale_offset_y;
-  int scale_width_x, scale_height_y;
-  int scale_range_x0, scale_range_x;
-  int scale_range_y0, scale_range_y;
-  int scale_cell_x, scale_cell_y;
-  */

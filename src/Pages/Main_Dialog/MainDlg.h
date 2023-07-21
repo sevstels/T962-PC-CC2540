@@ -61,8 +61,8 @@ class CMainDlg : public CDialog
   CPage6 *pPage6;
   CBTDlg *pBTDlg;
 
+  CProtocolEx PROTOCOL;
   CDataTX BT;
-  CProtocolEx PROTOCOL;  
   CC2540 BLE;
 
   CLOGW	Console;
