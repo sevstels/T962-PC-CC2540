@@ -224,7 +224,7 @@ void CDSPL::Draw_ScaleX(CDC *pCDC, int x0, int y0, int width, int height,
   line_length = height+y0;
   y = y0;
 
-  //---- Draw horisontal lines
+  //Draw horisontal lines
   for(int i=0; i<cell_number+1; i++)
   {
 	Draw_Line(pCDC, line_width, x0, y, width+x0, y, color);
@@ -239,6 +239,6 @@ void CDSPL::Draw_ScaleX(CDC *pCDC, int x0, int y0, int width, int height,
 	y += step_y;
   } 
 
-  //---- delete graphic objects
+  //delete graphic objects
   font.DeleteObject();
 }
